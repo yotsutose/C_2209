@@ -1,13 +1,17 @@
 #動画の分割
 #-*- coding: utf-8 -*-
 
+from distutils.command.config import config
 import cv2
 import numpy as np
 import time
 import glob
+import imagehash
+from PIL import Image
 
 #保存する画像数
 countI = 52
+#countI = 0
 #保存時の画像名
 nameT = 'output1'
 #画像の大きさ
@@ -33,7 +37,7 @@ def func1():
     print("現在フレ：", cap.get(cv2.CAP_PROP_POS_FRAMES))   #動画の現在のフレームの位置
     
     #動画を１フレームごとに読み込んでウィンドウを起動、表示
-    #現在、全読してるけど、iで読み込むやつ制限する必要あるかも（フレ数やばいから）
+    #現在、10ずつで読み込む
     i=0
     j=0
     
@@ -88,72 +92,41 @@ def func2():
     for i in range(countI+1):
     #for i in range(20):
         name = nameT + '_' + '{0:04d}.jpeg'.format(i)
-        #print(name)
-        path = './output/' + name
-        img = cv2.imread(path)
+        img_path = './output/' + name
+        img = cv2.imread(img_path)
         cv2.imshow("Image", img)
         #cv2.waitKey()
         
-        j_zero = str(j).zfill(4)
-        nameF = nameT2 + '_' + j_zero + '.jpeg'
+        nameF = nameT2 + '_' + '{0:04d}.jpeg'.format(j)
         
         if i == 0:
-            cv2.imwrite(('output_F/' + nameF), img)
-            img_Comp = img 
+            cv2.imwrite(('output_Re/' + nameF), img)
+            hash = imagehash.average_hash(Image.open(img_path))
+            print(hash) 
+            #img_Comp = img
+            img_Comp_path = img_path
             j+=1
         else:
-            #画像の大きさが同じかを判定
-            #print(img.shape == img_Comp.shape)
-            img_E = img[0+cut :height-cut , 0+cut_W :width-cut_W]
-            img_Comp_E = img_Comp[0+cut :height-cut , 0+cut_W :width-cut_W ]
-            img_gauss1 = cv2.GaussianBlur(img_E, (5, 5), 5)
-            img_gauss2 = cv2.GaussianBlur(img_Comp_E, (5, 5), 5)
+            if d_hash(img_path, img_Comp_path) >= 16:
+                cv2.imwrite(('output_Re/' + nameF), img)
+                print('^'+str(j))
+                j+=1
+            #img_Comp = img
+            img_Comp_path = img_path
             
-            #img_E_G = cv2.hconcat([img_E, img_gauss1])
-            #img_Comp_E_G = cv2.hconcat([img_Comp_E, img_gauss2])
-            if not np.array_equal(img_gauss1, img_gauss2):
-                #bool = func3(img_E, img_Comp_E, i)
-                bool = func3(img_gauss1, img_gauss2, i)
-                print(str(i)+':'+str(bool))
-                if bool:
-                    cv2.imwrite(('output_F/' + nameF), img)
-                    print('^'+str(j))
-                    #img_Comp = img
-                    j+=1
-                img_Comp = img
-                
         if cv2.waitKey(1) & 0xFF == ord('q'): 
             break
 
 
-def func3(img, img_Comp, j):
-    im_diff = img.astype(int) - img_Comp.astype(int)
-    #print(im_diff.max())
-    #print(im_diff.min())
-    
-    im_diff_abs = np.abs(im_diff)
-    #print(im_diff_abs.max())
-    #print(im_diff_abs.min())
-    im_diff_abs_norm = im_diff_abs / im_diff_abs.max() * 255
-    cv2.imwrite('./testF/diff_abs' + str(j) + '.png', im_diff_abs_norm)
-    return func4(im_diff_abs_norm)
 
-
-def func4(img):
-    count_img_pixel = 0
-    for i in range(0, height-200, 5):
-        for j in range(0, width-100, 5):
-            pixelValue = img[i, j]
-            if np.all(pixelValue == 0):
-                count_img_pixel += 1
-                    
-    result_4 = count_img_pixel / (1792 * 828 / 25)
-    print('黒:'+str(result_4))
-    if result_4 < 0.5:
-    #if result_4 < 0.7:  #一つの動画に焦点を合わせすぎてしまうのも。。。
-        return True
-    else:
-        return False
+#Perceptual Hash値を使用して比較
+#https://aws.amazon.com/jp/blogs/news/jpmne-automatically-compare-two-videos-to-find-common-content/
+#「https://pypi.org/project/ImageHash/」
+#2つの画像のハッシュ値の差分を出力
+def d_hash(img,otherimg):
+    hash = imagehash.phash(Image.open(img))
+    other_hash = imagehash.phash(Image.open(otherimg))
+    return hash-other_hash
 
 
 def main():
@@ -163,12 +136,3 @@ def main():
 if __name__ == '__main__':
 	main()
 
-
-
-"""
-    for frame in files:
-        img = cv2.imread(frame)
-        cv2.imshow("Image", img)
-        #"q"を押すと終了
-        cv2.waitKey()
-"""
