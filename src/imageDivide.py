@@ -105,10 +105,10 @@ def func2():
             #print(img.shape == img_Comp.shape)
             img_E = img[0+cut :height-cut , 0+cut_W :width-cut_W]
             img_Comp_E = img_Comp[0+cut :height-cut , 0+cut_W :width-cut_W ]
-            img_gauss = cv2.GaussianBlur(img_E, (3, 3), 3)
+            img_gauss1 = cv2.GaussianBlur(img_E, (3, 3), 3)
             img_gauss2 = cv2.GaussianBlur(img_Comp_E, (3, 3), 3)
             
-            img_E_G = cv2.hconcat([img_E, img_gauss])
+            img_E_G = cv2.hconcat([img_E, img_gauss1])
             img_Comp_E_G = cv2.hconcat([img_Comp_E, img_gauss2])
             if not np.array_equal(img_E_G, img_Comp_E_G):
                 #bool = func3(img_E, img_Comp_E, i)
