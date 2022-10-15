@@ -1,3 +1,8 @@
 Github Commit test:
 　VScodeからできるかテスト（suzu-ki）
+<<<<<<< HEAD
 konnniti
+=======
+
+テスト坂部
+>>>>>>> 37d37d72d3f0f07eb8395b98a308dd79d4c7b4a3
