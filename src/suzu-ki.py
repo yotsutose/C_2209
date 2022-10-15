@@ -4,11 +4,16 @@
 import cv2
 import numpy as np
 import time
+import glob
 
+#保存する画像数
+countI = 52
+#保存時の画像名
+nameT = 'output1'
 
 #動画を読み込み、jフレームに１回保存
 def func1():
-    cap = cv2.VideoCapture('input/input1.MP4')
+    cap = cv2.VideoCapture('./input/input1.MP4')
     print(cap.isOpened())
     if cap.isOpened == False:
         print("むり")
@@ -26,7 +31,6 @@ def func1():
     #現在、全読してるけど、iで読み込むやつ制限する必要あるかも（フレ数やばいから）
     i=0
     j=0
-    nameT = 'output1'
     
     # 時間計測開始
     time_sta = time.time()
@@ -40,7 +44,8 @@ def func1():
                 j_zero = str(j).zfill(4)
                 nameI = nameT + '_' + j_zero + '.jpeg'
                 print(nameI)
-                cv2.imwrite(('output/' + nameI), img)
+                #画像の保存
+                #cv2.imwrite(('output/' + nameI), img)
                 j+=1
             
             #"q"を押すと終了
@@ -51,6 +56,8 @@ def func1():
             break
 
         if i == cap.get(cv2.CAP_PROP_FRAME_COUNT)-5:
+            countI = j-1
+            print(countI)
             break
 
         i+=1
@@ -67,13 +74,30 @@ def func1():
     exit()
 
 
-
+def func2():
+    print('aa')
+    #files = glob.glob('./output/*.jpeg')
+    for i in range(countI):
+        name = nameT + '_' + '{0:04d}.jpeg'.format(i)
+        print(name)
+        img = cv2.imread('./output/' + name)
+        cv2.imshow("Image", img)
+        cv2.waitKey()
 
 
 def main():
-    func1()
+    func2()
 
 
 if __name__ == '__main__':
 	main()
 
+
+
+"""
+    for frame in files:
+        img = cv2.imread(frame)
+        cv2.imshow("Image", img)
+        #"q"を押すと終了
+        cv2.waitKey()
+"""
