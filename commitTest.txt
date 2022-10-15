@@ -1,0 +1,2 @@
+Github Commit test:
+　VScodeからできるかテスト（suzu-ki）
