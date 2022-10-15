@@ -89,7 +89,8 @@ def func2():
     for i in range(20):
         name = nameT + '_' + '{0:04d}.jpeg'.format(i)
         #print(name)
-        img = cv2.imread('./output/' + name)
+        path = './output/' + name
+        img = cv2.imread(path)
         cv2.imshow("Image", img)
         cv2.waitKey()
         
@@ -150,8 +151,6 @@ def func4(img):
         return True
     else:
         return False
-
-
 
 
 def main():
