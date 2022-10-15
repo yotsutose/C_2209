@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm # プログレスバーの導入
 import matplotlib.pylab as plt # グラフの出力用
 
+# グラフ出力用のlist
 xdata=[]
 ydata=[]
 
@@ -32,12 +33,18 @@ def compare_image(img: np.ndarray, previous_img: np.ndarray):
   return False
 
 def func1():
+  # キャプチャの開始
   cap = cv2.VideoCapture('input/input1.MP4')
+  if cap.isOpened == False:
+    return
+  
+  # 基本情報の出力
   width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
   height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
   frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
   print(f'{width=} {height=} {frame_count=}')
 
+  # フレーム分だけループを回す
   previous_img = None
   for i in tqdm(range(frame_count)):
     ret, img = cap.read()
@@ -49,6 +56,8 @@ def func1():
       if is_break:
         break
     previous_img = img
+
+  # キャプチャを終了
   cap.release()
   cv2.destroyAllWindows()
 
