@@ -105,14 +105,20 @@ def func2():
             #print(img.shape == img_Comp.shape)
             img_E = img[0+cut :height-cut , 0+cut_W :width-cut_W]
             img_Comp_E = img_Comp[0+cut :height-cut , 0+cut_W :width-cut_W ]
+            img_gauss = cv2.GaussianBlur(img_E, (3, 3), 3)
+            img_gauss2 = cv2.GaussianBlur(img_Comp_E, (3, 3), 3)
             
-            if not np.array_equal(img_E, img_Comp_E):
-                bool = func3(img_E, img_Comp_E, j)
+            img_E_G = cv2.hconcat([img_E, img_gauss])
+            img_Comp_E_G = cv2.hconcat([img_Comp_E, img_gauss2])
+            if not np.array_equal(img_E_G, img_Comp_E_G):
+                #bool = func3(img_E, img_Comp_E, i)
+                bool = func3(img_E_G, img_Comp_E_G, i)
                 print(str(i)+':'+str(bool))
                 if bool:
                     cv2.imwrite(('output_F/' + nameF), img)
-                    img_Comp = img
+                    #img_Comp = img
                     j+=1
+                img_Comp = img
 
 
 def func3(img, img_Comp, j):
@@ -125,20 +131,20 @@ def func3(img, img_Comp, j):
     #print(im_diff_abs.min())
     im_diff_abs_norm = im_diff_abs / im_diff_abs.max() * 255
     cv2.imwrite('./testF/diff_abs' + str(j) + '.png', im_diff_abs_norm)
-    return func4(im_diff_abs)
+    return func4(im_diff_abs_norm)
 
 
 def func4(img):
     count_img_pixel = 0
-    for i in range(height-200):
-        for j in range(width-100):
+    for i in range(0, height-200, 5):
+        for j in range(0, width-100, 5):
             pixelValue = img[i, j]
             if np.all(pixelValue == 0):
                 count_img_pixel += 1
                     
-    result_4 = count_img_pixel / (1792 * 828)
+    result_4 = count_img_pixel / (1792 * 828 / 25)
     print('黒:'+str(result_4))
-    if result_4 < 0.45:
+    if result_4 < 0.7:
         return True
     else:
         return False
