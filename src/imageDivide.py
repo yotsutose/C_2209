@@ -105,17 +105,18 @@ def func2():
             #print(img.shape == img_Comp.shape)
             img_E = img[0+cut :height-cut , 0+cut_W :width-cut_W]
             img_Comp_E = img_Comp[0+cut :height-cut , 0+cut_W :width-cut_W ]
-            img_gauss1 = cv2.GaussianBlur(img_E, (3, 3), 3)
-            img_gauss2 = cv2.GaussianBlur(img_Comp_E, (3, 3), 3)
+            img_gauss1 = cv2.GaussianBlur(img_E, (5, 5), 5)
+            img_gauss2 = cv2.GaussianBlur(img_Comp_E, (5, 5), 5)
             
-            img_E_G = cv2.hconcat([img_E, img_gauss1])
-            img_Comp_E_G = cv2.hconcat([img_Comp_E, img_gauss2])
-            if not np.array_equal(img_E_G, img_Comp_E_G):
+            #img_E_G = cv2.hconcat([img_E, img_gauss1])
+            #img_Comp_E_G = cv2.hconcat([img_Comp_E, img_gauss2])
+            if not np.array_equal(img_gauss1, img_gauss2):
                 #bool = func3(img_E, img_Comp_E, i)
-                bool = func3(img_E_G, img_Comp_E_G, i)
+                bool = func3(img_gauss1, img_gauss2, i)
                 print(str(i)+':'+str(bool))
                 if bool:
                     cv2.imwrite(('output_F/' + nameF), img)
+                    print('^'+str(j))
                     #img_Comp = img
                     j+=1
                 img_Comp = img
@@ -144,7 +145,8 @@ def func4(img):
                     
     result_4 = count_img_pixel / (1792 * 828 / 25)
     print('黒:'+str(result_4))
-    if result_4 < 0.7:
+    if result_4 < 0.5:
+    #if result_4 < 0.7:  #一つの動画に焦点を合わせすぎてしまうのも。。。
         return True
     else:
         return False
