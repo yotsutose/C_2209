@@ -17,7 +17,10 @@ def compare_image(img: np.ndarray, previous_img: np.ndarray):
   # diff_abs_norm = diff_abs / diff_abs.max() * 255 # 最大化しない方がいい
   
   # diffの合計値をdataに保存
-  ydata.append(np.sum(diff_abs))
+  y = np.sum(diff_abs)
+  y = min(y, 100000)
+  y = max(y, 1000)
+  ydata.append(y)
 
   # 表示用の画像を生成
   mix_img = np.full((height+1, width*2+1, 3), 1280, dtype=np.uint8)
@@ -53,7 +56,7 @@ def write_graph():
   xdata=np.arange(len(ydata))
   fig, ax = plt.subplots()
   fig.suptitle("diff.abs.sum")
-  plt.scatter(xdata,ydata,marker='.',lw=0)
+  plt.scatter(xdata, ydata, marker='.', lw=0)
   plt.show()
 
 def main():
