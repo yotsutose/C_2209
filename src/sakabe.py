@@ -50,6 +50,7 @@ def func1():
     ret, img = cap.read()
     if ret == False:
       break
+    # 画像をリサイズする　20分の1に圧縮
     img = cv2.resize(img, dsize=None, fx=1/20, fy=1/20)
     if i != 0:
       is_break = compare_image(img, previous_img)
