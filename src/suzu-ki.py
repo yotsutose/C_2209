@@ -10,6 +10,9 @@ import glob
 countI = 52
 #保存時の画像名
 nameT = 'output1'
+#画像の大きさ
+width = 828
+height = 1792
 
 #動画を読み込み、jフレームに１回保存
 def func1():
@@ -20,8 +23,10 @@ def func1():
         exit()
         
     #動画の大きさ
-    print("動画幅：", cap.get(cv2.CAP_PROP_FRAME_WIDTH)) #動画の幅
-    print("動画高さ：", cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  #動画の高さ
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    print("動画幅：", width) #動画の幅
+    print("動画高さ：", height)  #動画の高さ
     #動画のフレーム規格
     print("フレ数/s：", cap.get(cv2.CAP_PROP_FPS))   #動画の1秒あたりのフレーム数
     print("全フレ数：", cap.get(cv2.CAP_PROP_FRAME_COUNT))   #動画の全てのフレーム数
@@ -75,14 +80,70 @@ def func1():
 
 
 def func2():
-    print('aa')
-    #files = glob.glob('./output/*.jpeg')
-    for i in range(countI):
+    i = 0
+    j = 0
+    cut = 100
+    cut_W = 50
+    nameT2 = 'output_F'
+    #for i in range(countI+1):
+    for i in range(20):
         name = nameT + '_' + '{0:04d}.jpeg'.format(i)
-        print(name)
+        #print(name)
         img = cv2.imread('./output/' + name)
         cv2.imshow("Image", img)
         cv2.waitKey()
+        
+        j_zero = str(j).zfill(4)
+        nameF = nameT2 + '_' + j_zero + '.jpeg'
+        
+        if i == 0:
+            cv2.imwrite(('output_F/' + nameF), img)
+            img_Comp = img 
+            j+=1
+        else:
+            #画像の大きさが同じかを判定
+            #print(img.shape == img_Comp.shape)
+            img_E = img[0+cut :height-cut , 0+cut_W :width-cut_W]
+            img_Comp_E = img_Comp[0+cut :height-cut , 0+cut_W :width-cut_W ]
+            
+            if not np.array_equal(img_E, img_Comp_E):
+                bool = func3(img_E, img_Comp_E, j)
+                print(str(i)+':'+str(bool))
+                if bool:
+                    cv2.imwrite(('output_F/' + nameF), img)
+                    img_Comp = img
+                    j+=1
+
+
+def func3(img, img_Comp, j):
+    im_diff = img.astype(int) - img_Comp.astype(int)
+    #print(im_diff.max())
+    #print(im_diff.min())
+    
+    im_diff_abs = np.abs(im_diff)
+    #print(im_diff_abs.max())
+    #print(im_diff_abs.min())
+    im_diff_abs_norm = im_diff_abs / im_diff_abs.max() * 255
+    cv2.imwrite('./testF/diff_abs' + str(j) + '.png', im_diff_abs_norm)
+    return func4(im_diff_abs)
+
+
+def func4(img):
+    count_img_pixel = 0
+    for i in range(height-200):
+        for j in range(width-100):
+            pixelValue = img[i, j]
+            if np.all(pixelValue == 0):
+                count_img_pixel += 1
+                    
+    result_4 = count_img_pixel / (1792 * 828)
+    print('黒:'+str(result_4))
+    if result_4 < 0.45:
+        return True
+    else:
+        return False
+
+
 
 
 def main():
