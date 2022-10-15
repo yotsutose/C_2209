@@ -15,7 +15,8 @@ def compare_image(img: np.ndarray, previous_img: np.ndarray):
   diff = img.astype(int) - previous_img.astype(int)
   diff_abs = np.abs(diff)
   # diff_abs_norm = diff_abs / diff_abs.max() * 255 # 最大化しない方がいい
-  # print(f"{np.sum(diff_abs)=}")
+  
+  # diffの合計値をdataに保存
   ydata.append(np.sum(diff_abs))
 
   # 表示用の画像を生成
@@ -23,7 +24,9 @@ def compare_image(img: np.ndarray, previous_img: np.ndarray):
   mix_img[0:height,0:width] = img
   mix_img[0:pre_height,width:width+pre_width] = diff_abs
   cv2.imshow("Video", mix_img)
-  return
+  if cv2.waitKey(1) & 0xFF == ord('q'):
+    return True
+  return False
 
 def func1():
   cap = cv2.VideoCapture('input/input1.MP4')
@@ -39,8 +42,8 @@ def func1():
       break
     img = cv2.resize(img, dsize=None, fx=1/20, fy=1/20)
     if i != 0:
-      compare_image(img, previous_img)
-      if cv2.waitKey(1) & 0xFF == ord('q'):
+      is_break = compare_image(img, previous_img)
+      if is_break:
         break
     previous_img = img
   cap.release()
