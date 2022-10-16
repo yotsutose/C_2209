@@ -128,6 +128,7 @@ def func5():
         elif(degree_of_similarity <= 0.8):
             first_img = True
         
+    print('読み込み完了')
 
 
 def func6():
