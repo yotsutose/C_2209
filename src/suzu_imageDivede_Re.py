@@ -86,8 +86,6 @@ def func1():
 def func2():
     i = 0
     j = 0
-    cut = 100
-    cut_W = 50
     nameT2 = 'output_F'
     for i in range(countI+1):
     #for i in range(20):
