@@ -55,14 +55,14 @@ def func1():
         ret, img = cap.read()
 
         if ret == True:
-            cv2.imshow("Video", img)
+            #cv2.imshow("Video", img)
 
             if i%10 == 0:
                 j_zero = str(j).zfill(4)
                 nameI = nameT + '_' + j_zero + '.jpeg'
-                print(nameI)
+                #print(nameI)
                 #画像の保存
-                #cv2.imwrite(('output/' + nameI), img)
+                cv2.imwrite(('output/' + nameI), img)
                 j+=1
             
             #"q"を押すと終了
@@ -122,7 +122,7 @@ def func5():
         #類似度が0.8より大きくなった瞬間の画像を保存
         if(degree_of_similarity > 0.8 and first_img):
             name3 = nameT + '_' + '{0:04d}.jpeg'.format(j)
-            cv2.imwrite(('output_func5_2/' + name3), image1)
+            cv2.imwrite(('output_func5_2/' + name3), image2)
             j+=1
             first_img = False
         elif(degree_of_similarity <= 0.8):
@@ -197,10 +197,10 @@ def func7():
         print(name1 + ' : '+ name2 + " 類似度：" + str(degree_of_similarity))
 
         #類似度が0.8より大きくなった瞬間の画像を保存
-        if(degree_of_similarity < 0.8):
+        if(degree_of_similarity < 0.75):
             name3 = nameT + '_' + '{0:04d}.jpeg'.format(j)
             #cv2.imwrite(('output_func5_2/' + name3), image1)
-            cv2.imwrite(('OO/' + name3), image2)
+            cv2.imwrite(('OO/' + name2), image2)
             print('^^')
             j+=1
             #first_img = False
@@ -215,8 +215,11 @@ def funcPlot():
     plt.show() # 出力
 
 def main():
+    func1()
     func5()
-    funcPlot()
+    func6()
+    func7()
+    #funcPlot()
 
 
 if __name__ == '__main__':
