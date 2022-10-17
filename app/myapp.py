@@ -200,12 +200,6 @@ class Controller():
     def set_events(self):
         '受け付けるイベントを設定する'
 
-        # キャンバス上のマウス押し下げ開始イベント受付
-        self.view.canvases[0].bind(
-            "<ButtonPress-1>",
-            self.button_press
-        )
-
         # 動画選択ボタン押し下げイベント受付
         self.view.load_button['command'] = self.push_load_button
 
@@ -232,42 +226,22 @@ class Controller():
             self.model.create_video(file_path)
 
             # 最初のフレームを表示
-            self.model.advance_frame()
-            self.model.create_image(
-                (
-                    self.view.canvas.winfo_width(),
-                    self.view.canvas.winfo_height()
-                )
-            )
-            self.model.reverse_video()
+            # self.model.advance_frame()
+            # self.model.create_image(
+            #     (
+            #         self.view.canvas.winfo_width(),
+            #         self.view.canvas.winfo_height()
+            #     )
+            # )
             self.view.draw_image()
 
-    def button_press(self, event):
-        'マウスボタン押された時の処理'
-
-        # 動画の再生/停止を切り替える
-        if not self.playing:
-            self.playing = True
-
-            # 再生ボタンの削除
-            self.view.delete_play_button()
-        else:
-            self.playing = False
-            
-            # 再生ボタンの描画
-            self.view.draw_play_button()
-
     def push_gray_button(self):
-        print("push")
         self.model.next_frame()
         self.view.draw_image()
-        # print(self.model.now)
 
     def push_flip_button(self):
-        print("push")
         self.model.previous_frame()
         self.view.draw_image()
-        # print(self.model.now)
 
 
 app = tkinter.Tk()
