@@ -167,14 +167,15 @@ class View():
         # グレーON/OFFボタンの作成と配置
         self.gray_button = tkinter.Button(
             self.operation_frame,
-            text="モノクロON/OFF"
+            text="Next Frame"
         )
+        self.gray_button.pack()
         self.gray_button.pack()
 
         # フリップ/OFFボタンの作成と配置
         self.flip_button = tkinter.Button(
             self.operation_frame,
-            text="フリップON/OFF"
+            text="Previous Frame"
         )
         self.flip_button.pack()
 
