@@ -16,6 +16,10 @@ class Model():
         # 読み込んだフレーム
         self.frames = []
 
+        # 読み込んだフレームの選択状態 0:選択、1:未選択 2:被り
+        # 最初から2は消しておくかもしれない
+        self.frame_state = []
+
         # PIL画像オブジェクト参照用
         self.image = None
 
@@ -30,7 +34,6 @@ class Model():
     def create_video(self, path):
         '動画オブジェクトの生成を行う'
 
-
         # pathの動画から動画オブジェクト生成
         self.cap = cv2.VideoCapture(path)
         width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -39,6 +42,7 @@ class Model():
         print(f'{width=} {height=} {frame_count=}')
 
         self.frames = []
+        self.frame_state = [0]*frame_count
         for i in tqdm(range(frame_count)):
             ret, img = self.cap.read()
             if ret == False:
@@ -103,26 +107,7 @@ class View():
             bg="#EEEEEE",) for x in range(7)]
         
         for i in range(len(self.canvases)):
-            self.canvases[i].pack(fill = 'x', padx=0, side = 'left')
-
-        # # キャンバスの作成と配置
-        # self.canvas = tkinter.Canvas(
-        #     self.canvas_frame,
-        #     width=canvas_width/4,
-        #     height=canvas_height,
-        #     bg="#EEEEEE",
-        # )
-        # self.canvas.pack(fill = 'x', padx=20, side = 'left')
-
-        # # キャンパス2
-        # self.canvas2 = tkinter.Canvas(
-        #     self.canvas_frame,
-        #     width=canvas_width/4,
-        #     height=canvas_height,
-        #     bg="#FFFFFF",
-        # )
-        # self.canvas2.pack(fill = 'x', padx=20, side = 'left')
-        
+            self.canvases[i].pack(fill = 'x', padx=0, side = 'left')     
 
         # ファイル読み込みボタンの作成と配置
         self.load_button = tkinter.Button(
