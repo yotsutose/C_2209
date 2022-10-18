@@ -20,6 +20,8 @@ class Model():
         # 最初から2は消しておくかもしれない
         self.frame_state = []
 
+        self.state = list(range(0, 8))
+
         # PIL画像オブジェクト参照用
         self.image = None
 
@@ -28,6 +30,7 @@ class Model():
 
         # 現在表示中のフレーム
         self.now = tkinter.IntVar()
+        self.now.initialize(3)
 
         self.create_video("./input/input1.MP4")
 
@@ -54,6 +57,13 @@ class Model():
             pil_image = Image.fromarray(rgb_frame)
             pil_image = pil_image.resize((round(width/4), round(height/4)), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
+    
+    def set_vec_now(self, a):
+        for i in range(8):
+            state_ = self.now.get() + i - 4
+            state_ = min( state_, len(self.frames)-1)
+            state_ = max( state_, 0)
+            self.state[i] = state_
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
@@ -70,6 +80,9 @@ class View():
 
         self.master = app
         self.model = model
+
+        # callbackを用意
+        self.model.now.trace_add("write", self.draw_image)
 
         # アプリ内のウィジェットを作成
         self.create_widgets()
@@ -99,15 +112,34 @@ class View():
         )
         self.operation_frame.grid(column=1, row=2)
 
-        # キャンバスs
-        self.canvases = [tkinter.Canvas(
+        # キャンバスの配列
+        self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
             width=canvas_width/5.5,
             height=canvas_height/2,
-            bg="#EEEEEE",) for x in range(7)]
-        
-        for i in range(len(self.canvases)):
-            self.canvases[i].pack(fill = 'x', padx=0, side = 'left')     
+            bg="#FFFFFF") for x in range(8)]
+        # [self.canvas_paneles[x].pack(fill = 'x', padx=10, side = 'left') for x in range(7)]
+        [self.canvas_paneles[x].grid(column=x, row=1) for x in range(1, 8)]
+
+        # キャンバスごとのフレーム番号表示
+        self.frame_index = [tkinter.Label(
+            self.canvas_paneles[x],
+            text="text") for x in range(8)]
+        [self.frame_index[x].pack() for x in range(8)]
+
+        # キャンバスごとのフレーム表示
+        self.frame = [tkinter.Canvas(
+            self.canvas_paneles[x],
+            width=canvas_width/5.5,
+            height=canvas_height/2,
+            bg="#FFFFFF") for x in range(8)]
+        [self.frame[x].pack() for x in range(8)]
+
+        # キャンパスごとのボタン表示
+        self.state_button = [tkinter.Button(
+            self.canvas_paneles[x],
+            text="button") for x in range(8)]
+        [self.state_button[x].pack() for x in range(8)]
 
         # ファイル読み込みボタンの作成と配置
         self.load_button = tkinter.Button(
@@ -116,31 +148,31 @@ class View():
         )
         self.load_button.pack()
 
-
-        # グレーON/OFFボタンの作成と配置
-        self.gray_button = tkinter.Button(
-            self.operation_frame,
-            text="Next Frame"
-        )
-        self.gray_button.pack()
-
-        # フリップ/OFFボタンの作成と配置
-        self.flip_button = tkinter.Button(
-            self.operation_frame,
-            text="Previous Frame"
-        )
-        self.flip_button.pack()
-
         # val = tkinter.IntVar()
         self.scale_bar = ttk.Scale(
             self.operation_frame,
             variable=self.model.now,
             orient=tkinter.HORIZONTAL,
             length=600,
-            from_=0 + 4,
-            to=len(self.model.frames)-1 - 4,
-            command=lambda e: self.draw_image())
+            from_=0,
+            to=len(self.model.frames)-1,
+            # command=lambda e: self.draw_image()
+        )
         self.scale_bar.pack()
+
+        # グレーON/OFFボタンの作成と配置
+        self.gray_button = tkinter.Button(
+            self.operation_frame,
+            text="Next Frame"
+        )
+        self.gray_button.pack(fill = 'x', padx=20, side = 'right')
+
+        # フリップ/OFFボタンの作成と配置
+        self.flip_button = tkinter.Button(
+            self.operation_frame,
+            text="Previous Frame"
+        )
+        self.flip_button.pack(fill = 'x', padx=20, side = 'left')
 
     def select_open_file(self, file_types):
         'オープンするファイル選択画面を表示'
@@ -152,22 +184,17 @@ class View():
         )
         return file_path
 
-    def draw_image(self):
+    def draw_image(self, a, b, c):
+        self.model.set_vec_now(self.model)
         '画像をキャンバスに描画'
-
-        for i in range(len(self.canvases)):
-            image = self.model.frames[self.model.now.get() - 2 + i]
-
+        for i in range(len(self.canvas_paneles)):
+            now = self.model.state[i]
+            image = self.model.frames[now]
             if image is None:
                 continue
-            # キャンバス上の画像の左上座標を決定
-            sx = (self.canvases[0].winfo_width() - image.width()) // 2
-            sy = (self.canvases[0].winfo_height() - image.height()) // 2
-
-            # 画像をキャンバスの真ん中に描画
-            self.canvases[i].delete('all')
-            self.canvases[i].create_image(
-                sx, sy,
+            self.frame[i].delete('all')
+            self.frame[i].create_image(
+                0, 0,
                 image=image,
                 anchor=tkinter.NW,
                 tag="image"
@@ -204,29 +231,15 @@ class Controller():
 
         # ファイル選択画面表示
         file_path = self.view.select_open_file(file_types)
-
         if len(file_path) != 0:
-
             # 動画オブジェクト生成
             self.model.create_video(file_path)
 
-            # 最初のフレームを表示
-            # self.model.advance_frame()
-            # self.model.create_image(
-            #     (
-            #         self.view.canvas.winfo_width(),
-            #         self.view.canvas.winfo_height()
-            #     )
-            # )
-            self.view.draw_image()
-
     def push_gray_button(self):
         self.model.next_frame()
-        self.view.draw_image()
 
     def push_flip_button(self):
         self.model.previous_frame()
-        self.view.draw_image()
 
 
 app = tkinter.Tk()
