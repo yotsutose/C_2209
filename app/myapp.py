@@ -20,8 +20,6 @@ class Model():
         # 最初から2は消しておくかもしれない
         self.frame_state = []
 
-        self.state = list(range(0, 8))
-
         # PIL画像オブジェクト参照用
         self.image = None
 
@@ -30,6 +28,11 @@ class Model():
 
         # 現在表示中のフレーム
         self.now = tkinter.IntVar()
+        self.nows = []
+        for x in range(8):
+            self.nows.append(tkinter.IntVar())
+
+        self.now.trace_add("write", self.set_nows)
 
         self.create_video("./input/input1.MP4")
 
@@ -50,7 +53,7 @@ class Model():
             if ret == False:
                 break
             # 画像をリサイズする　20分の1に圧縮
-            if i % 20 != 0:
+            if i % 50 != 0:
                 continue
             rgb_frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             pil_image = Image.fromarray(rgb_frame)
@@ -59,12 +62,12 @@ class Model():
         # セットする
         self.now.set(3)
 
-    def set_vec_now(self, a):
+    def set_nows(self, a, b, c):
         for i in range(8):
             state_ = self.now.get() + i - 4
             state_ = min( state_, len(self.frames)-1)
             state_ = max( state_, 0)
-            self.state[i] = state_
+            self.nows[i].set(state_)
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
@@ -83,7 +86,14 @@ class View():
         self.model = model
 
         # callbackを用意
-        self.model.now.trace_add("write", self.draw_image)
+        self.model.nows[0].trace_add("write", lambda name, index, mode: self.draw_image(self, 0))
+        self.model.nows[1].trace_add("write", lambda name, index, mode: self.draw_image(self, 1))
+        self.model.nows[2].trace_add("write", lambda name, index, mode: self.draw_image(self, 2))
+        self.model.nows[3].trace_add("write", lambda name, index, mode: self.draw_image(self, 3))
+        self.model.nows[4].trace_add("write", lambda name, index, mode: self.draw_image(self, 4))
+        self.model.nows[5].trace_add("write", lambda name, index, mode: self.draw_image(self, 5))
+        self.model.nows[6].trace_add("write", lambda name, index, mode: self.draw_image(self, 6))
+        self.model.nows[7].trace_add("write", lambda name, index, mode: self.draw_image(self, 7))
 
         # アプリ内のウィジェットを作成
         self.create_widgets()
@@ -93,11 +103,12 @@ class View():
 
         # キャンバスのサイズ
         canvas_width = 1200
-        canvas_height = 900
+        canvas_height = 800
 
         # キャンバスとボタンとタイトル配置するフレームの作成と配置
         self.main_frame = tkinter.Frame(
-            self.master
+            self.master,
+            bg="#FCFFEE"
         )
         self.main_frame.pack()
 
@@ -106,35 +117,46 @@ class View():
             self.main_frame,
             height=200,
             width=700,
-            bg="red"
+            bg="#FCFFEE"
         )
         self.head_frame.grid(column=1, row=1)
 
         # キャンバスを配置するフレームの作成と配置
         self.canvas_frame = tkinter.Frame(
-            self.main_frame
+            self.main_frame,
+            bg="#FCFFEE"
         )
         self.canvas_frame.grid(column=1, row=2)
 
         # ユーザ操作用フレームの作成と配置
         self.operation_frame = tkinter.Frame(
-            self.main_frame
+            self.main_frame,
+            bg="#FCFFEE"
         )
         self.operation_frame.grid(column=1, row=3)
+
+        # 下の表示を配置するフレームの作成と配置
+        self.head_frame = tkinter.Frame(
+            self.main_frame,
+            height=50,
+            width=700,
+            bg="#FCFFEE"
+        )
+        self.head_frame.grid(column=1, row=4)
 
         # キャンバスの配列
         self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
-            width=canvas_width/5.5,
-            height=canvas_height/2,
-            bg="#FFFFFF") for x in range(8)]
+            bg="#FCFFEE",) for x in range(8)]
         # [self.canvas_paneles[x].pack(fill = 'x', padx=10, side = 'left') for x in range(7)]
         [self.canvas_paneles[x].grid(column=x, row=1) for x in range(1, 8)]
 
         # キャンバスごとのフレーム番号表示
         self.frame_index = [tkinter.Label(
             self.canvas_paneles[x],
-            textvariable=self.model.now) for x in range(8)]
+            bg="#FCFFEE",
+            font=("MSゴシック", "30", "bold"),
+            textvariable=self.model.nows[x]) for x in range(8)]
         [self.frame_index[x].pack() for x in range(8)]
 
         # キャンバスごとのフレーム表示
@@ -142,29 +164,52 @@ class View():
             self.canvas_paneles[x],
             width=canvas_width/5.5,
             height=canvas_height/2,
-            bg="#FFFFFF") for x in range(8)]
+            highlightbackground='#FCFFEE',
+            bg='#FCFFEE'
+            ) for x in range(8)]
         [self.frame[x].pack() for x in range(8)]
 
         # キャンパスごとのボタン表示
         self.state_button = [tkinter.Button(
             self.canvas_paneles[x],
-            text="button") for x in range(8)]
+            text="button",
+            highlightbackground='#FCFFEE'
+) for x in range(8)]
         [self.state_button[x].pack() for x in range(8)]
 
         # ファイル読み込みボタンの作成と配置
         self.load_button = tkinter.Button(
             self.operation_frame,
-            text="動画選択"
+            text="動画選択",
+            highlightbackground='#FCFFEE'
         )
         self.load_button.pack()
 
-        # val = tkinter.IntVar()
-        self.scale_bar = ttk.Scale(
+        # style = ttk.Style()
+        # style.configure(
+        #     "Horizontal.TScale",
+        #     background="cyan"
+        # )
+        # self.scale_bar = ttk.Scale(
+        #     self.operation_frame,
+        #     style="TScale",
+        #     variable=self.model.now,
+        #     orient="horizontal",
+        #     length=600,
+        #     from_=0,
+        #     to=len(self.model.frames)-1,
+        #     # command=lambda e: self.draw_image()
+        # )
+
+        self.scale_bar = tkinter.Scale(
             self.operation_frame,
             variable=self.model.now,
             orient=tkinter.HORIZONTAL,
+            bg='#FCFFEE',
+            troughcolor='#FCFFEE',
             length=600,
             from_=0,
+            sliderlength=15,
             to=len(self.model.frames)-1,
             # command=lambda e: self.draw_image()
         )
@@ -173,14 +218,17 @@ class View():
         # グレーON/OFFボタンの作成と配置
         self.gray_button = tkinter.Button(
             self.operation_frame,
-            text="Next Frame"
+            text="Next Frame",
+            highlightbackground='#FCFFEE'
         )
         self.gray_button.pack(fill = 'x', padx=20, side = 'right')
 
         # フリップ/OFFボタンの作成と配置
         self.flip_button = tkinter.Button(
             self.operation_frame,
-            text="Previous Frame"
+            text="Previouss Frame",
+            width = 20,
+            highlightbackground='#FCFFEE'
         )
         self.flip_button.pack(fill = 'x', padx=20, side = 'left')
 
@@ -194,21 +242,19 @@ class View():
         )
         return file_path
 
-    def draw_image(self, a, b, c):
-        self.model.set_vec_now(self.model)
+    def draw_image(self, name, index):
         '画像をキャンバスに描画'
-        for i in range(len(self.canvas_paneles)):
-            now = self.model.state[i]
-            image = self.model.frames[now]
-            if image is None:
-                continue
-            self.frame[i].delete('all')
-            self.frame[i].create_image(
-                0, 0,
-                image=image,
-                anchor=tkinter.NW,
-                tag="image"
-            )
+        i = index
+        image = self.model.frames[self.model.nows[index].get()]
+        if image is None:
+            return
+        self.frame[i].delete('all')
+        self.frame[i].create_image(
+            0, 0,
+            image=image,
+            anchor=tkinter.NW,
+            tag="image"
+        )
 
 class Controller():
 
