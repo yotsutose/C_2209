@@ -30,7 +30,6 @@ class Model():
 
         # 現在表示中のフレーム
         self.now = tkinter.IntVar()
-        self.now.initialize(3)
 
         self.create_video("./input/input1.MP4")
 
@@ -57,7 +56,9 @@ class Model():
             pil_image = Image.fromarray(rgb_frame)
             pil_image = pil_image.resize((round(width/4), round(height/4)), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
-    
+        # セットする
+        self.now.set(3)
+
     def set_vec_now(self, a):
         for i in range(8):
             state_ = self.now.get() + i - 4
@@ -94,23 +95,32 @@ class View():
         canvas_width = 1200
         canvas_height = 900
 
-        # キャンバスとボタンを配置するフレームの作成と配置
+        # キャンバスとボタンとタイトル配置するフレームの作成と配置
         self.main_frame = tkinter.Frame(
             self.master
         )
         self.main_frame.pack()
 
+        # 上の表示を配置するフレームの作成と配置
+        self.head_frame = tkinter.Frame(
+            self.main_frame,
+            height=200,
+            width=700,
+            bg="red"
+        )
+        self.head_frame.grid(column=1, row=1)
+
         # キャンバスを配置するフレームの作成と配置
         self.canvas_frame = tkinter.Frame(
             self.main_frame
         )
-        self.canvas_frame.grid(column=1, row=1)
+        self.canvas_frame.grid(column=1, row=2)
 
         # ユーザ操作用フレームの作成と配置
         self.operation_frame = tkinter.Frame(
             self.main_frame
         )
-        self.operation_frame.grid(column=1, row=2)
+        self.operation_frame.grid(column=1, row=3)
 
         # キャンバスの配列
         self.canvas_paneles = [tkinter.Frame(
@@ -124,7 +134,7 @@ class View():
         # キャンバスごとのフレーム番号表示
         self.frame_index = [tkinter.Label(
             self.canvas_paneles[x],
-            text="text") for x in range(8)]
+            textvariable=self.model.now) for x in range(8)]
         [self.frame_index[x].pack() for x in range(8)]
 
         # キャンバスごとのフレーム表示
