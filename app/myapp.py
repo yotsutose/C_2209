@@ -32,6 +32,7 @@ class Model():
         self.nows = []
         for x in range(7):
             self.nows.append(tkinter.IntVar())
+            self.nows[x].set(-1)
 
         self.now.trace_add("write", self.set_nows)
 
@@ -48,7 +49,7 @@ class Model():
         print(f'{width=} {height=} {frame_count=}')
 
         self.frames = []
-        self.frame_state = [0]*frame_count
+        
         for i in tqdm(range(frame_count)):
             ret, img = self.cap.read()
             if ret == False:
@@ -60,13 +61,29 @@ class Model():
             pil_image = Image.fromarray(rgb_frame)
             pil_image = pil_image.resize((round(width/4), round(height/4)), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
+        self.frame_state = []
+        for x in range(len(self.frames)):
+            self.frame_state.append(tkinter.IntVar())
         # セットする
         self.now.set(3)
 
     def set_nows(self, a, b, c):
-        for i in range(1,6): # 1...5
-            state_ = self.now.get() + i - 3
-            self.nows[i].set(state_)
+        # 0用
+        self.nows[0].set(-1)
+        for i in range(self.now.get()-3, 0, -1):
+            if self.frame_state[i].get() == 1:
+                self.nows[0].set(i)
+                break
+        # 1から5用
+        for i in range(5):
+            state_ = self.now.get() + i - 2
+            self.nows[i+1].set(state_)
+        # 6用
+        self.nows[6].set(-1)
+        for i in range(self.now.get()+3, len(self.frames), 1):
+            if self.frame_state[i].get() == 1:
+                self.nows[6].set(i)
+                break
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
@@ -98,10 +115,6 @@ class View():
 
     def create_widgets(self):
         'アプリ内にウィジェットを作成・配置する'
-
-        # キャンバスのサイズ
-        canvas_width = 1200
-        canvas_height = 800
 
         # キャンバスとボタンとタイトル配置するフレームの作成と配置
         self.main_frame = tkinter.Frame(
@@ -160,8 +173,8 @@ class View():
         # キャンバスごとのフレーム表示
         self.frame = [tkinter.Canvas(
             self.canvas_paneles[x],
-            width=canvas_width/5.5,
-            height=canvas_height/2,
+            width=220,
+            height=480,
             highlightbackground='#FCFFEE',
             bg='#FCFFEE'
             ) for x in range(7)]
@@ -306,8 +319,9 @@ class Controller():
 
     def done(self, x):
         index = self.model.nows[x].get()
-        print(index)
-        self.model.frame_state[index] = (self.model.frame_state[index]+1)%2
+        
+        self.model.frame_state[index].set((self.model.frame_state[index].get()+1)%2)
+        print([self.model.frame_state[x].get() for x in range(len(self.model.frames))])
         center = round(len(self.model.nows)/2)
         self.model.nows[center].set(self.model.nows[center].get())
 
