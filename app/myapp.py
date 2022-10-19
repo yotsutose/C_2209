@@ -18,7 +18,6 @@ class Model():
 
         # mode 0:プレビュー、1:編集
         self.mode = tkinter.IntVar()
-        self.mode.set(0)
 
         # 読み込んだフレームの選択状態 1:選択、0:未選択
         # 最初から2は消しておくかもしれない
@@ -75,7 +74,8 @@ class Model():
         for x in range(7):
             self.nows[x].set(-1)
         if self.mode.get() == 0: # プレビュー
-            now = self.now.get()
+            # now = self.now.get()
+            now = 0
             idx = 1
             for i in range(now, len(self.frames), 1):
                 if self.frame_state[i].get() == 1:
@@ -147,13 +147,24 @@ class View():
         # self.main_frame.pack()
         self.main_frame.tkraise()
 
+        edit_top_image_ = Image.open('./app/image/編集モード.png')
+        edit_top_image_ = edit_top_image_.resize((int(edit_top_image_.width*1.2), int(edit_top_image_.height*1.2)))
+        edit_top_image = ImageTk.PhotoImage(edit_top_image_)
         # 上の表示を配置するフレームの作成と配置
-        self.head_frame = tkinter.Frame(
+        self.head_frame = tkinter.Canvas(
             self.main_frame,
             height=200,
-            width=700,
+            width=500,
+            highlightbackground='#FCFFEE',
             bg="#FCFFEE"
         )
+        self.head_frame.create_image(
+            40, 50,
+            image=edit_top_image,
+            anchor=tkinter.NW,
+            tag="image",
+        )
+        self.head_frame.image = edit_top_image
         self.head_frame.grid(column=1, row=1)
 
         # キャンバスを配置するフレームの作成と配置
@@ -250,7 +261,7 @@ class View():
             text="動画選択",
             highlightbackground='#FCFFEE'
         )
-        self.load_button.pack()
+        # self.load_button.pack()
 
         style = ttk.Style()
         style.configure(
@@ -280,7 +291,7 @@ class View():
         #     to=len(self.model.frames)-1,
         #     # command=lambda e: self.draw_image()
         # )
-        self.scale_bar.pack()
+        self.scale_bar.pack(pady=30)
 
         # グレーON/OFFボタンの作成と配置
         self.gray_button = tkinter.Button(
@@ -298,18 +309,40 @@ class View():
         )
         self.flip_button.pack(fill = 'x', padx=20, side = 'left')
 
-        # modeのON/OFFボタンの作成と配置
-        mode_button_image_ = Image.open('./input/IMG_0240.png')
-        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
-        # mode_button_image = tkinter.PhotoImage(file='./input/IMG_0240.png')
-        self.mode_button = tkinter.Button(
+        # modeチェンジのためのフレーム
+        self.mode_change_frame = tkinter.Frame(
             self.operation_frame,
-            text="change mode",
+            highlightbackground='#FCFFEE',
+            bg='#FCFFEE')
+        self.mode_change_frame.grid_rowconfigure(0, weight=1)
+        self.mode_change_frame.grid_columnconfigure(0, weight=1)
+        self.mode_change_frame.pack()
+
+        # プレビューから編集モードに行くための編集ボタン
+        mode_button_image_ = Image.open('./app/image/編集.png')
+        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
+        self.mode_button = tkinter.Button(
+            self.mode_change_frame,
             image=mode_button_image,
+            bg='#FCFFEE',
             highlightbackground='#FCFFEE'
         )
         self.mode_button.image = mode_button_image
-        self.mode_button.pack()
+        self.mode_button.grid(row=0, column=0, sticky="nsew")
+        
+
+        # 編集モードからプレビューに行くための決定ボタン
+        mode_button_image2_ = Image.open('./app/image/決定.png')
+        mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
+        self.mode_button2 = tkinter.Button(
+            self.mode_change_frame,
+            image=mode_button_image2,
+            bg='#FCFFEE',
+            highlightbackground='#FCFFEE'
+        )
+        self.mode_button2.image = mode_button_image2
+        self.mode_button2.grid(row=0, column=0, sticky="nsew")
+        self.mode_button.tkraise()
 
     def select_open_file(self, file_types):
         'オープンするファイル選択画面を表示'
@@ -356,6 +389,8 @@ class Controller():
         self.view = view
 
         self.set_events()
+        self.model.mode.set(0)
+
 
     def set_events(self):
         '受け付けるイベントを設定する'
@@ -371,6 +406,8 @@ class Controller():
 
         # modeON/OFFボタン押し下げイベント受付
         self.view.mode_button['command'] = self.push_mode_button
+        self.view.mode_button2['command'] = self.push_mode_button
+
 
         for x in range(7):
             self.view.state_button[x]['command'] = self.make_push_state_button(x)    
@@ -413,6 +450,12 @@ class Controller():
 
     def push_mode_button(self):
         self.model.mode.set((self.model.mode.get()+1)%2)
+        if self.model.mode.get() == 0: # プレビュー
+            self.view.mode_button.tkraise()
+        else: # 編集モード
+            self.view.mode_button2.tkraise()
+
+        # ここに編集モードとプレビューモードのviewの変更をかく
         self.model.set_nows("", "", "")
 
 
