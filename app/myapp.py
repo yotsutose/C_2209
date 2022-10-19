@@ -16,7 +16,7 @@ class Model():
         # 読み込んだフレーム
         self.frames = []
 
-        # 読み込んだフレームの選択状態 0:選択、1:未選択 2:被り
+        # 読み込んだフレームの選択状態 1:選択、0:未選択
         # 最初から2は消しておくかもしれない
         # 0と1しかない予定
         self.frame_state = []
@@ -70,7 +70,7 @@ class Model():
     def set_nows(self, a, b, c):
         # 0用
         self.nows[0].set(-1)
-        for i in range(self.now.get()-3, 0, -1):
+        for i in range(self.now.get()-3, -1, -1):
             if self.frame_state[i].get() == 1:
                 self.nows[0].set(i)
                 break
@@ -102,6 +102,9 @@ class View():
         self.model = model
 
         # callbackを用意
+        # for x in range(7):
+        #     self.model.nows[x].trace_add("write", lambda name, index, mode: self.make_draw_image(self, x))
+
         self.model.nows[0].trace_add("write", lambda name, index, mode: self.draw_image(self, 0))
         self.model.nows[1].trace_add("write", lambda name, index, mode: self.draw_image(self, 1))
         self.model.nows[2].trace_add("write", lambda name, index, mode: self.draw_image(self, 2))
@@ -116,12 +119,17 @@ class View():
     def create_widgets(self):
         'アプリ内にウィジェットを作成・配置する'
 
+        self.master.grid_rowconfigure(0, weight=1)
+        self.master.grid_columnconfigure(0, weight=1)
+
         # キャンバスとボタンとタイトル配置するフレームの作成と配置
         self.main_frame = tkinter.Frame(
             self.master,
             bg="#FCFFEE"
         )
-        self.main_frame.pack()
+        self.main_frame.grid(row=0, column=0, sticky="nsew")
+        # self.main_frame.pack()
+        self.main_frame.tkraise()
 
         # 上の表示を配置するフレームの作成と配置
         self.head_frame = tkinter.Frame(
@@ -155,11 +163,10 @@ class View():
         )
         self.head_frame.grid(column=1, row=4)
 
-        # キャンバスの配列
+        # キャンバスのフレーム
         self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
             bg="#FCFFEE",) for x in range(7)]
-        # [self.canvas_paneles[x].pack(fill = 'x', padx=10, side = 'left') for x in range(7)]
         [self.canvas_paneles[x].grid(column=x, row=1) for x in range(7)]
 
         # キャンバスごとのフレーム番号表示
@@ -168,7 +175,7 @@ class View():
             bg="#FCFFEE",
             font=("MSゴシック", "30", "bold"),
             textvariable=self.model.nows[x]) for x in range(7)]
-        [self.frame_index[x].pack() for x in range(7)]
+        [self.frame_index[x].grid(row=0, column=0, sticky="nsew") for x in range(7)]
 
         # キャンバスごとのフレーム表示
         self.frame = [tkinter.Canvas(
@@ -178,15 +185,48 @@ class View():
             highlightbackground='#FCFFEE',
             bg='#FCFFEE'
             ) for x in range(7)]
-        [self.frame[x].pack() for x in range(7)]
+        [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(7)]
+
+        # キャンバスのボタンのためのフレーム
+        self.button_frame = [tkinter.Frame(
+            self.canvas_paneles[x],
+            highlightbackground='#FCFFEE',
+            bg='#FCFFEE'
+            ) for x in range(7)]
+        [self.button_frame[x].grid_rowconfigure(0, weight=1) for x in range(7)]
+        [self.button_frame[x].grid_columnconfigure(0, weight=1) for x in range(7)]
+        [self.button_frame[x].grid(row=2, column=0, sticky="nsew") for x in range(7)]
+        
+        # [self.frame[x].pack() for x in range(7)]
 
         # キャンパスごとのボタン表示
         self.state_button = [tkinter.Button(
-            self.canvas_paneles[x],
-            text="button",
-            highlightbackground='#FCFFEE'
+            self.button_frame[x],
+            text="追加",
+            highlightbackground='blue'
             ) for x in range(7)]
-        [self.state_button[x].pack() for x in range(7)]
+        [self.state_button[x].grid(row=0, column=0) for x in range(7)]
+        
+
+        # キャンパスごとのボタン表示
+        self.state_button2 = [tkinter.Button(
+            self.button_frame[x],
+            text="削除",
+            highlightbackground='red'
+            ) for x in range(7)]
+        [self.state_button2[x].grid(row=0, column=0) for x in range(7)]
+
+        [self.state_button[x].tkraise() for x in range(7)]
+        # [self.state_button2[x].tkraise() for x in range(7)]
+
+        # 練習用のフレーム
+        self.my_frame = tkinter.Frame(
+            self.master,
+            bg="#FCFFEE"
+        )
+        self.my_frame.grid(row=0, column=0, sticky="nsew")
+        self.my_frame.tkraise()
+        self.main_frame.tkraise()
 
         # ファイル読み込みボタンの作成と配置
         self.load_button = tkinter.Button(
@@ -252,22 +292,32 @@ class View():
         )
         return file_path
 
-    def make_draw_image(self, name, index):
-        return lambda: self.draw_image(self, index)
+    # def make_draw_image(self, name, index):
+    #     return lambda: self.draw_image(self, "", index)
 
     def draw_image(self, name, index):
-        '画像をキャンバスに描画'
         i = index
+        alli = self.model.nows[index].get()
+        'buttonの切り替え'
+        state_ = self.model.frame_state[alli].get()
+        if state_ == 1: # 選択されているので、削除ボタンを表示
+            self.state_button2[i].tkraise()
+        else: # 選択されていないので、追加ボタンを表示
+            self.state_button[i].tkraise()
+        
+        '画像をキャンバスに描画'
         self.frame[i].delete('all')
-        if self.model.nows[index].get() < 0 or len(self.model.frames) <= self.model.nows[index].get():
+        if alli < 0 or len(self.model.frames) <= alli:
             return
-        image = self.model.frames[self.model.nows[index].get()]
+        image = self.model.frames[alli]
         self.frame[i].create_image(
             0, 0,
             image=image,
             anchor=tkinter.NW,
             tag="image"
         )
+        
+
 
 class Controller():
 
@@ -292,6 +342,9 @@ class Controller():
 
         for x in range(7):
             self.view.state_button[x]['command'] = self.make_push_state_button(x)    
+        
+        for x in range(7):
+            self.view.state_button2[x]['command'] = self.make_push_state_button(x)    
         
     def push_load_button(self):
         '動画選択ボタンが押された時の処理'
@@ -322,6 +375,7 @@ class Controller():
         if index < 0 or len(self.model.frames) <= index:
             return
         self.model.frame_state[index].set((self.model.frame_state[index].get()+1)%2)
+        # print([self.model.frame_state[x].get() for x in range(len(self.model.frame_state))])
         # 全体の更新
         self.model.now.set(self.model.now.get())
 
