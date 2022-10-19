@@ -76,8 +76,7 @@ class Model():
         for x in range(7):
             self.nows[x].set(-1)
         if self.mode.get() == 0: # プレビュー
-            # now = self.now.get()
-            now = 0
+            now = self.now.get()
             idx = 1
             for i in range(now, len(self.frames), 1):
                 if self.frame_state[i].get() == 1:
@@ -123,6 +122,8 @@ class View():
         self.preview_top_image = None
         self.delete_button_image = None
         self.add_button_image = None
+        self.next_frame_button_image = None
+        self.prev_frame_button_image = None
 
         # callbackを用意
         # for x in range(7):
@@ -162,13 +163,13 @@ class View():
         # 上の表示を配置するフレームの作成と配置
         self.head_canvas = tkinter.Canvas(
             self.main_frame,
-            height=200,
+            height=150,
             width=500,
             highlightbackground='#FCFFEE',
             bg="#FCFFEE"
         )
         self.head_canvas.create_image(
-            40, 50,
+            30, 30,
             image=self.preview_top_image,
             anchor=tkinter.NW,
             tag="image",
@@ -192,7 +193,7 @@ class View():
         # 下の表示を配置するフレームの作成と配置
         self.foot_frame = tkinter.Frame(
             self.main_frame,
-            height=50,
+            height=20,
             width=700,
             bg="#FCFFEE"
         )
@@ -235,7 +236,7 @@ class View():
         # [self.frame[x].pack() for x in range(7)]
 
         # 追加ボタン表示
-        add_button_image_ = Image.open('./app/image/未選択.png')
+        add_button_image_ = Image.open('./app/image/未選択_四角.png')
         self.add_button_image = ImageTk.PhotoImage(add_button_image_)
         self.state_button = [tkinter.Button(
             self.button_frame[x],
@@ -245,7 +246,7 @@ class View():
         
 
         # 削除ボタン表示
-        delete_button_image_ = Image.open('./app/image/選択.png')
+        delete_button_image_ = Image.open('./app/image/選択_四角.png')
         self.delete_button_image = ImageTk.PhotoImage(delete_button_image_)
         self.state_button2 = [tkinter.Button(
             self.button_frame[x],
@@ -254,7 +255,6 @@ class View():
         [self.state_button2[x].grid(row=0, column=0) for x in range(7)]
 
         [self.state_button[x].tkraise() for x in range(7)]
-        # [self.state_button2[x].tkraise() for x in range(7)]
 
         # 練習用のフレーム
         self.my_frame = tkinter.Frame(
@@ -276,7 +276,6 @@ class View():
         style = ttk.Style()
         style.configure(
             "Horizontal.TScale",
-            background="cyan"
         )
         self.scale_bar = ttk.Scale(
             self.operation_frame,
@@ -301,23 +300,25 @@ class View():
         #     to=len(self.model.frames)-1,
         #     # command=lambda e: self.draw_image()
         # )
-        self.scale_bar.pack(pady=30)
+        self.scale_bar.pack(pady=25)
 
-        # グレーON/OFFボタンの作成と配置
-        self.gray_button = tkinter.Button(
+        # next_frameへのボタン
+        next_frame_button_image_ = Image.open('./app/image/次へ.png')
+        self.next_frame_button_image = ImageTk.PhotoImage(next_frame_button_image_)
+        self.next_frame_button = tkinter.Button(
             self.operation_frame,
-            text="Next Frame",
-            highlightbackground='#FCFFEE'
+            image = self.next_frame_button_image,
         )
-        self.gray_button.pack(fill = 'x', padx=20, side = 'right')
+        self.next_frame_button.pack(fill = 'x', padx=20, side = 'right')
 
-        # フリップ/OFFボタンの作成と配置
-        self.flip_button = tkinter.Button(
+        # prev_frameへのボタン
+        prev_frame_button_image_ = Image.open('./app/image/前へ.png')
+        self.prev_frame_button_image = ImageTk.PhotoImage(prev_frame_button_image_)
+        self.prev_frame_button = tkinter.Button(
             self.operation_frame,
-            text="Previouss Frame",
-            highlightbackground='#FCFFEE'
+            image = self.prev_frame_button_image,
         )
-        self.flip_button.pack(fill = 'x', padx=20, side = 'left')
+        self.prev_frame_button.pack(fill = 'x', padx=20, side = 'left')
 
         # modeチェンジのためのフレーム
         self.mode_change_frame = tkinter.Frame(
@@ -410,10 +411,10 @@ class Controller():
         self.view.load_button['command'] = self.push_load_button
 
         # モノクロON/OFFボタン押し下げイベント受付
-        self.view.gray_button['command'] = self.push_gray_button
+        self.view.next_frame_button['command'] = self.push_next_frame_button
 
         # フリップON/OFFボタン押し下げイベント受付
-        self.view.flip_button['command'] = self.push_flip_button
+        self.view.prev_frame_button['command'] = self.push_prev_frame_button
 
         # modeON/OFFボタン押し下げイベント受付
         self.view.mode_button['command'] = self.push_mode_button
@@ -440,10 +441,10 @@ class Controller():
             # 動画オブジェクト生成
             self.model.create_video(file_path)
 
-    def push_gray_button(self):
+    def push_next_frame_button(self):
         self.model.next_frame()
 
-    def push_flip_button(self):
+    def push_prev_frame_button(self):
         self.model.previous_frame()
 
     # ここではボタン押したら、今の数字のやつのstate切り替えと、再び表示がしたい、真ん中に真ん中を入れたらおけ
@@ -464,7 +465,7 @@ class Controller():
         if self.model.mode.get() == 0: # プレビュー
             self.view.head_canvas.delete('all')
             self.view.head_canvas.create_image(
-                40, 50,
+                30, 30,
                 image=self.view.preview_top_image,
                 anchor=tkinter.NW,
                 tag="image",
@@ -473,7 +474,7 @@ class Controller():
         else: # 編集モード
             self.view.head_canvas.delete('all')
             self.view.head_canvas.create_image(
-                40, 50,
+                30, 31,
                 image=self.view.edit_top_image,
                 anchor=tkinter.NW,
                 tag="image",
