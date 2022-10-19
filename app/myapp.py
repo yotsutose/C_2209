@@ -16,6 +16,10 @@ class Model():
         # 読み込んだフレーム
         self.frames = []
 
+        # mode 0:プレビュー、1:編集
+        self.mode = tkinter.IntVar()
+        self.mode.set(0)
+
         # 読み込んだフレームの選択状態 1:選択、0:未選択
         # 最初から2は消しておくかもしれない
         # 0と1しかない予定
@@ -68,22 +72,35 @@ class Model():
         self.now.set(3)
 
     def set_nows(self, a, b, c):
-        # 0用
-        self.nows[0].set(-1)
-        for i in range(self.now.get()-3, -1, -1):
-            if self.frame_state[i].get() == 1:
-                self.nows[0].set(i)
-                break
-        # 1から5用
-        for i in range(5):
-            state_ = self.now.get() + i - 2
-            self.nows[i+1].set(state_)
-        # 6用
-        self.nows[6].set(-1)
-        for i in range(self.now.get()+3, len(self.frames), 1):
-            if self.frame_state[i].get() == 1:
-                self.nows[6].set(i)
-                break
+        if self.mode.get() == 0: # プレビュー
+            print("プレビュー")
+            now = self.now.get()
+            for x in range(7):
+                self.nows[x].set(-1)
+            idx = 1
+            for i in range(now, len(self.frames), 1):
+                if self.frame_state[i].get() == 1:
+                    self.nows[idx].set(i)
+                    idx += 1
+                if idx > 5:
+                    break
+        else:
+            # 0用
+            self.nows[0].set(-1)
+            for i in range(self.now.get()-3, -1, -1):
+                if self.frame_state[i].get() == 1:
+                    self.nows[0].set(i)
+                    break
+            # 12345用
+            for i in range(5):
+                state_ = self.now.get() + i - 2
+                self.nows[i+1].set(state_)
+            # 6用
+            self.nows[6].set(-1)
+            for i in range(self.now.get()+3, len(self.frames), 1):
+                if self.frame_state[i].get() == 1:
+                    self.nows[6].set(i)
+                    break
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
@@ -282,6 +299,14 @@ class View():
         )
         self.flip_button.pack(fill = 'x', padx=20, side = 'left')
 
+        # modeのON/OFFボタンの作成と配置
+        self.mode_button = tkinter.Button(
+            self.operation_frame,
+            text="change mode",
+            highlightbackground='#FCFFEE'
+        )
+        self.mode_button.pack()
+
     def select_open_file(self, file_types):
         'オープンするファイル選択画面を表示'
 
@@ -316,7 +341,7 @@ class View():
             anchor=tkinter.NW,
             tag="image"
         )
-        
+
 
 
 class Controller():
@@ -339,6 +364,9 @@ class Controller():
 
         # フリップON/OFFボタン押し下げイベント受付
         self.view.flip_button['command'] = self.push_flip_button
+
+        # modeON/OFFボタン押し下げイベント受付
+        self.view.mode_button['command'] = self.push_mode_button
 
         for x in range(7):
             self.view.state_button[x]['command'] = self.make_push_state_button(x)    
@@ -378,6 +406,10 @@ class Controller():
         # print([self.model.frame_state[x].get() for x in range(len(self.model.frame_state))])
         # 全体の更新
         self.model.now.set(self.model.now.get())
+
+    def push_mode_button(self):
+        self.model.mode.set((self.model.mode.get()+1)%2)
+        self.model.set_nows("", "", "")
 
 
 app = tkinter.Tk()
