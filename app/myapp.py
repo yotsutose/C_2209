@@ -118,12 +118,12 @@ class View():
         self.master = app
         self.model = model
 
-        self.edit_top_image = None
-        self.preview_top_image = None
-        self.delete_button_image = None
-        self.add_button_image = None
-        self.next_frame_button_image = None
-        self.prev_frame_button_image = None
+        # self.edit_top_image = None
+        # self.preview_top_image = None
+        # self.delete_button_image = None
+        # self.add_button_image = None
+        # self.next_frame_button_image = None
+        # self.prev_frame_button_image = None
 
         # callbackを用意
         # for x in range(7):
@@ -146,21 +146,38 @@ class View():
         self.master.grid_rowconfigure(0, weight=1)
         self.master.grid_columnconfigure(0, weight=1)
 
-        # キャンバスとボタンとタイトル配置するフレームの作成と配置
+        # メインフレーム(編集とプレビュー画面)
         self.main_frame = tkinter.Frame(
             self.master,
             bg="#FCFFEE"
         )
         self.main_frame.grid(row=0, column=0, sticky="nsew")
-        # self.main_frame.pack()
+
+        # ホームフレーム(ホーム画面)
+        self.home_frame = tkinter.Frame(
+            self.master,
+            bg="#FCFFEE"
+        )
+        self.home_frame.grid(row=0, column=0, sticky="nsew")
+
+        # エンドフレーム(終了画面)
+        self.end_frame = tkinter.Frame(
+            self.master,
+            bg="#FCFFEE"
+        )
+        self.end_frame.grid(row=0, column=0, sticky="nsew")
+
+        # tkraise()
         self.main_frame.tkraise()
 
+        # モードの表示の画像の読み込み
         edit_top_image_ = Image.open('./app/image/編集モード.png')
         self.edit_top_image = ImageTk.PhotoImage(edit_top_image_)
 
         preview_top_image_ = Image.open('./app/image/プレビューモード.png')
         self.preview_top_image = ImageTk.PhotoImage(preview_top_image_)
-        # 上の表示を配置するフレームの作成と配置
+
+        # モードの表示を配置するフレーム
         self.head_canvas = tkinter.Canvas(
             self.main_frame,
             height=150,
@@ -176,7 +193,7 @@ class View():
         )
         self.head_canvas.grid(column=1, row=1)
 
-        # キャンバスを配置するフレームの作成と配置
+        # キャンバス達を配置するフレーム
         self.canvas_frame = tkinter.Frame(
             self.main_frame,
             bg="#FCFFEE"
@@ -190,7 +207,7 @@ class View():
         )
         self.operation_frame.grid(column=1, row=3)
 
-        # 下の表示を配置するフレームの作成と配置
+        # フッターのフレーム
         self.foot_frame = tkinter.Frame(
             self.main_frame,
             height=20,
@@ -199,13 +216,13 @@ class View():
         )
         self.foot_frame.grid(column=1, row=4)
 
-        # キャンバスのフレーム
+        # パネルごとのフレーム in canvas_panels
         self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
             bg="#FCFFEE",) for x in range(7)]
         [self.canvas_paneles[x].grid(column=x, row=1) for x in range(7)]
 
-        # キャンバスごとのフレーム番号表示
+        # フレーム番号表示 in canvas_panels
         self.frame_index = [tkinter.Label(
             self.canvas_paneles[x],
             bg="#FCFFEE",
@@ -213,7 +230,7 @@ class View():
             textvariable=self.model.nows[x]) for x in range(7)]
         [self.frame_index[x].grid(row=0, column=0, sticky="nsew") for x in range(7)]
 
-        # キャンバスごとのフレーム表示
+        # フレーム表示 in canvas_panels
         self.frame = [tkinter.Canvas(
             self.canvas_paneles[x],
             width=220,
@@ -223,7 +240,7 @@ class View():
             ) for x in range(7)]
         [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(7)]
 
-        # キャンバスのボタンのためのフレーム
+        # ボタンのためのフレーム
         self.button_frame = [tkinter.Frame(
             self.canvas_paneles[x],
             highlightbackground='#FCFFEE',
@@ -232,8 +249,6 @@ class View():
         [self.button_frame[x].grid_rowconfigure(0, weight=1) for x in range(7)]
         [self.button_frame[x].grid_columnconfigure(0, weight=1) for x in range(7)]
         [self.button_frame[x].grid(row=2, column=0, sticky="nsew") for x in range(7)]
-        
-        # [self.frame[x].pack() for x in range(7)]
 
         # 追加ボタン表示
         add_button_image_ = Image.open('./app/image/未選択_四角.png')
@@ -256,16 +271,7 @@ class View():
 
         [self.state_button[x].tkraise() for x in range(7)]
 
-        # 練習用のフレーム
-        self.my_frame = tkinter.Frame(
-            self.master,
-            bg="#FCFFEE"
-        )
-        self.my_frame.grid(row=0, column=0, sticky="nsew")
-        self.my_frame.tkraise()
-        self.main_frame.tkraise()
-
-        # ファイル読み込みボタンの作成と配置
+        # # ファイル読み込みボタンの作成と配置　これはホームに
         self.load_button = tkinter.Button(
             self.operation_frame,
             text="動画選択",
@@ -273,6 +279,7 @@ class View():
         )
         # self.load_button.pack()
 
+        # シークバーの表示
         style = ttk.Style()
         style.configure(
             "Horizontal.TScale",
@@ -287,6 +294,7 @@ class View():
             to=len(self.model.frames)-1,
             # command=lambda e: self.draw_image()
         )
+        self.scale_bar.pack(pady=25)
 
         # self.scale_bar = tkinter.Scale(
         #     self.operation_frame,
@@ -300,7 +308,6 @@ class View():
         #     to=len(self.model.frames)-1,
         #     # command=lambda e: self.draw_image()
         # )
-        self.scale_bar.pack(pady=25)
 
         # next_frameへのボタン
         next_frame_button_image_ = Image.open('./app/image/次へ.png')
