@@ -47,7 +47,9 @@ def func1():
     #動画を１フレームごとに読み込んでウィンドウを起動、表示
     #現在、全読してるけど、iで読み込むやつ制限する必要あるかも（フレ数やばいから）
     i=0
-    j=0
+    j5=0
+    j10 = 0
+    j20 = 0
     
     # 時間計測開始
     time_sta = time.time()
@@ -55,15 +57,31 @@ def func1():
         ret, img = cap.read()
 
         if ret == True:
-            #cv2.imshow("Video", img)
+            cv2.imshow("Video", img)
 
-            if i%10 == 0:
-                j_zero = str(j).zfill(4)
+            if i%5 == 0:
+                j_zero = str(j5).zfill(4)
                 nameI = nameT + '_' + j_zero + '.jpeg'
                 #print(nameI)
                 #画像の保存
-                cv2.imwrite(('output/' + nameI), img)
-                j+=1
+                cv2.imwrite(('./output_ex/out5/' + nameI), img)
+                j5+=1
+            
+            if i%10 == 0:
+                j_zero = str(j10).zfill(4)
+                nameI = nameT + '_' + j_zero + '.jpeg'
+                #print(nameI)
+                #画像の保存
+                cv2.imwrite(('./output_ex/out10/' + nameI), img)
+                j10+=1
+            
+            if i%20 == 0:
+                j_zero = str(j20).zfill(4)
+                nameI = nameT + '_' + j_zero + '.jpeg'
+                #print(nameI)
+                #画像の保存
+                cv2.imwrite(('./output_ex/out20/' + nameI), img)
+                j20+=1
             
             #"q"を押すと終了
             if cv2.waitKey(1) & 0xFF == ord('q'): 
@@ -73,8 +91,10 @@ def func1():
             break
 
         if i == cap.get(cv2.CAP_PROP_FRAME_COUNT)-5:
-            countI = j-1
+            countI = j5-1
             print(countI)
+            print(j10 - 1)
+            print(j20 - 1)
             break
 
         i+=1
@@ -91,29 +111,36 @@ def func1():
     #exit()
 
 
+
 def func5():
     first_img = True
     j=0
-    for i in range(countI-1):
+    res = 1.0
+    for i in range(403):
+    #for i in range(201):
+    #for i in range(100):
         name1 = nameT + '_' + '{0:04d}.jpeg'.format(i)
-        path = './output/' + name1
+        path = './output_ex/out5/' + name1
         image1 = cv2.imread(path)
 
         name2 = nameT + '_' + '{0:04d}.jpeg'.format(i+1)
-        path = './output/' + name2
+        path = './output_ex/out5/' + name2
         image2 = cv2.imread(path)
 
         height = image1.shape[0]
         width = image1.shape[1]
 
-        img_size = (int(width), int(height))
+        img_size = (int(width*res), int(height*res))
+        if i==0:
+            print(img_size)
 
         # 比較するために、同じサイズにリサイズしておく
         image1 = cv2.resize(image1, img_size)
         image2 = cv2.resize(image2, img_size)
 
         #画素数が一致している割合を計算
-        degree_of_similarity = np.count_nonzero(image1 == image2) / image2.size
+        #degree_of_similarity = np.count_nonzero(image1 == image2) / image2.size
+        degree_of_similarity = np.count_nonzero(abs(image1 - image2)<=10) / image2.size
         print(name1 + " 類似度：" + str(degree_of_similarity))
         
         y = degree_of_similarity
@@ -122,7 +149,7 @@ def func5():
         #類似度が0.8より大きくなった瞬間の画像を保存
         if(degree_of_similarity > 0.8 and first_img):
             name3 = nameT + '_' + '{0:04d}.jpeg'.format(j)
-            cv2.imwrite(('output_func5_2/' + name3), image2)
+            cv2.imwrite(('same_ex/out5/' + name3), image2)
             j+=1
             first_img = False
         elif(degree_of_similarity <= 0.8):
@@ -215,11 +242,11 @@ def funcPlot():
     plt.show() # 出力
 
 def main():
-    func1()
+    #func1()
     func5()
-    func6()
-    func7()
-    #funcPlot()
+    #func6()
+    #func7()
+    funcPlot()
 
 
 if __name__ == '__main__':
