@@ -291,7 +291,7 @@ class Controller():
         self.view.flip_button['command'] = self.push_flip_button
 
         for x in range(7):
-            self.view.state_button[x]['command'] = self.push_state_button(x)    
+            self.view.state_button[x]['command'] = self.make_push_state_button(x)    
         
     def push_load_button(self):
         '動画選択ボタンが押された時の処理'
@@ -314,16 +314,16 @@ class Controller():
         self.model.previous_frame()
 
     # ここではボタン押したら、今の数字のやつのstate切り替えと、再び表示がしたい、真ん中に真ん中を入れたらおけ
-    def push_state_button(self, x):
-        return lambda: self.done(x)
+    def make_push_state_button(self, x):
+        return lambda: self.push_state_button(x)
 
-    def done(self, x):
+    def push_state_button(self, x):
         index = self.model.nows[x].get()
-        
+        if index < 0 or len(self.model.frames) <= index:
+            return
         self.model.frame_state[index].set((self.model.frame_state[index].get()+1)%2)
-        print([self.model.frame_state[x].get() for x in range(len(self.model.frames))])
-        center = round(len(self.model.nows)/2)
-        self.model.nows[center].set(self.model.nows[center].get())
+        # 全体の更新
+        self.model.now.set(self.model.now.get())
 
 
 app = tkinter.Tk()
