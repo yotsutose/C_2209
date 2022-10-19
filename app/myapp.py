@@ -18,6 +18,7 @@ class Model():
 
         # 読み込んだフレームの選択状態 0:選択、1:未選択 2:被り
         # 最初から2は消しておくかもしれない
+        # 0と1しかない予定
         self.frame_state = []
 
         # PIL画像オブジェクト参照用
@@ -29,7 +30,7 @@ class Model():
         # 現在表示中のフレーム
         self.now = tkinter.IntVar()
         self.nows = []
-        for x in range(8):
+        for x in range(7):
             self.nows.append(tkinter.IntVar())
 
         self.now.trace_add("write", self.set_nows)
@@ -53,7 +54,7 @@ class Model():
             if ret == False:
                 break
             # 画像をリサイズする　20分の1に圧縮
-            if i % 50 != 0:
+            if i % 30 != 0:
                 continue
             rgb_frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             pil_image = Image.fromarray(rgb_frame)
@@ -63,10 +64,8 @@ class Model():
         self.now.set(3)
 
     def set_nows(self, a, b, c):
-        for i in range(8):
-            state_ = self.now.get() + i - 4
-            state_ = min( state_, len(self.frames)-1)
-            state_ = max( state_, 0)
+        for i in range(1,6): # 1...5
+            state_ = self.now.get() + i - 3
             self.nows[i].set(state_)
 
     def next_frame(self):
@@ -93,7 +92,6 @@ class View():
         self.model.nows[4].trace_add("write", lambda name, index, mode: self.draw_image(self, 4))
         self.model.nows[5].trace_add("write", lambda name, index, mode: self.draw_image(self, 5))
         self.model.nows[6].trace_add("write", lambda name, index, mode: self.draw_image(self, 6))
-        self.model.nows[7].trace_add("write", lambda name, index, mode: self.draw_image(self, 7))
 
         # アプリ内のウィジェットを作成
         self.create_widgets()
@@ -147,17 +145,17 @@ class View():
         # キャンバスの配列
         self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
-            bg="#FCFFEE",) for x in range(8)]
+            bg="#FCFFEE",) for x in range(7)]
         # [self.canvas_paneles[x].pack(fill = 'x', padx=10, side = 'left') for x in range(7)]
-        [self.canvas_paneles[x].grid(column=x, row=1) for x in range(1, 8)]
+        [self.canvas_paneles[x].grid(column=x, row=1) for x in range(7)]
 
         # キャンバスごとのフレーム番号表示
         self.frame_index = [tkinter.Label(
             self.canvas_paneles[x],
             bg="#FCFFEE",
             font=("MSゴシック", "30", "bold"),
-            textvariable=self.model.nows[x]) for x in range(8)]
-        [self.frame_index[x].pack() for x in range(8)]
+            textvariable=self.model.nows[x]) for x in range(7)]
+        [self.frame_index[x].pack() for x in range(7)]
 
         # キャンバスごとのフレーム表示
         self.frame = [tkinter.Canvas(
@@ -166,16 +164,16 @@ class View():
             height=canvas_height/2,
             highlightbackground='#FCFFEE',
             bg='#FCFFEE'
-            ) for x in range(8)]
-        [self.frame[x].pack() for x in range(8)]
+            ) for x in range(7)]
+        [self.frame[x].pack() for x in range(7)]
 
         # キャンパスごとのボタン表示
         self.state_button = [tkinter.Button(
             self.canvas_paneles[x],
             text="button",
             highlightbackground='#FCFFEE'
-) for x in range(8)]
-        [self.state_button[x].pack() for x in range(8)]
+            ) for x in range(7)]
+        [self.state_button[x].pack() for x in range(7)]
 
         # ファイル読み込みボタンの作成と配置
         self.load_button = tkinter.Button(
@@ -185,34 +183,34 @@ class View():
         )
         self.load_button.pack()
 
-        # style = ttk.Style()
-        # style.configure(
-        #     "Horizontal.TScale",
-        #     background="cyan"
-        # )
-        # self.scale_bar = ttk.Scale(
-        #     self.operation_frame,
-        #     style="TScale",
-        #     variable=self.model.now,
-        #     orient="horizontal",
-        #     length=600,
-        #     from_=0,
-        #     to=len(self.model.frames)-1,
-        #     # command=lambda e: self.draw_image()
-        # )
-
-        self.scale_bar = tkinter.Scale(
+        style = ttk.Style()
+        style.configure(
+            "Horizontal.TScale",
+            background="cyan"
+        )
+        self.scale_bar = ttk.Scale(
             self.operation_frame,
+            style="TScale",
             variable=self.model.now,
-            orient=tkinter.HORIZONTAL,
-            bg='#FCFFEE',
-            troughcolor='#FCFFEE',
+            orient="horizontal",
             length=600,
             from_=0,
-            sliderlength=15,
             to=len(self.model.frames)-1,
             # command=lambda e: self.draw_image()
         )
+
+        # self.scale_bar = tkinter.Scale(
+        #     self.operation_frame,
+        #     variable=self.model.now,
+        #     orient=tkinter.HORIZONTAL,
+        #     bg='#FCFFEE',
+        #     troughcolor='#FCFFEE',
+        #     length=600,
+        #     from_=0,
+        #     sliderlength=15,
+        #     to=len(self.model.frames)-1,
+        #     # command=lambda e: self.draw_image()
+        # )
         self.scale_bar.pack()
 
         # グレーON/OFFボタンの作成と配置
@@ -227,7 +225,6 @@ class View():
         self.flip_button = tkinter.Button(
             self.operation_frame,
             text="Previouss Frame",
-            width = 20,
             highlightbackground='#FCFFEE'
         )
         self.flip_button.pack(fill = 'x', padx=20, side = 'left')
@@ -242,13 +239,16 @@ class View():
         )
         return file_path
 
+    def make_draw_image(self, name, index):
+        return lambda: self.draw_image(self, index)
+
     def draw_image(self, name, index):
         '画像をキャンバスに描画'
         i = index
-        image = self.model.frames[self.model.nows[index].get()]
-        if image is None:
-            return
         self.frame[i].delete('all')
+        if self.model.nows[index].get() < 0 or len(self.model.frames) <= self.model.nows[index].get():
+            return
+        image = self.model.frames[self.model.nows[index].get()]
         self.frame[i].create_image(
             0, 0,
             image=image,
@@ -276,6 +276,9 @@ class Controller():
 
         # フリップON/OFFボタン押し下げイベント受付
         self.view.flip_button['command'] = self.push_flip_button
+
+        for x in range(7):
+            self.view.state_button[x]['command'] = self.push_state_button(x)    
         
     def push_load_button(self):
         '動画選択ボタンが押された時の処理'
@@ -296,6 +299,17 @@ class Controller():
 
     def push_flip_button(self):
         self.model.previous_frame()
+
+    # ここではボタン押したら、今の数字のやつのstate切り替えと、再び表示がしたい、真ん中に真ん中を入れたらおけ
+    def push_state_button(self, x):
+        return lambda: self.done(x)
+
+    def done(self, x):
+        index = self.model.nows[x].get()
+        print(index)
+        self.model.frame_state[index] = (self.model.frame_state[index]+1)%2
+        center = round(len(self.model.nows)/2)
+        self.model.nows[center].set(self.model.nows[center].get())
 
 
 app = tkinter.Tk()
