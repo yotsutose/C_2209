@@ -67,6 +67,8 @@ class Model():
         self.frame_state = []
         for x in range(len(self.frames)):
             self.frame_state.append(tkinter.IntVar())
+        for x in range(4):
+            self.frame_state[x].set(1)
         # セットする
         self.now.set(3)
 
@@ -117,6 +119,11 @@ class View():
         self.master = app
         self.model = model
 
+        self.edit_top_image = None
+        self.preview_top_image = None
+        self.delete_button_image = None
+        self.add_button_image = None
+
         # callbackを用意
         # for x in range(7):
         #     self.model.nows[x].trace_add("write", lambda name, index, mode: self.make_draw_image(self, x))
@@ -148,24 +155,25 @@ class View():
         self.main_frame.tkraise()
 
         edit_top_image_ = Image.open('./app/image/編集モード.png')
-        edit_top_image_ = edit_top_image_.resize((int(edit_top_image_.width*1.2), int(edit_top_image_.height*1.2)))
-        edit_top_image = ImageTk.PhotoImage(edit_top_image_)
+        self.edit_top_image = ImageTk.PhotoImage(edit_top_image_)
+
+        preview_top_image_ = Image.open('./app/image/プレビューモード.png')
+        self.preview_top_image = ImageTk.PhotoImage(preview_top_image_)
         # 上の表示を配置するフレームの作成と配置
-        self.head_frame = tkinter.Canvas(
+        self.head_canvas = tkinter.Canvas(
             self.main_frame,
             height=200,
             width=500,
             highlightbackground='#FCFFEE',
             bg="#FCFFEE"
         )
-        self.head_frame.create_image(
+        self.head_canvas.create_image(
             40, 50,
-            image=edit_top_image,
+            image=self.preview_top_image,
             anchor=tkinter.NW,
             tag="image",
         )
-        self.head_frame.image = edit_top_image
-        self.head_frame.grid(column=1, row=1)
+        self.head_canvas.grid(column=1, row=1)
 
         # キャンバスを配置するフレームの作成と配置
         self.canvas_frame = tkinter.Frame(
@@ -182,13 +190,13 @@ class View():
         self.operation_frame.grid(column=1, row=3)
 
         # 下の表示を配置するフレームの作成と配置
-        self.head_frame = tkinter.Frame(
+        self.foot_frame = tkinter.Frame(
             self.main_frame,
             height=50,
             width=700,
             bg="#FCFFEE"
         )
-        self.head_frame.grid(column=1, row=4)
+        self.foot_frame.grid(column=1, row=4)
 
         # キャンバスのフレーム
         self.canvas_paneles = [tkinter.Frame(
@@ -226,20 +234,22 @@ class View():
         
         # [self.frame[x].pack() for x in range(7)]
 
-        # キャンパスごとのボタン表示
+        # 追加ボタン表示
+        add_button_image_ = Image.open('./app/image/未選択.png')
+        self.add_button_image = ImageTk.PhotoImage(add_button_image_)
         self.state_button = [tkinter.Button(
             self.button_frame[x],
-            text="追加",
-            highlightbackground='blue'
+            image = self.add_button_image,
             ) for x in range(7)]
         [self.state_button[x].grid(row=0, column=0) for x in range(7)]
         
 
-        # キャンパスごとのボタン表示
+        # 削除ボタン表示
+        delete_button_image_ = Image.open('./app/image/選択.png')
+        self.delete_button_image = ImageTk.PhotoImage(delete_button_image_)
         self.state_button2 = [tkinter.Button(
             self.button_frame[x],
-            text="削除",
-            highlightbackground='red'
+            image = self.delete_button_image,
             ) for x in range(7)]
         [self.state_button2[x].grid(row=0, column=0) for x in range(7)]
 
@@ -390,6 +400,7 @@ class Controller():
 
         self.set_events()
         self.model.mode.set(0)
+        self.model.now.set(2)
 
 
     def set_events(self):
@@ -451,8 +462,22 @@ class Controller():
     def push_mode_button(self):
         self.model.mode.set((self.model.mode.get()+1)%2)
         if self.model.mode.get() == 0: # プレビュー
+            self.view.head_canvas.delete('all')
+            self.view.head_canvas.create_image(
+                40, 50,
+                image=self.view.preview_top_image,
+                anchor=tkinter.NW,
+                tag="image",
+            )
             self.view.mode_button.tkraise()
         else: # 編集モード
+            self.view.head_canvas.delete('all')
+            self.view.head_canvas.create_image(
+                40, 50,
+                image=self.view.edit_top_image,
+                anchor=tkinter.NW,
+                tag="image",
+            )
             self.view.mode_button2.tkraise()
 
         # ここに編集モードとプレビューモードのviewの変更をかく
