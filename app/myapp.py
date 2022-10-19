@@ -72,11 +72,10 @@ class Model():
         self.now.set(3)
 
     def set_nows(self, a, b, c):
+        for x in range(7):
+            self.nows[x].set(-1)
         if self.mode.get() == 0: # プレビュー
-            print("プレビュー")
             now = self.now.get()
-            for x in range(7):
-                self.nows[x].set(-1)
             idx = 1
             for i in range(now, len(self.frames), 1):
                 if self.frame_state[i].get() == 1:
@@ -86,7 +85,6 @@ class Model():
                     break
         else:
             # 0用
-            self.nows[0].set(-1)
             for i in range(self.now.get()-3, -1, -1):
                 if self.frame_state[i].get() == 1:
                     self.nows[0].set(i)
@@ -94,9 +92,10 @@ class Model():
             # 12345用
             for i in range(5):
                 state_ = self.now.get() + i - 2
+                if state_ < 0 or len(self.frames) <= state_:
+                    continue
                 self.nows[i+1].set(state_)
             # 6用
-            self.nows[6].set(-1)
             for i in range(self.now.get()+3, len(self.frames), 1):
                 if self.frame_state[i].get() == 1:
                     self.nows[6].set(i)
@@ -300,11 +299,16 @@ class View():
         self.flip_button.pack(fill = 'x', padx=20, side = 'left')
 
         # modeのON/OFFボタンの作成と配置
+        mode_button_image_ = Image.open('./input/IMG_0240.png')
+        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
+        # mode_button_image = tkinter.PhotoImage(file='./input/IMG_0240.png')
         self.mode_button = tkinter.Button(
             self.operation_frame,
             text="change mode",
+            image=mode_button_image,
             highlightbackground='#FCFFEE'
         )
+        self.mode_button.image = mode_button_image
         self.mode_button.pack()
 
     def select_open_file(self, file_types):
