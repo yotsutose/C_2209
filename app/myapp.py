@@ -196,10 +196,10 @@ class View():
         self.prev_frame_button_image = ImageTk.PhotoImage(prev_frame_button_image_)
         
         mode_button_image_ = Image.open('./app/image/編集.png')
-        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
+        self.mode_button_image = ImageTk.PhotoImage(mode_button_image_)
         
         mode_button_image2_ = Image.open('./app/image/完了ボタン.png')
-        mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
+        self.mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
 
         to_home_button_image_ = Image.open('./app/image/ホームへ.png')
         self.to_home_button_image = ImageTk.PhotoImage(to_home_button_image_)
@@ -323,14 +323,16 @@ class View():
         # 画面の上に持っていくために一旦消す
         # self.to_home_button.pack(fill = 'x', padx=20, side = 'left')
 
-        # modeチェンジのためのフレーム
-        self.mode_change_frame = tkinter.Frame(
-            self.operation_frame,
-            highlightbackground='#FCFFEE',
-            bg='#FCFFEE')
-        self.mode_change_frame.grid_rowconfigure(0, weight=1)
-        self.mode_change_frame.grid_columnconfigure(0, weight=1)
-        self.mode_change_frame.pack(fill = 'x', padx=20, side = 'left')
+        
+
+        # 編集ボタンは一人きり
+        self.mode_button = tkinter.Button(
+            self.main_frame,
+            image=self.mode_button_image,
+            bg='#FCFFEE',
+            highlightbackground='#FCFFEE'
+        )
+        self.mode_button.pack(in_=self.operation_frame, fill = 'x', padx=20, side = 'left')
 
         # prev_frameへのボタン
         self.prev_frame_button = tkinter.Button(
@@ -339,12 +341,14 @@ class View():
         )
         self.prev_frame_button.pack(fill = 'x', padx=10, side = 'left')
 
-        # pptx実行ボタン
-        self.making_pptx_button = tkinter.Button(
+        # modeチェンジのためのフレーム
+        self.mode_change_frame = tkinter.Frame(
             self.operation_frame,
-            image = self.making_pptx_button_image,
-        )
-        self.making_pptx_button.pack(fill = 'x', padx=20, side = 'right')
+            highlightbackground='#FCFFEE',
+            bg='#FCFFEE')
+        self.mode_change_frame.grid_rowconfigure(0, weight=1)
+        self.mode_change_frame.grid_columnconfigure(0, weight=1)
+        self.mode_change_frame.pack(fill = 'x', padx=20, side = 'right')
 
         # next_frameへのボタン
         self.next_frame_button = tkinter.Button(
@@ -353,27 +357,22 @@ class View():
         )
         self.next_frame_button.pack(fill = 'x', padx=10, side = 'right')
 
-        # プレビューから編集モードに行くための編集ボタン
-        self.mode_button = tkinter.Button(
-            self.mode_change_frame,
-            image=mode_button_image,
-            bg='#FCFFEE',
-            highlightbackground='#FCFFEE'
-        )
-        self.mode_button.image = mode_button_image
-        self.mode_button.grid(row=0, column=0, sticky="nsew")
-        
-
-        # 編集モードからプレビューに行くための完了ボタン
+        # 完了ボタン
         self.mode_button2 = tkinter.Button(
-            self.mode_change_frame,
-            image=mode_button_image2,
+            self.operation_frame,
+            image=self.mode_button_image2,
             bg='#FCFFEE',
             highlightbackground='#FCFFEE'
         )
-        self.mode_button2.image = mode_button_image2
-        self.mode_button2.grid(row=0, column=0, sticky="nsew")
-        self.mode_button.tkraise()
+        self.mode_button2.grid(in_=self.mode_change_frame, row=0, column=0, sticky="nsew")        
+        
+        # 実行ボタン - pptxを作る
+        self.making_pptx_button = tkinter.Button(
+            self.operation_frame,
+            image = self.making_pptx_button_image,
+        )
+        self.making_pptx_button.grid(in_=self.mode_change_frame, row=0, column=0, sticky="nsew")
+        self.making_pptx_button.tkraise()
         return
     
     def create_home_frame(self):
@@ -470,7 +469,7 @@ class View():
 
     def create_end_frame(self):
         # 画像の読み込み
-        complete_image_ = Image.open('./app/image/完了.png')
+        complete_image_ = Image.open('./app/image/完了_M.png')
         self.complete_image = ImageTk.PhotoImage(complete_image_)
 
         # キャンバスの配置
@@ -616,6 +615,7 @@ class Controller():
                 anchor=tkinter.NW,
                 tag="image",
             )
+            self.view.making_pptx_button.tkraise()
             self.view.mode_button.tkraise()
         else: # 編集モード
             self.view.head_canvas.delete('all')
@@ -626,7 +626,9 @@ class Controller():
                 tag="image",
             )
             self.view.mode_button2.tkraise()
+            self.view.mode_button.lower()
 
+        
         # ここに編集モードとプレビューモードのviewの変更をかく
         self.model.set_nows("", "", "")
 
