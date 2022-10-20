@@ -173,12 +173,30 @@ class View():
 
 
     def create_main_frame(self):
-        # モードの表示の画像の読み込み
+        # 画像の読み込み
         edit_top_image_ = Image.open('./app/image/編集モード.png')
         self.edit_top_image = ImageTk.PhotoImage(edit_top_image_)
 
         preview_top_image_ = Image.open('./app/image/プレビューモード.png')
         self.preview_top_image = ImageTk.PhotoImage(preview_top_image_)
+
+        add_button_image_ = Image.open('./app/image/未選択_四角.png')
+        self.add_button_image = ImageTk.PhotoImage(add_button_image_)
+
+        delete_button_image_ = Image.open('./app/image/選択_四角.png')
+        self.delete_button_image = ImageTk.PhotoImage(delete_button_image_)
+
+        next_frame_button_image_ = Image.open('./app/image/次へ.png')
+        self.next_frame_button_image = ImageTk.PhotoImage(next_frame_button_image_)
+        
+        prev_frame_button_image_ = Image.open('./app/image/前へ.png')
+        self.prev_frame_button_image = ImageTk.PhotoImage(prev_frame_button_image_)
+        
+        mode_button_image_ = Image.open('./app/image/編集.png')
+        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
+        
+        mode_button_image2_ = Image.open('./app/image/完了ボタン.png')
+        mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
 
         # モードの表示を配置するフレーム
         self.head_canvas = tkinter.Canvas(
@@ -254,8 +272,6 @@ class View():
         [self.button_frame[x].grid(row=2, column=0, sticky="nsew") for x in range(7)]
 
         # 追加ボタン表示
-        add_button_image_ = Image.open('./app/image/未選択_四角.png')
-        self.add_button_image = ImageTk.PhotoImage(add_button_image_)
         self.state_button = [tkinter.Button(
             self.button_frame[x],
             image = self.add_button_image,
@@ -263,8 +279,6 @@ class View():
         [self.state_button[x].grid(row=0, column=0) for x in range(7)]
 
         # 削除ボタン表示
-        delete_button_image_ = Image.open('./app/image/選択_四角.png')
-        self.delete_button_image = ImageTk.PhotoImage(delete_button_image_)
         self.state_button2 = [tkinter.Button(
             self.button_frame[x],
             image = self.delete_button_image,
@@ -304,8 +318,6 @@ class View():
         # )
 
         # next_frameへのボタン
-        next_frame_button_image_ = Image.open('./app/image/次へ.png')
-        self.next_frame_button_image = ImageTk.PhotoImage(next_frame_button_image_)
         self.next_frame_button = tkinter.Button(
             self.operation_frame,
             image = self.next_frame_button_image,
@@ -313,8 +325,6 @@ class View():
         self.next_frame_button.pack(fill = 'x', padx=20, side = 'right')
 
         # prev_frameへのボタン
-        prev_frame_button_image_ = Image.open('./app/image/前へ.png')
-        self.prev_frame_button_image = ImageTk.PhotoImage(prev_frame_button_image_)
         self.prev_frame_button = tkinter.Button(
             self.operation_frame,
             image = self.prev_frame_button_image,
@@ -331,8 +341,6 @@ class View():
         self.mode_change_frame.pack()
 
         # プレビューから編集モードに行くための編集ボタン
-        mode_button_image_ = Image.open('./app/image/編集.png')
-        mode_button_image = ImageTk.PhotoImage(mode_button_image_)
         self.mode_button = tkinter.Button(
             self.mode_change_frame,
             image=mode_button_image,
@@ -344,8 +352,6 @@ class View():
         
 
         # 編集モードからプレビューに行くための完了ボタン
-        mode_button_image2_ = Image.open('./app/image/完了ボタン.png')
-        mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
         self.mode_button2 = tkinter.Button(
             self.mode_change_frame,
             image=mode_button_image2,
