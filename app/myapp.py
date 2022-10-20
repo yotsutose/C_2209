@@ -165,11 +165,14 @@ class View():
             bg="#FCFFEE"
         )
         self.end_frame.grid(row=0, column=0, sticky="nsew")
+        self.end_frame.grid_rowconfigure(0, weight=1)
+        self.end_frame.grid_columnconfigure(0, weight=1)
         self.create_end_frame()
 
         # tkraise()
         self.home_frame.tkraise()
         # self.main_frame.tkraise()
+        # self.end_frame.tkraise()
 
 
     def create_main_frame(self):
@@ -463,6 +466,28 @@ class View():
         return
 
     def create_end_frame(self):
+        # 画像の読み込み
+        complete_image_ = Image.open('./app/image/完了.png')
+        self.complete_image = ImageTk.PhotoImage(complete_image_)
+
+        # キャンバスの配置
+        self.complete_canvas = tkinter.Canvas(
+            self.end_frame,
+            height=500,
+            width=700,
+            highlightbackground='#FCFFEE',
+            bg="#FCFFEE"
+        )
+        self.complete_canvas.create_image(
+            30, 30,
+            image=self.complete_image,
+            anchor=tkinter.NW,
+            tag="image",
+        )
+        self.complete_canvas.grid(column=0, row=0)
+        # 画像の配置
+
+
         return
 
     def select_open_file(self, file_types):
