@@ -77,7 +77,7 @@ class Model():
     def set_nows(self, a, b, c):
         for x in range(5):
             self.nows[x].set(-1)
-        if self.mode.get() == 0: # プレビュー
+        if self.mode.get() == 0: # プレビューモード
             now = self.now.get()
             idx = 0
             for i in range(now, len(self.frames), 1):
@@ -86,15 +86,12 @@ class Model():
                     idx += 1
                 if idx > 5:
                     break
-        else:
-            
-            #012340用
+        else: # 編集モード
             for i in range(5):
-                state_ = self.now.get() + i - 2
-                if state_ < 0 or len(self.frames) <= state_:
+                state_ = self.now.get() + i
+                if len(self.frames) <= state_:
                     continue
                 self.nows[i].set(state_)
-            
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
