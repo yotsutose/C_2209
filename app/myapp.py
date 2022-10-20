@@ -169,8 +169,7 @@ class View():
 
         # tkraise()
         self.home_frame.tkraise()
-        self.main_frame.tkraise()
-        self.home_frame.tkraise()
+        # self.main_frame.tkraise()
 
 
     def create_main_frame(self):
@@ -262,7 +261,6 @@ class View():
             image = self.add_button_image,
             ) for x in range(7)]
         [self.state_button[x].grid(row=0, column=0) for x in range(7)]
-        
 
         # 削除ボタン表示
         delete_button_image_ = Image.open('./app/image/選択_四角.png')
@@ -274,14 +272,6 @@ class View():
         [self.state_button2[x].grid(row=0, column=0) for x in range(7)]
 
         [self.state_button[x].tkraise() for x in range(7)]
-
-        # # ファイル読み込みボタンの作成と配置　これはホームに
-        self.load_button = tkinter.Button(
-            self.operation_frame,
-            text="動画選択",
-            highlightbackground='#FCFFEE'
-        )
-        # self.load_button.pack()
 
         # シークバーの表示
         style = ttk.Style()
@@ -372,6 +362,9 @@ class View():
         title_logo_image_ = Image.open('./app/image/titleLogo.png')
         self.title_logo_image = ImageTk.PhotoImage(title_logo_image_)
 
+        input_button_image_ = Image.open('./app/image/titleLogo.png')
+        self.input_button_image = ImageTk.PhotoImage(input_button_image_)
+
         using_button_image_ = Image.open('./app/image/使い方.png')
         self.using_button_image = ImageTk.PhotoImage(using_button_image_)
 
@@ -420,6 +413,15 @@ class View():
             bg="#FCFFEE"
         )
         self.home_foot_frame.grid(column=0, row=3)
+
+        # ファイル読み込みの作成と配置
+        self.input_button = tkinter.Button(
+            self.home_input_frame,
+            image = self.input_button_image,
+            highlightbackground='#FCFFEE'
+        )
+        self.input_button.pack()
+        # self.load_button.grid(column=1, row=0)
         return
 
     def create_end_frame(self):
@@ -478,7 +480,7 @@ class Controller():
         '受け付けるイベントを設定する'
 
         # 動画選択ボタン押し下げイベント受付
-        self.view.load_button['command'] = self.push_load_button
+        self.view.input_button['command'] = self.push_load_button
 
         # モノクロON/OFFボタン押し下げイベント受付
         self.view.next_frame_button['command'] = self.push_next_frame_button
@@ -510,6 +512,7 @@ class Controller():
         if len(file_path) != 0:
             # 動画オブジェクト生成
             self.model.create_video(file_path)
+        self.view.main_frame.tkraise()
 
     def push_next_frame_button(self):
         self.model.next_frame()
