@@ -120,13 +120,6 @@ class View():
         self.master = app
         self.model = model
 
-        # self.edit_top_image = None
-        # self.preview_top_image = None
-        # self.delete_button_image = None
-        # self.add_button_image = None
-        # self.next_frame_button_image = None
-        # self.prev_frame_button_image = None
-
         # callbackを用意
         # for x in range(7):
         #     self.model.nows[x].trace_add("write", lambda name, index, mode: self.make_draw_image(self, x))
@@ -162,6 +155,8 @@ class View():
             bg="#FCFFEE"
         )
         self.home_frame.grid(row=0, column=0, sticky="nsew")
+        self.home_frame.grid_rowconfigure(0, weight=4)
+        self.home_frame.grid_columnconfigure(0, weight=1)
         self.create_home_frame()
 
         # エンドフレーム(終了画面)
@@ -173,7 +168,10 @@ class View():
         self.create_end_frame()
 
         # tkraise()
+        self.home_frame.tkraise()
         self.main_frame.tkraise()
+        self.home_frame.tkraise()
+
 
     def create_main_frame(self):
         # モードの表示の画像の読み込み
@@ -370,6 +368,58 @@ class View():
         return
     
     def create_home_frame(self):
+        # 画像の読み込み
+        title_logo_image_ = Image.open('./app/image/titleLogo.png')
+        self.title_logo_image = ImageTk.PhotoImage(title_logo_image_)
+
+        using_button_image_ = Image.open('./app/image/使い方.png')
+        self.using_button_image = ImageTk.PhotoImage(using_button_image_)
+
+        done_button_image_ = Image.open('./app/image/実行ボタン.png')
+        self.done_button_image = ImageTk.PhotoImage(done_button_image_)
+
+        # タイトルロゴを配置するフレーム
+        self.home_title_canvas = tkinter.Canvas(
+            self.home_frame,
+            height=300,
+            width=650,
+            highlightbackground='#FCFFEE',
+            bg="#FCFFEE"
+        )
+        self.home_title_canvas.create_image(
+            10, 80,
+            image=self.title_logo_image,
+            anchor=tkinter.NW,
+            tag="image",
+        )
+        self.home_title_canvas.grid(column=0, row=0, pady=20)
+
+        # ファイル読み込みを配置するフレーム
+        self.home_input_frame = tkinter.Frame(
+            self.home_frame,
+            height=200,
+            width=500,
+            bg="blue"
+        )
+        self.home_input_frame.grid(column=0, row=1, pady=10)
+
+        # ユーザ操作用フレームの作成と配置
+        self.home_operation_frame = tkinter.Frame(
+            self.home_frame,
+            height=150,
+            width=500,
+            bg="green"
+        )
+        self.home_operation_frame.grid(column=0, row=2, pady=10)
+
+        # 下の余白のためのフレーム
+        self.home_foot_frame = tkinter.Frame(
+            self.home_frame,
+            height=150,
+            width=500,
+            bg="#FCFFEE"
+        )
+        self.home_foot_frame.grid(column=0, row=3)
         return
 
     def create_end_frame(self):
