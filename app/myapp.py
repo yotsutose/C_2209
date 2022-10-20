@@ -239,7 +239,7 @@ class View():
             width=200, # ここは要調整
             height=450,
             highlightbackground='#FCFFEE',
-            bg='red'
+            bg='#FCFFEE'
             ) for x in range(7)]
         [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(7)]
 
@@ -283,7 +283,7 @@ class View():
             style="TScale",
             variable=self.model.now,
             orient="horizontal",
-            length=600,
+            length=500,
             from_=0,
             to=len(self.model.frames)-1,
             # command=lambda e: self.draw_image()
@@ -359,10 +359,10 @@ class View():
     
     def create_home_frame(self):
         # 画像の読み込み
-        title_logo_image_ = Image.open('./app/image/titleLogo.png')
+        title_logo_image_ = Image.open('./app/image/bigtitle.png')
         self.title_logo_image = ImageTk.PhotoImage(title_logo_image_)
 
-        input_button_image_ = Image.open('./app/image/titleLogo.png')
+        input_button_image_ = Image.open('./app/image/動画選択.png')
         self.input_button_image = ImageTk.PhotoImage(input_button_image_)
 
         using_button_image_ = Image.open('./app/image/使い方.png')
@@ -371,39 +371,49 @@ class View():
         done_button_image_ = Image.open('./app/image/実行ボタン.png')
         self.done_button_image = ImageTk.PhotoImage(done_button_image_)
 
+        # 下の余白のためのフレーム
+        self.home_head_frame = tkinter.Frame(
+            self.home_frame,
+            height=50,
+            width=500,
+            bg="#FCFFEE"
+        )
+        self.home_head_frame.grid(column=0, row=0)
+
         # タイトルロゴを配置するフレーム
         self.home_title_canvas = tkinter.Canvas(
             self.home_frame,
-            height=300,
-            width=650,
+            height=280,
+            width=850,
             highlightbackground='#FCFFEE',
             bg="#FCFFEE"
         )
         self.home_title_canvas.create_image(
-            10, 80,
+            30, 80,
             image=self.title_logo_image,
             anchor=tkinter.NW,
             tag="image",
         )
-        self.home_title_canvas.grid(column=0, row=0, pady=20)
+        self.home_title_canvas.grid(column=0, row=1, pady=10)
 
         # ファイル読み込みを配置するフレーム
         self.home_input_frame = tkinter.Frame(
             self.home_frame,
             height=200,
             width=500,
-            bg="blue"
+            highlightbackground='#FCFFEE',
+            bg="#FCFFEE"
         )
-        self.home_input_frame.grid(column=0, row=1, pady=10)
+        self.home_input_frame.grid(column=0, row=2, pady=10)
 
         # ユーザ操作用フレームの作成と配置
         self.home_operation_frame = tkinter.Frame(
             self.home_frame,
             height=150,
             width=500,
-            bg="green"
+            bg="#FCFFEE"
         )
-        self.home_operation_frame.grid(column=0, row=2, pady=10)
+        self.home_operation_frame.grid(column=0, row=3, pady=10)
 
         # 下の余白のためのフレーム
         self.home_foot_frame = tkinter.Frame(
@@ -412,7 +422,7 @@ class View():
             width=500,
             bg="#FCFFEE"
         )
-        self.home_foot_frame.grid(column=0, row=3)
+        self.home_foot_frame.grid(column=0, row=4)
 
         # ファイル読み込みの作成と配置
         self.input_button = tkinter.Button(
@@ -421,7 +431,22 @@ class View():
             highlightbackground='#FCFFEE'
         )
         self.input_button.pack()
-        # self.load_button.grid(column=1, row=0)
+
+        # 使い方の作成と配置
+        self.using_button = tkinter.Button(
+            self.home_operation_frame,
+            image = self.using_button_image,
+            highlightbackground='#FCFFEE'
+        )
+        self.using_button.pack(fill = 'x', padx=25, side = 'left')
+
+        # 実行の作成と配置
+        self.done_button = tkinter.Button(
+            self.home_operation_frame,
+            image = self.done_button_image,
+            highlightbackground='#FCFFEE'
+        )
+        self.done_button.pack(fill = 'x', padx=25, side = 'right')
         return
 
     def create_end_frame(self):
@@ -492,13 +517,14 @@ class Controller():
         self.view.mode_button['command'] = self.push_mode_button
         self.view.mode_button2['command'] = self.push_mode_button
 
-
         for x in range(7):
             self.view.state_button[x]['command'] = self.make_push_state_button(x)    
         
         for x in range(7):
             self.view.state_button2[x]['command'] = self.make_push_state_button(x)    
-        
+
+        self.view.done_button['command'] = self.push_done_button
+
     def push_load_button(self):
         '動画選択ボタンが押された時の処理'
 
@@ -512,7 +538,6 @@ class Controller():
         if len(file_path) != 0:
             # 動画オブジェクト生成
             self.model.create_video(file_path)
-        self.view.main_frame.tkraise()
 
     def push_next_frame_button(self):
         self.model.next_frame()
@@ -557,6 +582,9 @@ class Controller():
         # ここに編集モードとプレビューモードのviewの変更をかく
         self.model.set_nows("", "", "")
 
+    def push_done_button(self):
+        self.view.main_frame.tkraise()
+        return
 
 app = tkinter.Tk()
 
