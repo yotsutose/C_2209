@@ -189,10 +189,10 @@ class View():
         delete_button_image_ = Image.open('./app/image/選択_四角.png')
         self.delete_button_image = ImageTk.PhotoImage(delete_button_image_)
 
-        next_frame_button_image_ = Image.open('./app/image/次へ.png')
+        next_frame_button_image_ = Image.open('./app/image/次へ_Y.png')
         self.next_frame_button_image = ImageTk.PhotoImage(next_frame_button_image_)
         
-        prev_frame_button_image_ = Image.open('./app/image/前へ.png')
+        prev_frame_button_image_ = Image.open('./app/image/前へ_M.png')
         self.prev_frame_button_image = ImageTk.PhotoImage(prev_frame_button_image_)
         
         mode_button_image_ = Image.open('./app/image/編集.png')
@@ -313,33 +313,15 @@ class View():
         )
         self.scale_bar.pack(pady=25)
 
-        # pptx実行ボタン
-        self.making_pptx_button = tkinter.Button(
-            self.operation_frame,
-            image = self.making_pptx_button_image,
-        )
-        self.making_pptx_button.pack(fill = 'x', padx=20, side = 'right')
+        
 
         # ホームへのボタン
         self.to_home_button = tkinter.Button(
             self.operation_frame,
             image = self.to_home_button_image,
         )
-        self.to_home_button.pack(fill = 'x', padx=20, side = 'left')
-
-        # next_frameへのボタン
-        self.next_frame_button = tkinter.Button(
-            self.operation_frame,
-            image = self.next_frame_button_image,
-        )
-        self.next_frame_button.pack(fill = 'x', padx=20, side = 'right')
-
-        # prev_frameへのボタン
-        self.prev_frame_button = tkinter.Button(
-            self.operation_frame,
-            image = self.prev_frame_button_image,
-        )
-        self.prev_frame_button.pack(fill = 'x', padx=20, side = 'left')
+        # 画面の上に持っていくために一旦消す
+        # self.to_home_button.pack(fill = 'x', padx=20, side = 'left')
 
         # modeチェンジのためのフレーム
         self.mode_change_frame = tkinter.Frame(
@@ -348,7 +330,28 @@ class View():
             bg='#FCFFEE')
         self.mode_change_frame.grid_rowconfigure(0, weight=1)
         self.mode_change_frame.grid_columnconfigure(0, weight=1)
-        self.mode_change_frame.pack()
+        self.mode_change_frame.pack(fill = 'x', padx=20, side = 'left')
+
+        # prev_frameへのボタン
+        self.prev_frame_button = tkinter.Button(
+            self.operation_frame,
+            image = self.prev_frame_button_image,
+        )
+        self.prev_frame_button.pack(fill = 'x', padx=10, side = 'left')
+
+        # pptx実行ボタン
+        self.making_pptx_button = tkinter.Button(
+            self.operation_frame,
+            image = self.making_pptx_button_image,
+        )
+        self.making_pptx_button.pack(fill = 'x', padx=20, side = 'right')
+
+        # next_frameへのボタン
+        self.next_frame_button = tkinter.Button(
+            self.operation_frame,
+            image = self.next_frame_button_image,
+        )
+        self.next_frame_button.pack(fill = 'x', padx=10, side = 'right')
 
         # プレビューから編集モードに行くための編集ボタン
         self.mode_button = tkinter.Button(
