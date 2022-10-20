@@ -39,6 +39,7 @@ class Model():
 
         self.now.trace_add("write", self.set_nows)
 
+        # debug用に最初から読み込んでおく
         self.create_video("./input/input1.MP4")
 
     def create_video(self, path):
@@ -52,27 +53,31 @@ class Model():
         print(f'{width=} {height=} {frame_count=}')
 
         self.frames = []
+        self.perfect_frames = []
         
+        print(f'ビデオの読み込み中')
         for i in tqdm(range(frame_count)):
             ret, img = self.cap.read()
             if ret == False:
                 break
-            # 画像をリサイズする　20分の1に圧縮
-            if i % 20 != 0:
+            if i % 5 != 0 or i==0: # 5枚ずつ切り取る
                 continue
+            # 完璧なイメージを保存 意外と時間はかからない
+            self.perfect_frames.append(img)
+
+            # プレビューの表示用に保存
             rgb_frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             pil_image = Image.fromarray(rgb_frame)
-            # widthとheightは画像とcanvasのサイズ見て考える
-            # 元の画像は800x1800くらい
             pil_image = pil_image.resize((width//4, height//4), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
+        
         self.frame_state = []
         for x in range(len(self.frames)):
             self.frame_state.append(tkinter.IntVar())
         for x in range(5):
             self.frame_state[x*2].set(1)
         # セットする
-        self.now.set(2)
+        self.now.set(0)
 
     def set_nows(self, a, b, c):
         for x in range(5):
@@ -94,7 +99,7 @@ class Model():
                 self.nows[i].set(state_)
 
     def next_frame(self):
-        next = min(self.now.get()+1, len(self.frames)-1)
+        next = min(self.now.get()+1, len(self.frames)-5)
         self.now.set(next)
 
     def previous_frame(self):
@@ -318,16 +323,11 @@ class View():
             orient="horizontal",
             length=500,
             from_=0,
-            to=len(self.model.frames)-1,
+            to=len(self.model.frames)-5,
             # command=lambda e: self.draw_image()
         )
         self.scale_bar.pack(pady=25)
 
-        
-
-        
-
-        
 
         # 編集ボタンは一人きり
         self.mode_button = tkinter.Button(
