@@ -58,11 +58,13 @@ class Model():
             if ret == False:
                 break
             # 画像をリサイズする　20分の1に圧縮
-            if i % 30 != 0:
+            if i % 20 != 0:
                 continue
             rgb_frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             pil_image = Image.fromarray(rgb_frame)
-            pil_image = pil_image.resize((round(width/4), round(height/4)), resample=3)
+            # widthとheightは画像とcanvasのサイズ見て考える
+            # 元の画像は800x1800くらい
+            pil_image = pil_image.resize((width//4, height//4), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
         self.frame_state = []
         for x in range(len(self.frames)):
@@ -70,7 +72,7 @@ class Model():
         for x in range(4):
             self.frame_state[x].set(1)
         # セットする
-        self.now.set(3)
+        self.now.set(2)
 
     def set_nows(self, a, b, c):
         for x in range(7):
@@ -233,10 +235,10 @@ class View():
         # フレーム表示 in canvas_panels
         self.frame = [tkinter.Canvas(
             self.canvas_paneles[x],
-            width=220,
-            height=480,
+            width=200, # ここは要調整
+            height=450,
             highlightbackground='#FCFFEE',
-            bg='#FCFFEE'
+            bg='red'
             ) for x in range(7)]
         [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(7)]
 
@@ -349,8 +351,8 @@ class View():
         self.mode_button.grid(row=0, column=0, sticky="nsew")
         
 
-        # 編集モードからプレビューに行くための決定ボタン
-        mode_button_image2_ = Image.open('./app/image/決定.png')
+        # 編集モードからプレビューに行くための完了ボタン
+        mode_button_image2_ = Image.open('./app/image/完了ボタン.png')
         mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
         self.mode_button2 = tkinter.Button(
             self.mode_change_frame,
