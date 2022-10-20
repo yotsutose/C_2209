@@ -160,8 +160,8 @@ class View():
         self.create_end_frame()
 
         # tkraise()
-        self.home_frame.tkraise()
-        # self.main_frame.tkraise()
+        # self.home_frame.tkraise()
+        self.main_frame.tkraise()
         # self.end_frame.tkraise()
 
 
@@ -197,21 +197,44 @@ class View():
         making_pptx_button_image_ = Image.open('./app/image/実行ボタン.png')
         self.making_pptx_button_image = ImageTk.PhotoImage(making_pptx_button_image_)
 
-        # 編集モード/プレビューモードのフレーム
-        self.head_canvas = tkinter.Canvas(
+        # ホームへ/編集モード/プレビューモードへのフレーム
+        self.head_frame = tkinter.Frame(
             self.main_frame,
+            highlightbackground='#FCFFEE',
+            bg="#FCFFEE"
+        )
+        self.head_frame.grid(column=1, row=1)
+
+        # ホームへのボタン
+        self.to_home_button = tkinter.Button(
+            self.main_frame,
+            image = self.to_home_button_image,
+        )
+        self.to_home_button.grid(in_=self.head_frame, column=0, row=0)
+
+        # 編集モード/プレビューモードのキャンバス
+        self.head_canvas = tkinter.Canvas(
+            self.head_frame,
             height=150,
             width=500,
             highlightbackground='#FCFFEE',
             bg="#FCFFEE"
         )
+        # 最初はプレビューモードの表示をしておく
         self.head_canvas.create_image(
             30, 30,
             image=self.preview_top_image,
             anchor=tkinter.NW,
             tag="image",
         )
-        self.head_canvas.grid(column=1, row=1)
+        self.head_canvas.grid(column=1, row=0, padx=150)
+
+        self.to_home_button2 = tkinter.Button(
+            self.main_frame,
+            image = self.to_home_button_image,
+        )
+        self.to_home_button2.grid(in_=self.head_frame,column=2, row=0)
+        self.to_home_button2.lower()
 
         # キャンバス5枚のフレーム
         self.canvas_frame = tkinter.Frame(
@@ -305,13 +328,7 @@ class View():
 
         
 
-        # ホームへのボタン
-        self.to_home_button = tkinter.Button(
-            self.operation_frame,
-            image = self.to_home_button_image,
-        )
-        # 画面の上に持っていくために一旦消す
-        # self.to_home_button.pack(fill = 'x', padx=20, side = 'left')
+        
 
         
 
@@ -606,6 +623,7 @@ class Controller():
                 tag="image",
             )
             self.view.making_pptx_button.tkraise()
+            self.view.to_home_button.tkraise()
             self.view.mode_button.tkraise()
         else: # 編集モード
             self.view.head_canvas.delete('all')
@@ -616,6 +634,7 @@ class Controller():
                 tag="image",
             )
             self.view.mode_button2.tkraise()
+            self.view.to_home_button.lower()
             self.view.mode_button.lower()
 
         
