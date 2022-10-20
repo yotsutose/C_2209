@@ -33,7 +33,7 @@ class Model():
         # 現在表示中のフレーム
         self.now = tkinter.IntVar()
         self.nows = []
-        for x in range(7):
+        for x in range(5):
             self.nows.append(tkinter.IntVar())
             self.nows[x].set(-1)
 
@@ -75,11 +75,11 @@ class Model():
         self.now.set(2)
 
     def set_nows(self, a, b, c):
-        for x in range(7):
+        for x in range(5):
             self.nows[x].set(-1)
         if self.mode.get() == 0: # プレビュー
             now = self.now.get()
-            idx = 1
+            idx = 0
             for i in range(now, len(self.frames), 1):
                 if self.frame_state[i].get() == 1:
                     self.nows[idx].set(i)
@@ -87,22 +87,14 @@ class Model():
                 if idx > 5:
                     break
         else:
-            # 0用
-            for i in range(self.now.get()-3, -1, -1):
-                if self.frame_state[i].get() == 1:
-                    self.nows[0].set(i)
-                    break
-            # 12345用
+            
+            #012340用
             for i in range(5):
                 state_ = self.now.get() + i - 2
                 if state_ < 0 or len(self.frames) <= state_:
                     continue
-                self.nows[i+1].set(state_)
-            # 6用
-            for i in range(self.now.get()+3, len(self.frames), 1):
-                if self.frame_state[i].get() == 1:
-                    self.nows[6].set(i)
-                    break
+                self.nows[i].set(state_)
+            
 
     def next_frame(self):
         next = min(self.now.get()+1, len(self.frames)-1)
@@ -121,7 +113,7 @@ class View():
         self.model = model
 
         # callbackを用意
-        # for x in range(7):
+        # for x in range(5):
         #     self.model.nows[x].trace_add("write", lambda name, index, mode: self.make_draw_image(self, x))
 
         self.model.nows[0].trace_add("write", lambda name, index, mode: self.draw_image(self, 0))
@@ -129,8 +121,6 @@ class View():
         self.model.nows[2].trace_add("write", lambda name, index, mode: self.draw_image(self, 2))
         self.model.nows[3].trace_add("write", lambda name, index, mode: self.draw_image(self, 3))
         self.model.nows[4].trace_add("write", lambda name, index, mode: self.draw_image(self, 4))
-        self.model.nows[5].trace_add("write", lambda name, index, mode: self.draw_image(self, 5))
-        self.model.nows[6].trace_add("write", lambda name, index, mode: self.draw_image(self, 6))
 
         # アプリ内のウィジェットを作成
         self.create_widgets()
@@ -223,12 +213,12 @@ class View():
         )
         self.head_canvas.grid(column=1, row=1)
 
-        # キャンバス7枚のフレーム
+        # キャンバス5枚のフレーム
         self.canvas_frame = tkinter.Frame(
             self.main_frame,
             bg="#FCFFEE"
         )
-        self.canvas_frame.grid(column=1, row=2)
+        self.canvas_frame.grid(column=1, row=2, padx=100)
 
         # オペレーションフレーム
         self.operation_frame = tkinter.Frame(
@@ -249,16 +239,16 @@ class View():
         # パネルごとのフレーム in canvas_panels
         self.canvas_paneles = [tkinter.Frame(
             self.canvas_frame,
-            bg="#FCFFEE",) for x in range(7)]
-        [self.canvas_paneles[x].grid(column=x, row=1) for x in range(7)]
+            bg="#FCFFEE",) for x in range(5)]
+        [self.canvas_paneles[x].grid(column=x, row=1, padx=10) for x in range(5)]
 
         # フレーム番号表示 in canvas_panels
         self.frame_index = [tkinter.Label(
             self.canvas_paneles[x],
             bg="#FCFFEE",
             font=("MSゴシック", "30", "bold"),
-            textvariable=self.model.nows[x]) for x in range(7)]
-        [self.frame_index[x].grid(row=0, column=0, sticky="nsew") for x in range(7)]
+            textvariable=self.model.nows[x]) for x in range(5)]
+        [self.frame_index[x].grid(row=0, column=0, sticky="nsew") for x in range(5)]
 
         # フレーム表示 in canvas_panels
         self.frame = [tkinter.Canvas(
@@ -267,34 +257,34 @@ class View():
             height=450,
             highlightbackground='#FCFFEE',
             bg='#FCFFEE'
-            ) for x in range(7)]
-        [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(7)]
+            ) for x in range(5)]
+        [self.frame[x].grid(row=1, column=0, sticky="nsew") for x in range(5)]
 
         # ボタンのためのフレーム
         self.button_frame = [tkinter.Frame(
             self.canvas_paneles[x],
             highlightbackground='#FCFFEE',
             bg='#FCFFEE'
-            ) for x in range(7)]
-        [self.button_frame[x].grid_rowconfigure(0, weight=1) for x in range(7)]
-        [self.button_frame[x].grid_columnconfigure(0, weight=1) for x in range(7)]
-        [self.button_frame[x].grid(row=2, column=0, sticky="nsew") for x in range(7)]
+            ) for x in range(5)]
+        [self.button_frame[x].grid_rowconfigure(0, weight=1) for x in range(5)]
+        [self.button_frame[x].grid_columnconfigure(0, weight=1) for x in range(5)]
+        [self.button_frame[x].grid(row=2, column=0, sticky="nsew") for x in range(5)]
 
         # 追加ボタン表示
         self.state_button = [tkinter.Button(
             self.button_frame[x],
             image = self.add_button_image,
-            ) for x in range(7)]
-        [self.state_button[x].grid(row=0, column=0) for x in range(7)]
+            ) for x in range(5)]
+        [self.state_button[x].grid(row=0, column=0) for x in range(5)]
 
         # 削除ボタン表示
         self.state_button2 = [tkinter.Button(
             self.button_frame[x],
             image = self.delete_button_image,
-            ) for x in range(7)]
-        [self.state_button2[x].grid(row=0, column=0) for x in range(7)]
+            ) for x in range(5)]
+        [self.state_button2[x].grid(row=0, column=0) for x in range(5)]
 
-        [self.state_button[x].tkraise() for x in range(7)]
+        [self.state_button[x].tkraise() for x in range(5)]
 
         # シークバーの表示
         style = ttk.Style()
@@ -538,7 +528,7 @@ class Controller():
 
         self.set_events()
         self.model.mode.set(0)
-        self.model.now.set(2)
+        self.model.now.set(0)
 
 
     def set_events(self):
@@ -557,10 +547,10 @@ class Controller():
         self.view.mode_button['command'] = self.push_mode_button
         self.view.mode_button2['command'] = self.push_mode_button
 
-        for x in range(7):
+        for x in range(5):
             self.view.state_button[x]['command'] = self.make_push_state_button(x)    
         
-        for x in range(7):
+        for x in range(5):
             self.view.state_button2[x]['command'] = self.make_push_state_button(x)    
 
         # ホームからプレビューへの画面遷移
