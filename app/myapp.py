@@ -635,7 +635,20 @@ class Controller():
 
     def push_making_pptx_button(self):
         self.view.end_frame.tkraise()
+        self.making_pptx()
+
+    def making_pptx(self):
+        print("今からパワポを作ります")
         # ここにパワポを作る操作をかく
+        # 画像　　 self.model.frames = []
+        # 選択状況 self.model.frame_state = []
+        
+        ## 保存を行う処理
+
+        ## pptxを保存する処理
+
+
+        return
 
 app = tkinter.Tk()
 
