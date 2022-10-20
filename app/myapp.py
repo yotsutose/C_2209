@@ -198,7 +198,13 @@ class View():
         mode_button_image2_ = Image.open('./app/image/完了ボタン.png')
         mode_button_image2 = ImageTk.PhotoImage(mode_button_image2_)
 
-        # モードの表示を配置するフレーム
+        to_home_button_image_ = Image.open('./app/image/ホームへ.png')
+        self.to_home_button_image = ImageTk.PhotoImage(to_home_button_image_)
+
+        making_pptx_button_image_ = Image.open('./app/image/実行ボタン.png')
+        self.making_pptx_button_image = ImageTk.PhotoImage(making_pptx_button_image_)
+
+        # 編集モード/プレビューモードのフレーム
         self.head_canvas = tkinter.Canvas(
             self.main_frame,
             height=150,
@@ -214,14 +220,14 @@ class View():
         )
         self.head_canvas.grid(column=1, row=1)
 
-        # キャンバス達を配置するフレーム
+        # キャンバス7枚のフレーム
         self.canvas_frame = tkinter.Frame(
             self.main_frame,
             bg="#FCFFEE"
         )
         self.canvas_frame.grid(column=1, row=2)
 
-        # ユーザ操作用フレームの作成と配置
+        # オペレーションフレーム
         self.operation_frame = tkinter.Frame(
             self.main_frame,
             bg="#FCFFEE"
@@ -304,18 +310,19 @@ class View():
         )
         self.scale_bar.pack(pady=25)
 
-        # self.scale_bar = tkinter.Scale(
-        #     self.operation_frame,
-        #     variable=self.model.now,
-        #     orient=tkinter.HORIZONTAL,
-        #     bg='#FCFFEE',
-        #     troughcolor='#FCFFEE',
-        #     length=600,
-        #     from_=0,
-        #     sliderlength=15,
-        #     to=len(self.model.frames)-1,
-        #     # command=lambda e: self.draw_image()
-        # )
+        # pptx実行ボタン
+        self.making_pptx_button = tkinter.Button(
+            self.operation_frame,
+            image = self.making_pptx_button_image,
+        )
+        self.making_pptx_button.pack(fill = 'x', padx=20, side = 'right')
+
+        # ホームへのボタン
+        self.to_home_button = tkinter.Button(
+            self.operation_frame,
+            image = self.to_home_button_image,
+        )
+        self.to_home_button.pack(fill = 'x', padx=20, side = 'left')
 
         # next_frameへのボタン
         self.next_frame_button = tkinter.Button(
@@ -519,7 +526,7 @@ class Controller():
         # フリップON/OFFボタン押し下げイベント受付
         self.view.prev_frame_button['command'] = self.push_prev_frame_button
 
-        # modeON/OFFボタン押し下げイベント受付
+        # 編集とプレビューの切り替えイベント受付
         self.view.mode_button['command'] = self.push_mode_button
         self.view.mode_button2['command'] = self.push_mode_button
 
@@ -529,7 +536,14 @@ class Controller():
         for x in range(7):
             self.view.state_button2[x]['command'] = self.make_push_state_button(x)    
 
+        # ホームからプレビューへの画面遷移
         self.view.done_button['command'] = self.push_done_button
+
+        # プレビューからホームへの画面遷移
+        self.view.to_home_button['command'] = self.push_to_home_button
+
+        # プレビューからエンドへの画面遷移
+        self.view.making_pptx_button['command'] = self.push_making_pptx_button
 
     def push_load_button(self):
         '動画選択ボタンが押された時の処理'
@@ -590,7 +604,13 @@ class Controller():
 
     def push_done_button(self):
         self.view.main_frame.tkraise()
-        return
+
+    def push_to_home_button(self):
+        self.view.home_frame.tkraise()
+
+    def push_making_pptx_button(self):
+        self.view.end_frame.tkraise()
+        # ここにパワポを作る操作をかく
 
 app = tkinter.Tk()
 
