@@ -154,6 +154,7 @@ class View():
             bg="#FCFFEE"
         )
         self.main_frame.grid(row=0, column=0, sticky="nsew")
+        self.create_main_frame()
 
         # ホームフレーム(ホーム画面)
         self.home_frame = tkinter.Frame(
@@ -161,6 +162,7 @@ class View():
             bg="#FCFFEE"
         )
         self.home_frame.grid(row=0, column=0, sticky="nsew")
+        self.create_home_frame()
 
         # エンドフレーム(終了画面)
         self.end_frame = tkinter.Frame(
@@ -168,10 +170,12 @@ class View():
             bg="#FCFFEE"
         )
         self.end_frame.grid(row=0, column=0, sticky="nsew")
+        self.create_end_frame()
 
         # tkraise()
         self.main_frame.tkraise()
 
+    def create_main_frame(self):
         # モードの表示の画像の読み込み
         edit_top_image_ = Image.open('./app/image/編集モード.png')
         self.edit_top_image = ImageTk.PhotoImage(edit_top_image_)
@@ -363,6 +367,13 @@ class View():
         self.mode_button2.image = mode_button_image2
         self.mode_button2.grid(row=0, column=0, sticky="nsew")
         self.mode_button.tkraise()
+        return
+    
+    def create_home_frame(self):
+        return
+
+    def create_end_frame(self):
+        return
 
     def select_open_file(self, file_types):
         'オープンするファイル選択画面を表示'
