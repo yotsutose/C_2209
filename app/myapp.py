@@ -69,8 +69,8 @@ class Model():
         self.frame_state = []
         for x in range(len(self.frames)):
             self.frame_state.append(tkinter.IntVar())
-        for x in range(4):
-            self.frame_state[x].set(1)
+        for x in range(5):
+            self.frame_state[x*2].set(1)
         # セットする
         self.now.set(2)
 
@@ -625,6 +625,7 @@ class Controller():
             self.view.making_pptx_button.tkraise()
             self.view.to_home_button.tkraise()
             self.view.mode_button.tkraise()
+            self.model.now.set(0)
         else: # 編集モード
             self.view.head_canvas.delete('all')
             self.view.head_canvas.create_image(
