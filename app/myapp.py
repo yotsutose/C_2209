@@ -70,16 +70,38 @@ class Model():
         frame_count = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
         print(f'{width=} {height=} {frame_count=}')
 
-        self.frames = []
-        self.perfect_frames = []
+        self.frames = [] # 1/4スケールの画像保存
+        self.perfect_frames = [] # 劣化なしの状態
+        self.frame_state = [] # 0か1で状態を書く
+
+        self.first_img = True
+        self.pre_img_is_similar = True
+        self.diff_max = 5
         
         print(f'ビデオの読み込み中')
         for i in tqdm(range(frame_count)):
-            ret, img = self.cap.read()
+            ret, image2 = self.cap.read()
             if ret == False:
                 break
-            if i % 5 != 0 or i==0: # 5枚ずつ切り取る
+            if i % 5 != 0: # 5枚ずつ切り取る
                 continue
+            if i == 0:
+                image1 = image2
+                continue
+            
+            height = image1.shape[0]
+            width = image1.shape[1]
+            img_size = (int(width), int(height))
+            ret = self.func5(image1, image2, img_size)
+
+            if ret == 1:
+                img = image1
+            elif ret == 2:
+                img = image2
+            else:
+                image1 = image2
+                continue
+
             # 完璧なイメージを保存 意外と時間はかからない
             self.perfect_frames.append(img)
 
@@ -88,14 +110,33 @@ class Model():
             pil_image = Image.fromarray(rgb_frame)
             pil_image = pil_image.resize((width//4, height//4), resample=3)
             self.frames.append(ImageTk.PhotoImage(pil_image))
-        
-        self.frame_state = []
-        for x in range(len(self.frames)):
+
+            # 状態管理用に追加
             self.frame_state.append(tkinter.IntVar())
-        for x in range(5):
-            self.frame_state[x*2].set(1)
+            self.frame_state[-1].set(ret%2)
+
+            # image1に保存する
+            image1 = image2
         # セットする
         self.now.set(0)
+
+    def func5(self, image1, image2, img_size):
+        # 比較するために、同じサイズにリサイズしておく
+        image1 = cv2.resize(image1, img_size)
+        image2 = cv2.resize(image2, img_size)
+
+        diff = image1.astype(int) - image2.astype(int)
+        diff_abs = np.abs(diff)
+        degree_of_similarity = np.count_nonzero(diff_abs < self.diff_max) / image2.size
+
+        # 最後の画像を保存
+        if(degree_of_similarity > 0.85 and not(self.pre_img_is_similar)): # 同じやつになり始めた
+            self.pre_img_is_similar = True
+            return 2
+        elif(degree_of_similarity <= 0.85 and self.pre_img_is_similar): # 変わり始めた
+            self.pre_img_is_similar = False
+            return 1
+        return 0
 
     def set_nows(self, a, b, c):
         for x in range(5):
@@ -779,7 +820,7 @@ class Controller():
             rect0.fill.solid()                                   # shapeオブジェクト➀を単色で塗り潰す
             rect0.fill.fore_color.rgb = RGBColor(74, 126, 187)  # RGB指定で色を指定
 
-        prs.save("./rakuraku-torisetsu.pptx")
+        prs.save("./らくらくトリセツ.pptx")
 
 app = tkinter.Tk()
 
