@@ -1,6 +1,6 @@
 # らくらくトリセツ
 
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2022/08/JPHACKS2022_ogp.jpg)](https://www.youtube.com/watch?v=LUPQFB4QyVo)
+[![IMAGE ALT TEXT HERE](https://github.com/jphacks/C_2209/blob/master/%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%BC%E3%83%B3%E3%82%B7%E3%83%A7%E3%83%83%E3%83%88%202022-10-22%2013.49.44.png)](https://youtu.be/2LpVG8CyQm4)
 
 
 ## 製品概要
