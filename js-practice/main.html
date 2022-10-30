@@ -13,7 +13,7 @@
         <video id="video" src="../input/input1.MP4" muted width="320" height="640"></video>
     </div>
     <div hidden>ABC</div>
-    <div> diff | presrc | src</div>
+    <div> diff | pptxrc | src</div>
     <input type="button" value="make PPTX" onclick="makePPTX()">
     <div class="box">
         <div class="canvases">
@@ -34,9 +34,9 @@
     <script>
         function makeSamplePPTX() {
             // 1. Create a new Presentation
-            let pres = new PptxGenJS();
+            let pptx = new PptxGenJS();
             // 2. Add a Slide
-            let slide = pres.addSlide();
+            let slide = pptx.addSlide();
 
             // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
             slide.addText("Hello World from PptxGenJS...", {
@@ -44,11 +44,11 @@
                 y: 1.5,
                 color: "363636",
                 fill: { color: "F1F1F1" },
-                align: pres.AlignH.center,
+                align: pptx.AlignH.center,
             });
 
             // 4. Save the Presentation
-            pres.writeFile({ fileName: "Sample Presentation.pptx" });
+            pptx.writeFile({ fileName: "Sample Presentation.pptx" });
         }
 
         function makePPTX() {
@@ -57,9 +57,15 @@
             imagedata = cvs.toDataURL("image/jpeg");  
 
             // 1. Create a new Presentation
-            let pres = new PptxGenJS();
+            let pptx = new PptxGenJS();
+            pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
+            pptx.layout = 'A4';
+            console.log("hello");
+            console.log(pptx.layout);
+
+
             // 2. Add a Slide
-            let slide = pres.addSlide();
+            let slide = pptx.addSlide();
 
             // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
             slide.addText("Hello World from PptxGenJS...", {
@@ -67,13 +73,13 @@
                 y: 1.5,
                 color: "363636",
                 fill: { color: "F1F1F1" },
-                align: pres.AlignH.center,
+                align: pptx.AlignH.center,
             });
 
             slide.addImage({ data: imagedata, w: 2, h: 4, x: 2, y: 1 });
 
             // 4. Save the Presentation
-            pres.writeFile({ fileName: "らくらくトリセツ.pptx" });
+            pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
         }
     </script>
 
@@ -95,7 +101,7 @@
             let cap;
             let frames = [];
             let index = 0;
-            let presrc;
+            let pptxrc;
 
             video.controls = true;
             video.willReadFrequently = true;
@@ -112,7 +118,7 @@
                 video.playbackRate = 1.0;
                 src = new cv.Mat(height, width, cv.CV_8UC4);
                 diff_src = new cv.Mat(height, width, cv.CV_8UC4);
-                presrc = new cv.Mat(height, width, cv.CV_8UC4);
+                pptxrc = new cv.Mat(height, width, cv.CV_8UC4);
                 cap = new cv.VideoCapture(video);
                 setTimeout(processVideo, 0);
             }
@@ -133,13 +139,13 @@
                 
                 index++;
 
-                cv.absdiff(presrc, src, diff_src);
+                cv.absdiff(pptxrc, src, diff_src);
                 cv.bitwise_not(diff_src, diff_src);
                 cv.imshow('canvasOutput', diff_src);
-                cv.imshow('canvasOutput2', presrc);
+                cv.imshow('canvasOutput2', pptxrc);
                 cv.imshow('canvasOutput3', src);
 
-                presrc = src.clone();
+                pptxrc = src.clone();
                 setTimeout(processVideo, 0);
             }
         }
