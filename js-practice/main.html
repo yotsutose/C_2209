@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+ 
+<head>
+    <title>らくらくトリセツ</title>
+    <link href="app.css" rel="stylesheet">
+</head>
+ 
+<body>
+    <h1>OpenCV Video</h1>
+    <div> 
+        <video id="video" src="../input/input1.MP4" muted width="320" height="640"></video>
+    </div>
+    <div hidden>ABC</div>
+    <div>DEF</div>
+    <canvas id="canvasOutput" width="320" height="240"></canvas>
+    <canvas id="canvasOutput2" width="320" height="240"></canvas>
+    <canvas id="canvasOutput3" width="320" height="240"></canvas>
+    <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
+    <script>
+        function onCvLoaded() {
+            console.log('cv', cv);
+            cv.onRuntimeInitialized = onReady;
+        }
+        const video = document.getElementById('video');
+        
+        const actionBtn = document.getElementById('actionBtn');
+        let streaming = false;
+        function onReady() {
+            console.log('ready');
+            let src;
+            let dst;
+            let cap;
+            let frames = [];
+            let index = 0;
+            let memo;
+
+            video.controls = true;
+            video.willReadFrequently = true;
+
+            video.addEventListener('play', start);
+            video.addEventListener('pause', stop);
+            video.addEventListener('ended', stop);
+
+            function start() {
+                console.log('playing...');
+                streaming = true;
+                const width = video.width;
+                const height = video.height;
+                video.playbackRate = 5.0;
+                src = new cv.Mat(height, width, cv.CV_8UC4);
+                dst = new cv.Mat(height, width, cv.CV_8UC4);
+                memo = new cv.Mat(height, width, cv.CV_8UC4);
+                cap = new cv.VideoCapture(video);
+                setTimeout(processVideo, 0);
+            }
+
+            function stop() {
+                console.log('paused or ended');
+                streaming = false;
+            }
+
+            function processVideo() {
+                if (!streaming) {
+                    src.delete();
+                    dst.delete();
+                    return;
+                }
+                cap.read(src);
+                
+                if(index==0){
+                    
+                    // console.log(src.sum());
+                    // memo = src.clone();
+                    // memo.sum();
+                    frames[0] = src.clone();
+                    memo = src.clone();
+                    
+                    console.log(memo.rows);
+                    console.log(memo.cols);
+                    console.log(frames[0].rows);
+                    console.log(frames[0].cols);
+                    console.log(src.rows);
+                    console.log(src.cols);
+                    console.log(dst.rows);
+                    console.log(dst.cols);
+                }
+                // console.log(index);
+                index++;
+
+                cv.absdiff(memo, src, dst); // memoとsrcがmat形式じゃないからあかんのかな? video形式だから?、いやcvtColorは動作するわけだしな
+                // dst = src.clone();
+                // cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+                cv.bitwise_not(dst, dst);
+                cv.imshow('canvasOutput', dst);
+                cv.imshow('canvasOutput2', memo);
+                cv.imshow('canvasOutput3', src);
+                setTimeout(processVideo, 0);
+            }
+        }
+ 
+    </script>
+</body>
+ 
+</html>

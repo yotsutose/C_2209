@@ -722,6 +722,7 @@ class Controller():
             
             # imanishi_pptx
             self.imanishi_pptx(dname, img_names)
+            print("finish")
 
     def put_pic(self, slide, path, pic_left, pic_top, pic_width, pic_height):
         #画像追加
