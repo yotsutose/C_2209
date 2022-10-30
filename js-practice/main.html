@@ -8,32 +8,94 @@
  
 <body>
     <h1>OpenCV Video</h1>
+    <input type="file" id="example" multiple>
     <div> 
         <video id="video" src="../input/input1.MP4" muted width="320" height="640"></video>
     </div>
     <div hidden>ABC</div>
-    <div>DEF</div>
-    <canvas id="canvasOutput" width="320" height="240"></canvas>
-    <canvas id="canvasOutput2" width="320" height="240"></canvas>
-    <canvas id="canvasOutput3" width="320" height="240"></canvas>
-    <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
+    <div> diff | presrc | src</div>
+    <input type="button" value="make PPTX" onclick="makePPTX()">
+    <div class="box">
+        <div class="canvases">
+            <canvas id="canvasOutput" width="320" height="240"></canvas>
+            <canvas id="canvasOutput2" width="320" height="240"></canvas>
+            <canvas id="canvasOutput3" width="320" height="240"></canvas>
+        </div>
+    </div>
+
+    <script>
+    </script>
+    
+    <!-- ここにCDNでopencv.jsとpptxgen.jsを読み込む -->
+    <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
+    <script  src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
+    <script  src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+
+    <script>
+        function makeSamplePPTX() {
+            // 1. Create a new Presentation
+            let pres = new PptxGenJS();
+            // 2. Add a Slide
+            let slide = pres.addSlide();
+
+            // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
+            slide.addText("Hello World from PptxGenJS...", {
+                x: 1.5,
+                y: 1.5,
+                color: "363636",
+                fill: { color: "F1F1F1" },
+                align: pres.AlignH.center,
+            });
+
+            // 4. Save the Presentation
+            pres.writeFile({ fileName: "Sample Presentation.pptx" });
+        }
+
+        function makePPTX() {
+            cvs = document.getElementById('canvasOutput2');
+            ctx = cvs.getContext('2d');
+            imagedata = cvs.toDataURL("image/jpeg");  
+
+            // 1. Create a new Presentation
+            let pres = new PptxGenJS();
+            // 2. Add a Slide
+            let slide = pres.addSlide();
+
+            // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
+            slide.addText("Hello World from PptxGenJS...", {
+                x: 1.5,
+                y: 1.5,
+                color: "363636",
+                fill: { color: "F1F1F1" },
+                align: pres.AlignH.center,
+            });
+
+            slide.addImage({ data: imagedata, w: 2, h: 4, x: 2, y: 1 });
+
+            // 4. Save the Presentation
+            pres.writeFile({ fileName: "らくらくトリセツ.pptx" });
+        }
+    </script>
+
     <script>
         function onCvLoaded() {
             console.log('cv', cv);
             cv.onRuntimeInitialized = onReady;
         }
         const video = document.getElementById('video');
+
+        
         
         const actionBtn = document.getElementById('actionBtn');
         let streaming = false;
         function onReady() {
             console.log('ready');
             let src;
-            let dst;
+            let diff_src;
             let cap;
             let frames = [];
             let index = 0;
-            let memo;
+            let presrc;
 
             video.controls = true;
             video.willReadFrequently = true;
@@ -47,10 +109,10 @@
                 streaming = true;
                 const width = video.width;
                 const height = video.height;
-                video.playbackRate = 5.0;
+                video.playbackRate = 1.0;
                 src = new cv.Mat(height, width, cv.CV_8UC4);
-                dst = new cv.Mat(height, width, cv.CV_8UC4);
-                memo = new cv.Mat(height, width, cv.CV_8UC4);
+                diff_src = new cv.Mat(height, width, cv.CV_8UC4);
+                presrc = new cv.Mat(height, width, cv.CV_8UC4);
                 cap = new cv.VideoCapture(video);
                 setTimeout(processVideo, 0);
             }
@@ -63,38 +125,21 @@
             function processVideo() {
                 if (!streaming) {
                     src.delete();
-                    dst.delete();
+                    diff_src.delete();
                     return;
                 }
                 cap.read(src);
                 
-                if(index==0){
-                    
-                    // console.log(src.sum());
-                    // memo = src.clone();
-                    // memo.sum();
-                    frames[0] = src.clone();
-                    memo = src.clone();
-                    
-                    console.log(memo.rows);
-                    console.log(memo.cols);
-                    console.log(frames[0].rows);
-                    console.log(frames[0].cols);
-                    console.log(src.rows);
-                    console.log(src.cols);
-                    console.log(dst.rows);
-                    console.log(dst.cols);
-                }
-                // console.log(index);
+                
                 index++;
 
-                cv.absdiff(memo, src, dst); // memoとsrcがmat形式じゃないからあかんのかな? video形式だから?、いやcvtColorは動作するわけだしな
-                // dst = src.clone();
-                // cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
-                cv.bitwise_not(dst, dst);
-                cv.imshow('canvasOutput', dst);
-                cv.imshow('canvasOutput2', memo);
+                cv.absdiff(presrc, src, diff_src);
+                cv.bitwise_not(diff_src, diff_src);
+                cv.imshow('canvasOutput', diff_src);
+                cv.imshow('canvasOutput2', presrc);
                 cv.imshow('canvasOutput3', src);
+
+                presrc = src.clone();
                 setTimeout(processVideo, 0);
             }
         }

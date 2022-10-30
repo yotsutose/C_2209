@@ -1,0 +1,11 @@
+.box {
+  width: 1000px;                /* 横幅を200pxに指定 */
+  height: 700px;               /* 横幅を200pxに指定 */
+  border: 1px solid #000;      /* わかりやすくボーダーを引く */
+  overflow-x: scroll;          /* 横方向にスクロール可能にする */
+  
+}
+.canvases {
+  width: 1200px;                /* 親要素よりも大きくする */
+  
+}
