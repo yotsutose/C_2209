@@ -17,7 +17,6 @@
     </div>
 
     <h2>【debug用】フレーム間のdiffを表示 ( diff | pre_src | src )</h2>
-    <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas()">
     <div class="box">
         <div class="canvasOutput">
             <canvas id="canvasOutput"  width="320" height="640"></canvas>
@@ -27,6 +26,7 @@
     </div>
 
     <h2>選択された画像の一覧画面</h2>
+    <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas(99)">
     <div class="box">
         <div class="canvases">
             <!-- ここに選択された画像がappendされる -->
@@ -38,8 +38,8 @@
     
     <!-- opencv.jsとpptxgen.jsの本体を読み込む -->
     <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
-    <script  src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
-    <script  src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+    <script async src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
 
     <!-- javasriptのコード-->
     <script>
