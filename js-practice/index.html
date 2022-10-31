@@ -16,10 +16,11 @@
     <div hidden>ABC</div>
     <div> diff | pptxrc | src</div>
     <input type="button" value="make PPTX" onclick="makePPTX()">
+    <input type="button" value="addCanvas" onclick="addCanvas()">
     <div class="box">
         <div class="canvases">
             <canvas id="canvasOutput" width="320" height="640"></canvas>
-            <canvas id="canvasOutput2" width="320" height="640"></canvas>
+            <canvas id="canvasOutput2" width="820" height="2000"　style="width:320px; height:100px;" ></canvas>
             <canvas id="canvasOutput3" width="320" height="640"></canvas>
         </div>
     </div>
@@ -81,6 +82,15 @@
 
             // 4. Save the Presentation
             pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
+        }
+    </script>
+
+    <script>
+        function addCanvas() {
+            let parentnode = document.getElementsByClassName('canvases');
+            let child = document.createElement('canvas');
+            child.id = "canvasOutput" + 5;
+            let resuls = parentnode[0].appendChild(child);
         }
     </script>
 
