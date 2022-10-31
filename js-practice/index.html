@@ -3,21 +3,21 @@
 
 <head>
     <title>らくらくトリセツ</title>
-    <link href="app.css" rel="stylesheet">
+    <link href="index.css" rel="stylesheet">
 </head>
 
 <body>
     <h1>らくらくトリセツ</h1>
 
+    <h2>ファイル選択画面</h2>
     <input type="file" id="filename" accept="video/*">
     <div style="width: 100px; height: 200px; overflow: auto;"> 
         <!-- 828 x 1792 -->
         <video id="video" muted playsinline autoplay="false" width="320" height="640"></video>
     </div>
 
-    <div> diff | pre_src | src</div>
-    <input type="button" value="make PPTX" onclick="makePPTX()">
-    <input type="button" value="addCanvas" onclick="addCanvas()">
+    <h2>フレーム間のdiffを表示 ( diff | pre_src | src )</h2>
+    <input type="button" value="canvasesにcanvasを追加するボタン" onclick="addCanvas()">
     <div class="box">
         <div class="canvases">
             <canvas id="canvasOutput"  width="320" height="640"></canvas>
@@ -25,6 +25,9 @@
             <canvas id="canvasOutput3" width="320" height="640"></canvas>
         </div>
     </div>
+
+    <h2>パワポの生成ボタン</h2>
+    <input type="button" value="make PPTX" onclick="makePPTX()">
     
     <!-- ここにCDNでopencv.jsとpptxgen.jsを読み込む -->
     <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
