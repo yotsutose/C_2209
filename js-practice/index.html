@@ -1,32 +1,30 @@
 <!doctype html>
 <html>
- 
+
 <head>
     <title>らくらくトリセツ</title>
     <link href="app.css" rel="stylesheet">
 </head>
- 
+
 <body>
-    <h1>OpenCV Video</h1>
+    <h1>らくらくトリセツ</h1>
+
     <input type="file" id="filename" accept="video/*">
-    <div> 
+    <div style="width: 100px; height: 200px; overflow: auto;"> 
         <!-- 828 x 1792 -->
-        <video id="video" muted autoplay="false" width="320" height="640"></video>
+        <video id="video" muted playsinline autoplay="false" width="320" height="640"></video>
     </div>
-    <div hidden>ABC</div>
+
     <div> diff | pre_src | src</div>
     <input type="button" value="make PPTX" onclick="makePPTX()">
     <input type="button" value="addCanvas" onclick="addCanvas()">
     <div class="box">
         <div class="canvases">
-            <canvas id="canvasOutput" width="320" height="640"></canvas>
+            <canvas id="canvasOutput"  width="320" height="640"></canvas>
             <canvas id="canvasOutput2" width="320" height="640"></canvas>
             <canvas id="canvasOutput3" width="320" height="640"></canvas>
         </div>
     </div>
-
-    <script>
-    </script>
     
     <!-- ここにCDNでopencv.jsとpptxgen.jsを読み込む -->
     <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
@@ -173,5 +171,5 @@
  
     </script>
 </body>
- 
+
 </html>
