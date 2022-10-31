@@ -19,41 +19,30 @@
     <h2>【debug用】フレーム間のdiffを表示 ( diff | pre_src | src )</h2>
     <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas()">
     <div class="box">
-        <div class="canvases">
+        <div class="canvasOutput">
             <canvas id="canvasOutput"  width="320" height="640"></canvas>
             <canvas id="canvasOutput2" width="320" height="640"></canvas>
             <canvas id="canvasOutput3" width="320" height="640"></canvas>
         </div>
     </div>
 
+    <h2>選択された画像の一覧画面</h2>
+    <div class="box">
+        <div class="canvases">
+            <!-- ここに選択された画像がappendされる -->
+        </div>
+    </div>
+
     <h2>パワポの生成ボタン</h2>
     <input type="button" value="make PPTX" onclick="makePPTX()">
     
-    <!-- ここにCDNでopencv.jsとpptxgen.jsを読み込む -->
+    <!-- opencv.jsとpptxgen.jsの本体を読み込む -->
     <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
     <script  src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
     <script  src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
 
+    <!-- javasriptのコード-->
     <script>
-        function makeSamplePPTX() {
-            // 1. Create a new Presentation
-            let pptx = new PptxGenJS();
-            // 2. Add a Slide
-            let slide = pptx.addSlide();
-
-            // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-            slide.addText("Hello World from PptxGenJS...", {
-                x: 1.5,
-                y: 1.5,
-                color: "363636",
-                fill: { color: "F1F1F1" },
-                align: pptx.AlignH.center,
-            });
-
-            // 4. Save the Presentation
-            pptx.writeFile({ fileName: "Sample Presentation.pptx" });
-        }
-
         function makePPTX() {
             cvs = document.getElementById('canvasOutput2');
             ctx = cvs.getContext('2d');
@@ -87,12 +76,7 @@
     </script>
 
     <script>
-        function addCanvas() {
-            let parentnode = document.getElementsByClassName('canvases');
-            let child = document.createElement('canvas');
-            child.id = "canvasOutput" + 5;
-            let resuls = parentnode[0].appendChild(child);
-        }
+        
     </script>
 
     <script>
@@ -129,7 +113,7 @@
             video.willReadFrequently = true;
 
             video.addEventListener('play', start);
-            video.addEventListener('pause', stop);
+            video.addEventListener('pause', pause);
             video.addEventListener('ended', stop);
 
             function start() {
@@ -145,6 +129,10 @@
                 setTimeout(processVideo, 0);
             }
 
+            function pause() {
+                // video.play();
+            }
+
             function stop() {
                 console.log('paused or ended');
                 streaming = false;
@@ -158,7 +146,10 @@
                 }
                 cap.read(src);
                 
-                
+                if(index%60==0){ // 30FPSだから2秒に一回くらい
+                    canvas_id = addCanvas(index);
+                    cv.imshow(canvas_id, src);
+                }
                 index++;
 
                 cv.absdiff(pre_src, src, diff_src);
@@ -170,8 +161,16 @@
                 pre_src = src.clone();
                 setTimeout(processVideo, 0);
             }
+
+            function addCanvas(index) {
+                let parentnode = document.getElementsByClassName('canvases');
+                let child = document.createElement('canvas');
+                child.id = "canvas" + (index/60);
+                parentnode[0].appendChild(child);
+                return child.id;
+            }
         }
- 
+
     </script>
 </body>
 
