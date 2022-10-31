@@ -8,19 +8,19 @@
  
 <body>
     <h1>OpenCV Video</h1>
-    <input type="file" id="example" multiple>
+    <input type="file" id="filename" accept="video/*">
     <div> 
         <!-- 828 x 1792 -->
-        <video id="video" src="../input/input1.MP4" muted width="320" height="640"></video>
+        <video id="video" muted autoplay="false" width="320" height="640"></video>
     </div>
     <div hidden>ABC</div>
-    <div> diff | pptxrc | src</div>
+    <div> diff | pre_src | src</div>
     <input type="button" value="make PPTX" onclick="makePPTX()">
     <input type="button" value="addCanvas" onclick="addCanvas()">
     <div class="box">
         <div class="canvases">
             <canvas id="canvasOutput" width="320" height="640"></canvas>
-            <canvas id="canvasOutput2" width="820" height="2000"　style="width:320px; height:100px;" ></canvas>
+            <canvas id="canvasOutput2" width="820" height="2000" style="width:320px; height:100px;" ></canvas>
             <canvas id="canvasOutput3" width="320" height="640"></canvas>
         </div>
     </div>
@@ -95,24 +95,34 @@
     </script>
 
     <script>
+        const fileInput = document.getElementById('filename');
+        const video = document.getElementById('video');
+        // changeイベントで呼び出す関数
+        const handleFileSelect = () => {
+            var URL = URL || webkitURL;
+            let videofile = fileInput.files[0];
+            video.src = URL.createObjectURL(videofile);
+            document.getElementById('filename').innerHTML = video.src;
+        }
+        // ファイル選択時にhandleFileSelectを発火
+        fileInput.addEventListener('change', handleFileSelect);
+
         function onCvLoaded() {
             console.log('cv', cv);
             cv.onRuntimeInitialized = onReady;
         }
-        const video = document.getElementById('video');
+        
 
-        
-        
         const actionBtn = document.getElementById('actionBtn');
         let streaming = false;
         function onReady() {
             console.log('ready');
             let src;
             let diff_src;
+            let pre_src;
             let cap;
-            let frames = [];
             let index = 0;
-            let pptxrc;
+            
 
             video.controls = true;
             video.willReadFrequently = true;
@@ -129,7 +139,7 @@
                 video.playbackRate = 1.0;
                 src = new cv.Mat(height, width, cv.CV_8UC4);
                 diff_src = new cv.Mat(height, width, cv.CV_8UC4);
-                pptxrc = new cv.Mat(height, width, cv.CV_8UC4);
+                pre_src = new cv.Mat(height, width, cv.CV_8UC4);
                 cap = new cv.VideoCapture(video);
                 setTimeout(processVideo, 0);
             }
@@ -150,13 +160,13 @@
                 
                 index++;
 
-                cv.absdiff(pptxrc, src, diff_src);
+                cv.absdiff(pre_src, src, diff_src);
                 cv.bitwise_not(diff_src, diff_src);
                 cv.imshow('canvasOutput', diff_src);
-                cv.imshow('canvasOutput2', pptxrc);
+                cv.imshow('canvasOutput2', pre_src);
                 cv.imshow('canvasOutput3', src);
 
-                pptxrc = src.clone();
+                pre_src = src.clone();
                 setTimeout(processVideo, 0);
             }
         }
