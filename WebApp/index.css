@@ -1,5 +1,7 @@
 body {
 	background-color:#FCFFEE;		/*ページ全体の背景色*/
+  margin: auto;
+  width: 960px;
 }
 
 .box {

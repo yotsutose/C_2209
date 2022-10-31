@@ -142,14 +142,14 @@
                     pre_src = src.clone();
                     setTimeout(processVideo, 0);
                 }
+            }
 
-                function addCanvas(index) {
-                    let parentnode = document.getElementsByClassName('canvases');
-                    let child = document.createElement('canvas');
-                    child.id = "canvas" + (index/60);
-                    parentnode[0].appendChild(child);
-                    return child.id;
-                }
+            function addCanvas(index) {
+                let parentnode = document.getElementsByClassName('canvases');
+                let child = document.createElement('canvas');
+                child.id = "canvas" + (index/60);
+                parentnode[0].appendChild(child);
+                return child.id;
             }
 
             function makePPTX() {
