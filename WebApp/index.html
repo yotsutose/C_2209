@@ -73,7 +73,6 @@
             }
             
 
-            const actionBtn = document.getElementById('actionBtn');
             let streaming = false;
             function onReady() {
                 console.log('ready');
@@ -106,6 +105,7 @@
 
                 function pause() {
                     // video.play();
+                    stop();
                 }
 
                 function stop() {
@@ -121,17 +121,23 @@
                     }
                     cap.read(src);
                     
-                    if(index%60==0){ // 30FPSだから2秒に一回くらい
+                    
+
+                    // diffをとる
+                    cv.absdiff(pre_src, src, diff_src);
+                    cv.bitwise_not(diff_src, diff_src);
+
+                    // debug用のキャンバス表示
+                    cv.imshow('canvasOutput', diff_src);
+                    cv.imshow('canvasOutput2', pre_src);
+                    cv.imshow('canvasOutput3', src);
+
+                    // 選択されたフレームをキャンバスに追加
+                    if(index%60==0){ // 30FPSだから2秒に一回くらい洗濯
                         canvas_id = addCanvas(index);
                         cv.imshow(canvas_id, src);
                     }
                     index++;
-
-                    cv.absdiff(pre_src, src, diff_src);
-                    cv.bitwise_not(diff_src, diff_src);
-                    cv.imshow('canvasOutput', diff_src);
-                    cv.imshow('canvasOutput2', pre_src);
-                    cv.imshow('canvasOutput3', src);
 
                     pre_src = src.clone();
                     setTimeout(processVideo, 0);
