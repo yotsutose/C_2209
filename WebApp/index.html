@@ -8,8 +8,7 @@
 </head>
 
 <body>
-    <!-- ここからhtml-->
-
+    <!-- ここからHTML-->
         <h1>らくらくトリセツ</h1>
 
         <h2>ファイル選択画面</h2>
@@ -41,150 +40,19 @@
 
         <h2>パワポの生成ボタン</h2>
         <input type="button" value="make PPTX" onclick="makePPTX()">
-    <!-- ここまでhtml-->
+    <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
         <!-- opencv.jsのコード本体を読み込む -->
-        <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
         <!-- <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script> -->
+        <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
         
         <!-- pptxgen.jsのコード本体を読み込む -->
         <script async src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
         <script async src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
 
-        <!-- 以下、自作のjavasriptのコード-->
-        <script>
-            const fileInput = document.getElementById('filename');
-            const video = document.getElementById('video');
-            // changeイベントで呼び出す関数
-            
-            const handleFileSelect = () => {
-                var URL = URL || webkitURL;
-                let videofile = fileInput.files[0];
-                video.src = URL.createObjectURL(videofile);
-                document.getElementById('filename').innerHTML = video.src;
-            }
-            // ファイル選択時にhandleFileSelectを発火
-            fileInput.addEventListener('change', handleFileSelect);
-
-            function onCvLoaded() {
-                console.log('cv', cv);
-                cv.onRuntimeInitialized = onReady;
-            }
-            
-
-            let streaming = false;
-            function onReady() {
-                console.log('ready');
-                let src;
-                let diff_src;
-                let pre_src;
-                let cap;
-                let index = 0;
-                
-
-                video.controls = true;
-                video.willReadFrequently = true;
-
-                video.addEventListener('play', start);
-                video.addEventListener('pause', pause);
-                video.addEventListener('ended', stop);
-
-                function start() {
-                    console.log('playing...');
-                    streaming = true;
-                    const width = video.width;
-                    const height = video.height;
-                    video.playbackRate = 1.0;
-                    src = new cv.Mat(height, width, cv.CV_8UC4);
-                    diff_src = new cv.Mat(height, width, cv.CV_8UC4);
-                    pre_src = new cv.Mat(height, width, cv.CV_8UC4);
-                    cap = new cv.VideoCapture(video);
-                    setTimeout(processVideo, 0);
-                }
-
-                function pause() {
-                    // video.play();
-                    stop();
-                }
-
-                function stop() {
-                    console.log('paused or ended');
-                    streaming = false;
-                }
-
-                function processVideo() {
-                    if (!streaming) {
-                        src.delete();
-                        diff_src.delete();
-                        return;
-                    }
-                    cap.read(src);
-                    
-                    
-
-                    // diffをとる
-                    cv.absdiff(pre_src, src, diff_src);
-                    cv.bitwise_not(diff_src, diff_src);
-
-                    // debug用のキャンバス表示
-                    cv.imshow('canvasOutput', diff_src);
-                    cv.imshow('canvasOutput2', pre_src);
-                    cv.imshow('canvasOutput3', src);
-
-                    // 選択されたフレームをキャンバスに追加
-                    if(index%60==0){ // 30FPSだから2秒に一回くらい洗濯
-                        canvas_id = addCanvas(index);
-                        cv.imshow(canvas_id, src);
-                    }
-                    index++;
-
-                    pre_src = src.clone();
-                    setTimeout(processVideo, 0);
-                }
-            }
-
-            function addCanvas(index) {
-                let parentnode = document.getElementsByClassName('canvases');
-                let child = document.createElement('canvas');
-                child.id = "canvas" + (index/60);
-                parentnode[0].appendChild(child);
-                return child.id;
-            }
-
-            function makePPTX() {
-                cvs = document.getElementById('canvasOutput2');
-                ctx = cvs.getContext('2d');
-                imagedata = cvs.toDataURL("image/jpeg");  
-
-                // 1. Create a new Presentation
-                let pptx = new PptxGenJS();
-                pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
-                pptx.layout = 'A4';
-                console.log("hello");
-                console.log(pptx.layout);
-
-
-                // 2. Add a Slide
-                let slide = pptx.addSlide();
-
-                // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-                slide.addText("Hello World from PptxGenJS...", {
-                    x: 1.5,
-                    y: 1.5,
-                    color: "363636",
-                    fill: { color: "F1F1F1" },
-                    align: pptx.AlignH.center,
-                });
-
-                slide.addImage({ data: imagedata, w: 2, h: 4, x: 2, y: 1 });
-
-                // 4. Save the Presentation
-                pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
-            }
-
-        </script>
-
+        <!-- 自作のJavaScriptのコードの読み込み-->
+        <script src="./index.js"></script>
     <!-- ここまでJavaScript -->
 </body>
 
