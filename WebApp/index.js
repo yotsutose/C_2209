@@ -7,7 +7,12 @@ const handleFileSelect = () => {
     var URL = URL || webkitURL;
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
+    //!!
+    console.log(document.getElementById('filename').innerHTML);
     document.getElementById('filename').innerHTML = video.src;
+    //検証テスト!!
+    console.log(document.getElementById('filename').innerHTML);
+    //document.getElementById('suzu_test1').innerHTML = video.src;
 }
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
