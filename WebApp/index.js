@@ -1,5 +1,6 @@
 const fileInput = document.getElementById('filename');
 const video = document.getElementById('video');
+let videoWidth, videoHeight, videoRatio;
 
 // FileInputのchangeイベントで呼び出す関数
 const handleFileSelect = () => {
@@ -28,7 +29,6 @@ function onReady() {
     let index = 0;
     
     video.controls = true;
-    video.willReadFrequently = true;
 
     // videoタグに対して、再生・ポーズ・終了などのアクションに対して発火する関数をセットしている
     video.addEventListener('play', start);
@@ -40,12 +40,15 @@ function onReady() {
     function start() {
         console.log('playing...');
         streaming = true;
-        const width = video.width;
-        const height = video.height;
+        videoWidth  = video.videoWidth; // video本体の大きさ取得
+        videoHeight = video.videoHeight;
+        videoRatio = videoHeight/videoWidth;
+        video.height = videoHeight; // videoElementの大きさを決める(capのため)
+        video.width = videoWidth;
         video.playbackRate = 1.0;
-        src = new cv.Mat(height, width, cv.CV_8UC4);
-        diff_src = new cv.Mat(height, width, cv.CV_8UC4);
-        pre_src = new cv.Mat(height, width, cv.CV_8UC4);
+        src      = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
+        diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
+        pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         cap = new cv.VideoCapture(video);
         setTimeout(processVideo, 0);
     }
@@ -99,11 +102,24 @@ function onReady() {
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
 function addCanvas(index) {
+
     let parentnode = document.getElementsByClassName('canvases');
-    let child = document.createElement('canvas');
-    child.id = "canvas" + (index/60);
-    parentnode[0].appendChild(child);
-    return child.id;
+
+    let divElement = document.createElement('div');
+    parentnode[0].appendChild(divElement);
+    
+    let canvasElement = document.createElement('canvas');
+    canvasElement.id = "canvas" + (index/60);
+    canvasElement.style.width  = Math.round(videoWidth /3)+"px";
+    canvasElement.style.height = Math.round(videoHeight/3)+"px";
+    canvasElement.willReadFrequently = true;
+
+    let buttonElement = document.createElement('p');
+    buttonElement.value = "button"
+    divElement.appendChild(buttonElement);
+    divElement.appendChild(canvasElement);
+
+    return canvasElement.id;
 }
 
 // パワーポイントを作る関数
