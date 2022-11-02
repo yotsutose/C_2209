@@ -158,3 +158,24 @@ function makePPTX() {
     // 4. パワポを保存する
     pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
 }
+
+// PDFを作る関数
+function makePDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
+
+    doc.text("Hello world!", 10, 10);
+
+    // canvasに書かれたデータを読み取るコード
+    cvs = document.getElementById('canvasOutput2');
+    ctx = cvs.getContext('2d');
+    imagedata = cvs.toDataURL("image/jpeg");
+    
+    // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
+    // https://artskydj.github.io/jsPDF/docs/module-addImage.html
+    doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
+
+    doc.addPage({orientation: "landscape"});
+
+    doc.save("らくらくトリセツ.pdf");
+}
