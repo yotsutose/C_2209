@@ -23,13 +23,11 @@ function onCvLoaded() {
 let streaming = false;
 function onReady() {
     console.log('ready');
-    let src;
-    let diff_src;
-    let pre_src;
+    let src, diff_src, pre_src;
     let cap;
     let index = 0;
     let pre_img_is_similar = false;
-    let rate_similer = 0.95;
+    const rate_similer = 0.95;
     
     video.controls = true;
 
@@ -101,13 +99,14 @@ function onReady() {
             // canvas_id = addCanvas(index);
             // cv.imshow(canvas_id, pre_src);
             pre_img_is_similar = false;
+            index++;
         }else if(similler >= rate_similer && !pre_img_is_similar){ // アニメーション終わり
             canvas_id = addCanvas(index);
             cv.imshow(canvas_id, src);
             pre_img_is_similar = true;
+            index++;
         }
         
-        index++;
         pre_src = src.clone(); // 30フレームx10秒くらいやると落ちる, 6フレームx50秒くらいまで耐えられる
     }
 }
@@ -131,7 +130,7 @@ function addCanvas(index) {
     buttonElement.onclick = () => console.log(index);
     // キャンバス
     let canvasElement = document.createElement('canvas');
-    canvasElement.id = "canvas" + (index/60);
+    canvasElement.id = "canvas" + (index);
     canvasElement.style.width  = Math.round(videoWidth /3)+"px";
     canvasElement.style.height = Math.round(videoHeight/3)+"px";
     canvasElement.willReadFrequently = true;
