@@ -7,15 +7,9 @@ const handleFileSelect = () => {
     var URL = URL || webkitURL;
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
-    // //!! いらない
-    // //console.log(document.getElementById('filename').innerHTML);
-    // document.getElementById('suzu_test1').innerHTML ='LL'+ document.getElementById('filename').innerHTML;
     // document.getElementById('filename').innerHTML = video.src;
-    // //検証テスト!!
-    // //console.log(document.getElementById('filename').innerHTML);
-    // //document.getElementById('suzu_test2').innerHTML = video.src;
-    // document.getElementById('suzu_test2').innerHTML = 'LL'+ document.getElementById('filename').innerHTML;
 }
+
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
 
@@ -59,7 +53,7 @@ function onReady() {
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         cap = new cv.VideoCapture(video);
-        setTimeout(processVideo, 0);
+        setInterval(processVideo, 0);
     }
 
     // 動画のポーズ時に発火する関数
@@ -77,34 +71,24 @@ function onReady() {
     // 再生されている動画から画像を切り出す関数
     function processVideo() {
         if (!streaming) {
-
-            src.delete();
-            diff_src.delete();
             return; // ストリーミング=falseなら終了
         }
         
         // 今videoで流れている画像をsrcにreadする処理
+        // アイデア:ここの処理をsrc1とsrc2に交互に読み込めばコピーが起こらない
         cap.read(src);
         
         // diffをとる
         cv.absdiff(pre_src, src, diff_src);
         cv.bitwise_not(diff_src, diff_src);
-
         cv.cvtColor(diff_src, diff_src, cv.COLOR_RGBA2GRAY, 0);
 
-        // ここでdiffから類似度を計算する
-        // todo
         let channels = diff_src.channels(); //要素の次元
-        let sum = 0;
         let count = 0;
         let Lcount = 0;
         for (let y = 0; y < diff_src.rows; y+=10) {
             for (let x = 0; x < diff_src.cols; x+=10) {
                 for (let c = 0; c < channels; ++c) {
-                    sum += diff_src.ucharPtr(y, x)[c];
-                    // if(Lcount%100==0){
-                    //     console.log(diff_src.ucharPtr(y, x)[c]);
-                    // }
                     if(diff_src.ucharPtr(y, x)[c] > 240){
                         count+=1;
                     }
@@ -112,34 +96,18 @@ function onReady() {
                 }
             }
         }
-        //console.log(`sum = ${sum}`);
         let similler = count/Lcount;
-        //console.log(`count = ${count}`);
-        console.log(`similler = ${similler}`);
-        //console.log(`Lcount = ${Lcount}`);
-
-        
-        if(similler < rate_similer && pre_img_is_similar){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
+        if(similler < rate_similer && pre_img_is_similar){
             console.log('e : '+pre_img_is_similar);
             canvas_id = addCanvas(index);
-            // cv.imshow(canvas_id, src);
             cv.imshow(canvas_id, pre_src);
             pre_img_is_similar = false;
-            console.log('s : '+pre_img_is_similar);
         }else if(similler >= rate_similer && !pre_img_is_similar){
-            console.log('e : '+pre_img_is_similar);
             pre_img_is_similar = true;
-            console.log('s : '+pre_img_is_similar);
         }
-
-        // debug用のキャンバス表示 なくても困らない
-        cv.imshow('canvasOutput', diff_src);
-        cv.imshow('canvasOutput2', pre_src);
-        cv.imshow('canvasOutput3', src);
         
         index++;
-        pre_src = src.clone();
-        setTimeout(processVideo, 0);
+        pre_src = src.clone(); // 30フレームx10秒くらいやると落ちる, 6フレームx50秒くらいまで耐えられる
     }
 }
 
