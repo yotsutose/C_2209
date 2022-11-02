@@ -13,12 +13,12 @@
 
         <h2>ファイル選択画面</h2>
         <input type="file" id="filename" accept="video/*">
-        <div style="width: 800px; height: 200px; overflow: auto;"> 
+        <div style="width: 800px; height: 100px; overflow: auto;"> 
             <!-- 828 x 1792 -->
             <video id="video" muted playsinline autoplay="false"></video>
         </div>
 
-        <details> <!-- トグルになってる部分 -->
+        <!-- <details>
             <summary>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</summary>
             <h2>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</h2>
             <div class="box">
@@ -28,10 +28,9 @@
                     <canvas id="canvasOutput3" width="320" height="640" style="width:320px; height:640px;"></canvas>
                 </div>
             </div>
-        </details>
+        </details> -->
 
         <h2>選択された画像の一覧画面</h2>
-        <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas(99)">
         <div class="box">
             <div class="canvases">
                 <!-- ここに選択された画像がappendされる -->
