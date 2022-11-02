@@ -54,7 +54,7 @@ function onReady() {
         videoRatio = videoHeight/videoWidth;
         video.height = videoHeight; // videoElementの大きさを決める(capのため)
         video.width = videoWidth;
-        video.playbackRate = 1.0;
+        video.playbackRate = 3.0;
         src      = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
@@ -118,11 +118,7 @@ function onReady() {
         console.log(`similler = ${similler}`);
         //console.log(`Lcount = ${Lcount}`);
 
-        // 選択されたフレームをキャンバスに追加
-        // if(index%60==0){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
-        //     canvas_id = addCanvas(index);
-        //     cv.imshow(canvas_id, src);
-        // }
+        
         if(similler < rate_similer && pre_img_is_similar){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
             console.log('e : '+pre_img_is_similar);
             canvas_id = addCanvas(index);
