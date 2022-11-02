@@ -40,6 +40,9 @@
 
         <h2>パワポの生成ボタン</h2>
         <input type="button" value="make PPTX" onclick="makePPTX()">
+
+        <h2>PDFの生成ボタン</h2>
+        <input type="button" value="make PDF" onclick="makePDF()">
     <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
@@ -50,6 +53,9 @@
         <!-- pptxgen.jsのコード本体を読み込む -->
         <script async src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
         <script async src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+
+        <!-- jsPDFのコード本体を読み込む -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
         <!-- 自作のJavaScriptのコードの読み込み-->
         <script src="./index.js"></script>
