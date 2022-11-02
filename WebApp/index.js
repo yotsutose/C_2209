@@ -29,7 +29,7 @@ function onReady() {
     let cap;
     let index = 0;
     let pre_img_is_similar = false;
-    let rate_similer = 0.92;
+    let rate_similer = 0.95;
     
     video.controls = true;
 
@@ -48,7 +48,7 @@ function onReady() {
         videoRatio = videoHeight/videoWidth;
         video.height = videoHeight; // videoElementの大きさを決める(capのため)
         video.width = videoWidth;
-        video.playbackRate = 3.0;
+        video.playbackRate = 5.0;
         src      = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
@@ -97,12 +97,13 @@ function onReady() {
             }
         }
         let similler = count/Lcount;
-        if(similler < rate_similer && pre_img_is_similar){
-            console.log('e : '+pre_img_is_similar);
-            canvas_id = addCanvas(index);
-            cv.imshow(canvas_id, pre_src);
+        if(similler < rate_similer && pre_img_is_similar){ // アニメーション始まり
+            // canvas_id = addCanvas(index);
+            // cv.imshow(canvas_id, pre_src);
             pre_img_is_similar = false;
-        }else if(similler >= rate_similer && !pre_img_is_similar){
+        }else if(similler >= rate_similer && !pre_img_is_similar){ // アニメーション終わり
+            canvas_id = addCanvas(index);
+            cv.imshow(canvas_id, src);
             pre_img_is_similar = true;
         }
         
