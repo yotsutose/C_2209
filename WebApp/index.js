@@ -7,14 +7,21 @@ const handleFileSelect = () => {
     var URL = URL || webkitURL;
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
-    document.getElementById('filename').innerHTML = video.src;
+    // //!! いらない
+    // //console.log(document.getElementById('filename').innerHTML);
+    // document.getElementById('suzu_test1').innerHTML ='LL'+ document.getElementById('filename').innerHTML;
+    // document.getElementById('filename').innerHTML = video.src;
+    // //検証テスト!!
+    // //console.log(document.getElementById('filename').innerHTML);
+    // //document.getElementById('suzu_test2').innerHTML = video.src;
+    // document.getElementById('suzu_test2').innerHTML = 'LL'+ document.getElementById('filename').innerHTML;
 }
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
 
 // opencv.jsの読み込みが終わってから動く関数
 function onCvLoaded() {
-    console.log('cv', cv);
+    console.log('cv', cv); //debug用
     cv.onRuntimeInitialized = onReady;
 }
 
@@ -27,6 +34,8 @@ function onReady() {
     let pre_src;
     let cap;
     let index = 0;
+    let pre_img_is_similar = false;
+    let rate_similer = 0.92;
     
     video.controls = true;
 
@@ -68,6 +77,7 @@ function onReady() {
     // 再生されている動画から画像を切り出す関数
     function processVideo() {
         if (!streaming) {
+
             src.delete();
             diff_src.delete();
             return; // ストリーミング=falseなら終了
@@ -80,13 +90,46 @@ function onReady() {
         cv.absdiff(pre_src, src, diff_src);
         cv.bitwise_not(diff_src, diff_src);
 
+        cv.cvtColor(diff_src, diff_src, cv.COLOR_RGBA2GRAY, 0);
+
         // ここでdiffから類似度を計算する
         // todo
+        let channels = diff_src.channels(); //要素の次元
+        let sum = 0;
+        let count = 0;
+        let Lcount = 0;
+        for (let y = 0; y < diff_src.rows; y+=10) {
+            for (let x = 0; x < diff_src.cols; x+=10) {
+                for (let c = 0; c < channels; ++c) {
+                    sum += diff_src.ucharPtr(y, x)[c];
+                    // if(Lcount%100==0){
+                    //     console.log(diff_src.ucharPtr(y, x)[c]);
+                    // }
+                    if(diff_src.ucharPtr(y, x)[c] > 240){
+                        count+=1;
+                    }
+                    Lcount+=1;
+                }
+            }
+        }
+        //console.log(`sum = ${sum}`);
+        let similler = count/Lcount;
+        //console.log(`count = ${count}`);
+        console.log(`similler = ${similler}`);
+        //console.log(`Lcount = ${Lcount}`);
 
-        // 選択されたフレームをキャンバスに追加
-        if(index%3==0){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
+        
+        if(similler < rate_similer && pre_img_is_similar){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
+            console.log('e : '+pre_img_is_similar);
             canvas_id = addCanvas(index);
-            cv.imshow(canvas_id, src);
+            // cv.imshow(canvas_id, src);
+            cv.imshow(canvas_id, pre_src);
+            pre_img_is_similar = false;
+            console.log('s : '+pre_img_is_similar);
+        }else if(similler >= rate_similer && !pre_img_is_similar){
+            console.log('e : '+pre_img_is_similar);
+            pre_img_is_similar = true;
+            console.log('s : '+pre_img_is_similar);
         }
 
         // debug用のキャンバス表示 なくても困らない
