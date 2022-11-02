@@ -2,8 +2,7 @@ const fileInput = document.getElementById('filename');
 const video = document.getElementById('video');
 let videoWidth, videoHeight, videoRatio;
 let stateOfFrame = [];
-let mode = 0; // 0:preview, 1:edit
-let index = 0;
+let prewviewMode = true;
 
 
 // FileInputのchangeイベントで呼び出す関数
@@ -17,18 +16,26 @@ const handleFileSelect = () => {
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
 
-// modeChange
+// 編集モードとプレビューモードの切り替え
 function modeChange() {
-    mode++;
-    for(var i = 0;i < index; i++){
-        if(mode%2==0){
-            if(stateOfFrame[i]%2==1) document.getElementById("allDiv" + (i)).hidden = true;
+    prewviewMode = !prewviewMode;
+    for(var i = 0;i < stateOfFrame.length; i++){
+        if(prewviewMode){ // プレビューに変わったので
+            if(stateOfFrame[i]) document.getElementById("allDiv" + (i)).hidden = true;
             else document.getElementById("allDiv" + (i)).hidden = false;
         }
-        else{
+        else{ // 編集モードに入ったので全てを表示
             document.getElementById("allDiv" + (i)).hidden = false;
         }
     }
+}
+
+// フレームの選択/非選択の切り替え
+function stateChange(i){
+    stateOfFrame[i] = !stateOfFrame[i];
+    const allDivi = document.getElementById("allDiv" + (i));
+    if(prewviewMode) allDivi.hidden = true;
+    allDivi.style.backgroundColor = !stateOfFrame[i]? '#00FF00': '#FF0000';
 }
 
 // opencv.jsの読み込みが終わってから動く関数
@@ -44,6 +51,7 @@ function onReady() {
     let src, diff_src, pre_src;
     let cap;
     let pre_img_is_similar = false;
+    let index = 0;
     const rate_similer = 0.95;
     
     video.controls = true;
@@ -56,6 +64,7 @@ function onReady() {
     // 動画の再生時に発火する関数
     // processvideoを最後に呼んでいる
     function start() {
+        if(!streaming) return;
         console.log('playing...');
         videoWidth  = video.videoWidth; // video本体の大きさ取得
         videoHeight = video.videoHeight;
@@ -84,9 +93,7 @@ function onReady() {
 
     // 再生されている動画から画像を切り出す関数
     function processVideo() {
-        if(!streaming){
-            return;
-        }
+        if(!streaming) return;
         
         // 今videoで流れている画像をsrcにreadする処理
         // アイデア:ここの処理をsrc1とsrc2に交互に読み込めばコピーが起こらない
@@ -114,13 +121,13 @@ function onReady() {
         if(similler < rate_similer && pre_img_is_similar){ // アニメーション始まり
             canvas_id = addCanvas(index, true);
             cv.imshow(canvas_id, pre_src);
-            stateOfFrame.push(1);
+            stateOfFrame.push(false);
             index++;
             pre_img_is_similar = false;
         }else if(similler >= rate_similer && !pre_img_is_similar){ // アニメーション終わり
             canvas_id = addCanvas(index, false);
             cv.imshow(canvas_id, src);
-            stateOfFrame.push(0);
+            stateOfFrame.push(true);
             index++;
             pre_img_is_similar = true;
         }
@@ -131,7 +138,7 @@ function onReady() {
 }
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas(index, isHidden) {
+function addCanvas(i, isSelected) {
     // <div>
     //   <div><button></button></div>
     //   <canvas></canvas>
@@ -141,17 +148,18 @@ function addCanvas(index, isHidden) {
 
     // 一番外側のdiv要素
     let allDivElement = document.createElement('div');
-    allDivElement.id = "allDiv" + (index);
-    allDivElement.hidden = isHidden;
+    allDivElement.id = "allDiv" + (i);
+    allDivElement.hidden = !isSelected; // 選択状態なら隠さない
+    allDivElement.style.backgroundColor = isSelected? '#00FF00': '#FF0000';
     // ボタンのためのdiv
     let buttonDivElement = document.createElement('div');
     // ボタン
     let buttonElement = document.createElement('button');
-    buttonElement.textContent = "button"
-    buttonElement.onclick = () => stateOfFrame[index]++;
+    buttonElement.textContent = "選択/非選択"
+    buttonElement.onclick = () => stateChange(i);
     // キャンバス
     let canvasElement = document.createElement('canvas');
-    canvasElement.id = "canvas" + (index);
+    canvasElement.id = "canvas" + (i);
     canvasElement.style.width  = Math.round(videoWidth /3)+"px";
     canvasElement.style.height = Math.round(videoHeight/3)+"px";
     canvasElement.willReadFrequently = true;
