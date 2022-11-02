@@ -31,6 +31,7 @@
         </details> -->
 
         <h2>選択された画像の一覧画面</h2>
+        <input type="button" value="mode Change" onclick="modeChange()">
         <div class="box">
             <div class="canvases">
                 <!-- ここに選択された画像がappendされる -->
@@ -45,6 +46,9 @@
     <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
+        <!-- 自作のJavaScriptのコードの読み込み-->
+        <script src="./index.js"></script>
+
         <!-- opencv.jsのコード本体を読み込む -->
         <!-- <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script> -->
         <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
@@ -54,10 +58,8 @@
         <script async src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
 
         <!-- jsPDFのコード本体を読み込む -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
-        <!-- 自作のJavaScriptのコードの読み込み-->
-        <script src="./index.js"></script>
     <!-- ここまでJavaScript -->
 </body>
 

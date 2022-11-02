@@ -1,6 +1,10 @@
 const fileInput = document.getElementById('filename');
 const video = document.getElementById('video');
 let videoWidth, videoHeight, videoRatio;
+let stateOfFrame = [];
+let mode = 0; // 0:preview, 1:edit
+let index = 0;
+
 
 // FileInputのchangeイベントで呼び出す関数
 const handleFileSelect = () => {
@@ -13,6 +17,20 @@ const handleFileSelect = () => {
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
 
+// modeChange
+function modeChange() {
+    mode++;
+    for(var i = 0;i < index; i++){
+        if(mode%2==0){
+            if(stateOfFrame[i]%2==1) document.getElementById("allDiv" + (i)).hidden = true;
+            else document.getElementById("allDiv" + (i)).hidden = false;
+        }
+        else{
+            document.getElementById("allDiv" + (i)).hidden = false;
+        }
+    }
+}
+
 // opencv.jsの読み込みが終わってから動く関数
 function onCvLoaded() {
     console.log('cv', cv); //debug用
@@ -20,12 +38,11 @@ function onCvLoaded() {
 }
 
 // videoの再生時に処理を行う関数達
-let streaming = false;
+let streaming = true;
 function onReady() {
     console.log('ready');
     let src, diff_src, pre_src;
     let cap;
-    let index = 0;
     let pre_img_is_similar = false;
     const rate_similer = 0.95;
     
@@ -40,7 +57,6 @@ function onReady() {
     // processvideoを最後に呼んでいる
     function start() {
         console.log('playing...');
-        streaming = true;
         videoWidth  = video.videoWidth; // video本体の大きさ取得
         videoHeight = video.videoHeight;
         videoRatio = videoHeight/videoWidth;
@@ -51,7 +67,7 @@ function onReady() {
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         cap = new cv.VideoCapture(video);
-        setInterval(processVideo, 0);
+        setTimeout(processVideo, 0);
     }
 
     // 動画のポーズ時に発火する関数
@@ -68,8 +84,8 @@ function onReady() {
 
     // 再生されている動画から画像を切り出す関数
     function processVideo() {
-        if (!streaming) {
-            return; // ストリーミング=falseなら終了
+        if(!streaming){
+            return;
         }
         
         // 今videoで流れている画像をsrcにreadする処理
@@ -96,23 +112,26 @@ function onReady() {
         }
         let similler = count/Lcount;
         if(similler < rate_similer && pre_img_is_similar){ // アニメーション始まり
-            // canvas_id = addCanvas(index);
-            // cv.imshow(canvas_id, pre_src);
+            canvas_id = addCanvas(index, true);
+            cv.imshow(canvas_id, pre_src);
+            stateOfFrame.push(1);
+            index++;
             pre_img_is_similar = false;
-            index++;
         }else if(similler >= rate_similer && !pre_img_is_similar){ // アニメーション終わり
-            canvas_id = addCanvas(index);
+            canvas_id = addCanvas(index, false);
             cv.imshow(canvas_id, src);
-            pre_img_is_similar = true;
+            stateOfFrame.push(0);
             index++;
+            pre_img_is_similar = true;
         }
         
         pre_src = src.clone(); // 30フレームx10秒くらいやると落ちる, 6フレームx50秒くらいまで耐えられる
+        setTimeout(processVideo, 0);
     }
 }
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas(index) {
+function addCanvas(index, isHidden) {
     // <div>
     //   <div><button></button></div>
     //   <canvas></canvas>
@@ -121,13 +140,15 @@ function addCanvas(index) {
     let parentnode = document.getElementsByClassName('canvases');
 
     // 一番外側のdiv要素
-    let divElement = document.createElement('div');
+    let allDivElement = document.createElement('div');
+    allDivElement.id = "allDiv" + (index);
+    allDivElement.hidden = isHidden;
     // ボタンのためのdiv
     let buttonDivElement = document.createElement('div');
     // ボタン
     let buttonElement = document.createElement('button');
     buttonElement.textContent = "button"
-    buttonElement.onclick = () => console.log(index);
+    buttonElement.onclick = () => stateOfFrame[index]++;
     // キャンバス
     let canvasElement = document.createElement('canvas');
     canvasElement.id = "canvas" + (index);
@@ -136,9 +157,9 @@ function addCanvas(index) {
     canvasElement.willReadFrequently = true;
 
     buttonDivElement.appendChild(buttonElement);
-    divElement.appendChild(buttonDivElement);
-    divElement.appendChild(canvasElement);
-    parentnode[0].appendChild(divElement);
+    allDivElement.appendChild(buttonDivElement);
+    allDivElement.appendChild(canvasElement);
+    parentnode[0].appendChild(allDivElement);
 
     return canvasElement.id;
 }
