@@ -21,8 +21,8 @@ function modeChange() {
     prewviewMode = !prewviewMode;
     for(var i = 0;i < stateOfFrame.length; i++){
         if(prewviewMode){ // プレビューに変わったので
-            if(stateOfFrame[i]) document.getElementById("allDiv" + (i)).hidden = true;
-            else document.getElementById("allDiv" + (i)).hidden = false;
+            if(stateOfFrame[i]) document.getElementById("allDiv" + (i)).hidden = false;
+            else document.getElementById("allDiv" + (i)).hidden = true;
         }
         else{ // 編集モードに入ったので全てを表示
             document.getElementById("allDiv" + (i)).hidden = false;
@@ -35,7 +35,7 @@ function stateChange(i){
     stateOfFrame[i] = !stateOfFrame[i];
     const allDivi = document.getElementById("allDiv" + (i));
     if(prewviewMode) allDivi.hidden = true;
-    allDivi.style.backgroundColor = !stateOfFrame[i]? '#00FF00': '#FF0000';
+    allDivi.style.backgroundColor = stateOfFrame[i]? '#00FF00': '#FF0000';
 }
 
 // opencv.jsの読み込みが終わってから動く関数
@@ -121,13 +121,13 @@ function onReady() {
         if(similler < rate_similer && pre_img_is_similar){ // アニメーション始まり
             canvas_id = addCanvas(index, true);
             cv.imshow(canvas_id, pre_src);
-            stateOfFrame.push(false);
+            stateOfFrame.push(true);
             index++;
             pre_img_is_similar = false;
         }else if(similler >= rate_similer && !pre_img_is_similar){ // アニメーション終わり
             canvas_id = addCanvas(index, false);
             cv.imshow(canvas_id, src);
-            stateOfFrame.push(true);
+            stateOfFrame.push(false);
             index++;
             pre_img_is_similar = true;
         }
