@@ -80,6 +80,7 @@ function onReady() {
 
             src.delete();
             diff_src.delete();
+            pre_src.delete();
             return; // ストリーミング=falseなら終了
         }
         
@@ -102,9 +103,6 @@ function onReady() {
             for (let x = 0; x < diff_src.cols; x+=10) {
                 for (let c = 0; c < channels; ++c) {
                     sum += diff_src.ucharPtr(y, x)[c];
-                    // if(Lcount%100==0){
-                    //     console.log(diff_src.ucharPtr(y, x)[c]);
-                    // }
                     if(diff_src.ucharPtr(y, x)[c] > 240){
                         count+=1;
                     }
@@ -117,7 +115,6 @@ function onReady() {
         //console.log(`count = ${count}`);
         console.log(`similler = ${similler}`);
         //console.log(`Lcount = ${Lcount}`);
-
         
         if(similler < rate_similer && pre_img_is_similar){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
             console.log('e : '+pre_img_is_similar);
@@ -140,6 +137,9 @@ function onReady() {
         index++;
         pre_src = src.clone();
         setTimeout(processVideo, 0);
+        // setTimeout(function () {
+        //     processVideo();
+        // }, 0);
     }
 }
 
