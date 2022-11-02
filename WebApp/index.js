@@ -45,7 +45,7 @@ function onReady() {
         videoRatio = videoHeight/videoWidth;
         video.height = videoHeight; // videoElementの大きさを決める(capのため)
         video.width = videoWidth;
-        video.playbackRate = 1.0;
+        video.playbackRate = 3.0;
         src      = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
