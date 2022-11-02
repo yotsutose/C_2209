@@ -114,22 +114,32 @@ function onReady() {
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
 function addCanvas(index) {
+    // <div>
+    //   <div><button></button></div>
+    //   <canvas></canvas>
+    // <div>
 
     let parentnode = document.getElementsByClassName('canvases');
 
+    // 一番外側のdiv要素
     let divElement = document.createElement('div');
-    parentnode[0].appendChild(divElement);
-    
+    // ボタンのためのdiv
+    let buttonDivElement = document.createElement('div');
+    // ボタン
+    let buttonElement = document.createElement('button');
+    buttonElement.textContent = "button"
+    buttonElement.onclick = () => console.log(index);
+    // キャンバス
     let canvasElement = document.createElement('canvas');
     canvasElement.id = "canvas" + (index/60);
     canvasElement.style.width  = Math.round(videoWidth /3)+"px";
     canvasElement.style.height = Math.round(videoHeight/3)+"px";
     canvasElement.willReadFrequently = true;
 
-    let buttonElement = document.createElement('p');
-    buttonElement.value = "button"
-    divElement.appendChild(buttonElement);
+    buttonDivElement.appendChild(buttonElement);
+    divElement.appendChild(buttonDivElement);
     divElement.appendChild(canvasElement);
+    parentnode[0].appendChild(divElement);
 
     return canvasElement.id;
 }
