@@ -7,19 +7,21 @@ const handleFileSelect = () => {
     var URL = URL || webkitURL;
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
-    //!!
-    console.log(document.getElementById('filename').innerHTML);
-    document.getElementById('filename').innerHTML = video.src;
-    //検証テスト!!
-    console.log(document.getElementById('filename').innerHTML);
-    //document.getElementById('suzu_test1').innerHTML = video.src;
+    // //!! いらない
+    // //console.log(document.getElementById('filename').innerHTML);
+    // document.getElementById('suzu_test1').innerHTML ='LL'+ document.getElementById('filename').innerHTML;
+    // document.getElementById('filename').innerHTML = video.src;
+    // //検証テスト!!
+    // //console.log(document.getElementById('filename').innerHTML);
+    // //document.getElementById('suzu_test2').innerHTML = video.src;
+    // document.getElementById('suzu_test2').innerHTML = 'LL'+ document.getElementById('filename').innerHTML;
 }
 // ファイル選択時にhandleFileSelectを発火
 fileInput.addEventListener('change', handleFileSelect);
 
 // opencv.jsの読み込みが終わってから動く関数
 function onCvLoaded() {
-    console.log('cv', cv);
+    console.log('cv', cv); //debug用
     cv.onRuntimeInitialized = onReady;
 }
 
