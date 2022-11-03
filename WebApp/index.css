@@ -2,8 +2,12 @@ body {
 	background-color:#FCFFEE;		/*ページ全体の背景色*/
 }
 
-.box {
-  height: 550px;               /* canvasの表示する高さを指定 */
+.pagenation {
+  height: 100vh;
+}
+
+.box-canvases {
+  height: 500px;               /* canvasの表示する高さを指定 */
   border: 1px solid #000;      /* わかりやすくボーダーを引く */
   overflow-x: scroll;          /* 横方向にスクロール可能にする */
 }

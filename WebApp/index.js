@@ -11,6 +11,7 @@ const handleFileSelect = () => {
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
     // document.getElementById('filename').innerHTML = video.src;
+    $.scrollify.next();
 }
 
 // ファイル選択時にhandleFileSelectを発火
@@ -71,7 +72,7 @@ function onReady() {
         videoRatio = videoHeight/videoWidth;
         video.height = videoHeight; // videoElementの大きさを決める(capのため)
         video.width = videoWidth;
-        video.playbackRate = 5.0;
+        video.playbackRate = 4.0;
         src      = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         diff_src = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
         pre_src  = new cv.Mat(videoHeight, videoWidth, cv.CV_8UC4);
@@ -160,8 +161,8 @@ function addCanvas(i, isSelected) {
     // キャンバス
     let canvasElement = document.createElement('canvas');
     canvasElement.id = "canvas" + (i);
-    canvasElement.style.width  = Math.round(videoWidth /3.5)+"px";
-    canvasElement.style.height = Math.round(videoHeight/3.5)+"px";
+    canvasElement.style.width  = Math.round(videoWidth /4)+"px";
+    canvasElement.style.height = Math.round(videoHeight/4)+"px";
     canvasElement.willReadFrequently = true;
 
     buttonDivElement.appendChild(buttonElement);

@@ -12,37 +12,41 @@
 
 <body>
     <!-- ここからHTML-->
-        <h2>ファイル選択画面</h2>
-        <input type="file" id="filename" accept="video/*">
-        <div style="width: 1px; height: 1px; overflow: auto;"> 
-            <video id="video" muted playsinline autoplay="true"></video> <!-- 828 x 1792 -->
+        <div class="pagenation">
+            <h2>ファイル選択画面</h2>
+            <input type="file" id="filename" accept="video/*">
+            <!-- <details>
+                <summary>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</summary>
+                <h2>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</h2>
+                <div class="box-canvases">
+                    <div class="canvasOutput">
+                        <canvas id="canvasOutput"  width="320" height="640" style="width:320px; height:640px;"></canvas>
+                        <canvas id="canvasOutput2" width="320" height="640" style="width:320px; height:640px;"></canvas>
+                        <canvas id="canvasOutput3" width="320" height="640" style="width:320px; height:640px;"></canvas>
+                    </div>
+                </div>
+            </details> -->
         </div>
 
-        <!-- <details>
-            <summary>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</summary>
-            <h2>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</h2>
-            <div class="box">
-                <div class="canvasOutput">
-                    <canvas id="canvasOutput"  width="320" height="640" style="width:320px; height:640px;"></canvas>
-                    <canvas id="canvasOutput2" width="320" height="640" style="width:320px; height:640px;"></canvas>
-                    <canvas id="canvasOutput3" width="320" height="640" style="width:320px; height:640px;"></canvas>
+        <div class="pagenation">
+            <h2>選択された画像の一覧画面(プレビューとedit)</h2>
+            <div style="width: 1px; height: 1px; overflow: auto;"> 
+                <video id="video" muted playsinline autoplay="true"></video> <!-- 828 x 1792 -->
+            </div>
+            <input type="button" value="プレビュー/編集" onclick="modeChange()">
+            <div class="box-canvases">
+                <div class="canvases">
+                    <!-- ここに選択された画像がappendされる -->
                 </div>
             </div>
-        </details> -->
-
-        <h2>選択された画像の一覧画面(プレビューとedit)</h2>
-        <input type="button" value="プレビュー/編集" onclick="modeChange()">
-        <div class="box">
-            <div class="canvases">
-                <!-- ここに選択された画像がappendされる -->
-            </div>
         </div>
 
-        <h2>パワポの生成ボタン</h2>
-        <input type="button" value="make PPTX" onclick="makePPTX()">
-        <h2>PDFの生成ボタン</h2>
-        <input type="button" value="make PDF" onclick="makePDF()">
-    
+        <div class="pagenation">
+            <h2>パワポの生成ボタン</h2>
+            <input type="button" value="make PPTX" onclick="makePPTX()">
+            <h2>PDFの生成ボタン</h2>
+            <input type="button" value="make PDF" onclick="makePDF()">
+        </div>
     <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
@@ -59,6 +63,34 @@
 
         <!-- jsPDFのコード本体を読み込む -->
         <script async src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <!-- JQueryとScrollifyのコード本体を読み込む -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollify/1.0.21/jquery.scrollify.min.js" integrity="sha512-UyX8JsMsNRW1cYl8BoxpcamonpwU2y7mSTsN0Z52plp7oKo1u92Xqfpv6lOlTyH3yiMXK+gU1jw0DVCsPTfKew==" crossorigin="anonymous"></script>
+
+        <!-- scrollifyの設定コード(jsコードと分離するためここに記述) -->
+        <script>
+            $(function() {
+                $.scrollify({
+                    section : ".pagenation",
+                    sectionName : "section-name",
+                    interstitialSection : "",
+                    easing: "easeOutExpo",
+                    scrollSpeed: 300,
+                    offset : 0,
+                    scrollbars: false,
+                    standardScrollElements: ".box-canvases",
+                    setHeights: true,
+                    overflowScroll: false,
+                    updateHash: true,
+                    touchScroll: false,
+                    before:function() {},
+                    after:function() {},
+                    afterResize:function() {},
+                    afterRender:function() {}
+                });
+            });
+        </script>
 
     <!-- ここまでJavaScript -->
 </body>
