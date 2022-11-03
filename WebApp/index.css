@@ -3,7 +3,7 @@ body {
 }
 
 .box {
-  height: 650px;               /* 横幅を200pxに指定 */
+  height: 550px;               /* canvasの表示する高さを指定 */
   border: 1px solid #000;      /* わかりやすくボーダーを引く */
   overflow-x: scroll;          /* 横方向にスクロール可能にする */
 }

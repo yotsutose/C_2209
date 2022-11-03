@@ -160,8 +160,8 @@ function addCanvas(i, isSelected) {
     // キャンバス
     let canvasElement = document.createElement('canvas');
     canvasElement.id = "canvas" + (i);
-    canvasElement.style.width  = Math.round(videoWidth /3)+"px";
-    canvasElement.style.height = Math.round(videoHeight/3)+"px";
+    canvasElement.style.width  = Math.round(videoWidth /3.5)+"px";
+    canvasElement.style.height = Math.round(videoHeight/3.5)+"px";
     canvasElement.willReadFrequently = true;
 
     buttonDivElement.appendChild(buttonElement);
