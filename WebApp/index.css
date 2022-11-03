@@ -1,11 +1,10 @@
 body {
 	background-color:#FCFFEE;		/*ページ全体の背景色*/
-  margin: auto;
-  width: 960px;
+  width: 490px;
 }
 
 .box {
-  width: 1000px;                /* 横幅を200pxに指定 */
+  width: 300px;                /* 横幅を200pxに指定 */
   height: 650px;               /* 横幅を200pxに指定 */
   border: 1px solid #000;      /* わかりやすくボーダーを引く */
   overflow-x: scroll;          /* 横方向にスクロール可能にする */
