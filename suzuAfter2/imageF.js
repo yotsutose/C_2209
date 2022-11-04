@@ -7,7 +7,7 @@ var c = canvasL.getContext('2d');
 
 // Image オブジェクトを生成
 var img = new Image();
-var img_S = new Image();
+// var img_S = new Image();
 img.src = 'image/backWhite.png'; //解像度72
 //img.src = 'image/a4_white.png'; //解像度300
 let images = [];
@@ -23,12 +23,14 @@ let srcs = [
 //押すスタンプのid
 let stamp_id_S = "stamp1";
 
+let loadcount = 0;
 //スタンプ画像の読み込み
 for(let i=0; i<srcs.length;i++){
     images[i] = new Image();
     images[i].src = srcs[i];
 
     images[i].onload = function(){
+        loadcount +=1;
 
         console.log('dddd');
         let stamp_id = addCanvas(i+1);
@@ -69,6 +71,38 @@ for(let i=0; i<srcs.length;i++){
     
             console.log( canvasX,canvasY );
         });
+
+        if(loadcount == srcs.length){
+            console.log('sort');
+            mySort();
+        }
+    }
+
+}
+
+function mySort() {
+    // (1) ノードリストを取得
+    var myUL = document.getElementsByClassName("stamps");
+    var myNodeList = myUL[0].getElementsByTagName("canvas");
+
+    // (2) 配列を得る
+    var myArray = Array.prototype.slice.call(myNodeList);
+    // (3) 配列をソート
+    function compareText (a,b) {
+        if ( a.id > b.id)
+            return 1;
+        else if (a.id < b.id)
+            return -1;
+        return 0;
+    }
+    myArray.sort(compareText);
+    // (4) 新しい順番を DOM ツリーに反映
+    //とりあえず一度全消ししてから、追加しとく
+    while(myUL[0].firstChild){
+        myUL[0].removeChild(myUL[0].firstChild);
+    }
+    for (var i=0; i<myArray.length; i++) {
+        myUL[0].appendChild(myArray[i]);
     }
 }
 
@@ -93,20 +127,20 @@ img.onload = function(){
     c.drawImage(img, 0, 0, w, h);
 }
 
-img_S.onload = function(){
-    let ws = img_S.width;
-    let hs = img_S.height;
-    console.log('ws'+ws);
-    console.log('hs'+hs);
+// img_S.onload = function(){
+//     let ws = img_S.width;
+//     let hs = img_S.height;
+//     console.log('ws'+ws);
+//     console.log('hs'+hs);
 
-    canStamp.width = ws/2;
-    canStamp.height = hs/2;
-    img_S.width /= 2;
-    img_S.height /= 2;
-    console.log('w__'+img_S.width);
-    console.log('h__'+hs);
-    cS.drawImage(img_S, 0, 0, ws/2, hs/2);
-}
+//     canStamp.width = ws/2;
+//     canStamp.height = hs/2;
+//     img_S.width /= 2;
+//     img_S.height /= 2;
+//     console.log('w__'+img_S.width);
+//     console.log('h__'+hs);
+//     cS.drawImage(img_S, 0, 0, ws/2, hs/2);
+// }
 
 canvasL.addEventListener("click", point=>{
     const rect = point.target.getBoundingClientRect();
@@ -132,23 +166,23 @@ canvasL.addEventListener("click", point=>{
 });
 
 
-canStamp.addEventListener("click", point=>{
-    const rect = point.target.getBoundingClientRect();
+// canStamp.addEventListener("click", point=>{
+//     const rect = point.target.getBoundingClientRect();
 
-    // ブラウザ上での座標を求める
-    const   viewX = point.clientX - rect.left,
-            viewY = point.clientY - rect.top;
+//     // ブラウザ上での座標を求める
+//     const   viewX = point.clientX - rect.left,
+//             viewY = point.clientY - rect.top;
 
-    // 表示サイズとキャンバスの実サイズの比率を求める
-    const   scaleWidth =  canvasL.clientWidth / canvasL.width,
-            scaleHeight =  canvasL.clientHeight / canvasL.height;
+//     // 表示サイズとキャンバスの実サイズの比率を求める
+//     const   scaleWidth =  canvasL.clientWidth / canvasL.width,
+//             scaleHeight =  canvasL.clientHeight / canvasL.height;
 
-    // ブラウザ上でのクリック座標をキャンバス上に変換
-    const   canvasX = Math.floor( viewX / scaleWidth ),
-            canvasY = Math.floor( viewY / scaleHeight );
+//     // ブラウザ上でのクリック座標をキャンバス上に変換
+//     const   canvasX = Math.floor( viewX / scaleWidth ),
+//             canvasY = Math.floor( viewY / scaleHeight );
 
-    console.log( canvasX,canvasY );
-});
+//     console.log( canvasX,canvasY );
+// });
 
 async function concatCanvas(base, asset, cX, cY){
     const canvas = document.querySelector(base); //ここは変えない方が良い
