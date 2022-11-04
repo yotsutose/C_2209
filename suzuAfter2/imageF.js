@@ -10,9 +10,50 @@ var img = new Image();
 var img_S = new Image();
 img.src = 'image/backWhite.png'; //解像度72
 //img.src = 'image/a4_white.png'; //解像度300
+let images = [];
+let srcs = [
+    'image/stm/redT1.png',
+    'image/stm/redT2.png',
+    'image/stm/redT3.png',
+    'image/stm/redT4.png',
+    'image/stm/redT5.png',
+    'image/stm/redT6.png',
+];
+
+let loadcount = 0;
+for(let i=0; i<srcs.length;i++){
+    images[i] = new Image();
+    images[i].src = srcs[i];
+
+    images[i].onload = function(){
+        loadcount+=1;
+
+        console.log('dddd');
+        let stamp_id = addCanvas(i);
+        console.log(stamp_id);
+        let stamp_C = document.getElementById(stamp_id);
+        let ctS = stamp_C.getContext('2d');
+
+        let ws = img_S.width;
+        let hs = img_S.height;
+        console.log('ws'+ws);
+        console.log('hs'+hs);
+
+        stamp_C.width = ws/2;
+        stamp_C.height = hs/2;
+        images[i].width /= 2;
+        images[i].height /= 2;
+        console.log('w__'+images[i].width);
+        console.log('h__'+hs);
+        ctS.drawImage(images[i], 0, 0, ws/2, hs/2);
+    }
+}
+
 img_S.src = 'image/redT.png';
 let w =0;
 let h = 0;
+let stamp_siv_width = 200;
+let stamp_siv_height = 150;
 
 //スタンプの指先の座標
 let asset_w = 113;
@@ -85,45 +126,6 @@ canStamp.addEventListener("click", point=>{
     console.log( canvasX,canvasY );
 });
 
-// async function concatCanvas(base, asset, cX, cY){
-//     let baseC = document.querySelector(base);
-//     let ctx = baseC.getContext("2d");
-//     let base_data = ctx.getImageData(0, 0, baseC.width, baseC.height);
-
-//     const assetC = document.querySelector(asset);
-//     const ctxAS = assetC.getContext("2d");
-//     let asset_data = ctxAS.getImageData(0, 0, assetC.width, assetC.height);
-
-//     let k=0;
-//     let l =0;
-//     for (var y = cY;y < base_data.height;y++) {
-//         for (var x = cX;x < base_data.width;x++) {
-
-//             var index = (x + y * base_data.width) * 4;
-//             var index_asset = (k + l * base_data.width) * 4;
-
-//             base_data.data[index] = asset_data.data[index_asset];
-//             base_data.data[index+1] = asset_data.data[index_asset];
-//             base_data.data[index + 2] =asset_data.data[index_asset];
-
-//             l +=1;
-//         }
-//         k +=1;
-//     }
-// }
-
-
-// async function concatCanvas(base, asset, cX, cY){
-//     const canvas = document.querySelector(base); //ここは変えない方が良い
-//     const ctx = canvas.getContext("2d");
-
-//     for(let i=0; i<asset.length; i++){
-//         //const image1 = await getImagefromCanvas(asset[i]);
-//         ctx.drawImage(img_S, cX, cY, canvas.width, canvas.height);
-//     }
-    
-// }
-
 async function concatCanvas(base, asset, cX, cY){
     const canvas = document.querySelector(base); //ここは変えない方が良い
     const ctx = canvas.getContext("2d");
@@ -141,4 +143,31 @@ function getImagefromCanvas(id){
         image.onerror = (e) => reject(e);
         image.src = ctx.canvas.toDataURL();
     });
+}
+
+function reset(){
+    console.log('reset');
+    c.drawImage(img, 0, 0, w, h); //リセット
+}
+
+
+// 「選択された画像の一覧画面」のところに<canvas>を追加する処理
+function addCanvas(index) {
+
+    let parentnode = document.getElementsByClassName('stamps');
+
+    let divElement = document.createElement('div');
+    parentnode[0].appendChild(divElement);
+    
+    let canvasElement = document.createElement('canvas');
+    canvasElement.id = "stamp" + (index);
+    canvasElement.style.width  = stamp_siv_width+"px";
+    canvasElement.style.height = stamp_siv_height+"px";
+    canvasElement.style.border = "1px solid";
+    //canvasElement.style.float = "left";
+    canvasElement.willReadFrequently = true;
+
+    divElement.appendChild(canvasElement);
+
+    return canvasElement.id;
 }

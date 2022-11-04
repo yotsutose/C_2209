@@ -1,3 +1,7 @@
 body{
     background-color: rgb(123, 127, 107);
 }
+
+.stamps{
+    display: flex;
+}
