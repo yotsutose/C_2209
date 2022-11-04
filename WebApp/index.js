@@ -109,7 +109,7 @@ function addCanvas(index) {
     parentnode[0].appendChild(divElement);
     
     let canvasElement = document.createElement('canvas');
-    canvasElement.id = "canvas" + (index/60);
+    canvasElement.id = "canvas" + (index/3);
     canvasElement.style.width  = Math.round(videoWidth /3)+"px";
     canvasElement.style.height = Math.round(videoHeight/3)+"px";
     canvasElement.willReadFrequently = true;
@@ -124,6 +124,9 @@ function addCanvas(index) {
 
 // パワーポイントを作る関数
 function makePPTX() {
+    function Cm(n) {
+    return n * 0.3937;
+}
     // 1. パワポの作成、設定
     let pptx = new PptxGenJS();
     pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
@@ -134,20 +137,73 @@ function makePPTX() {
 
     // 3. こんな感じでスライドにオブジェクトを追加できる
     slide.addText("Hello World from PptxGenJS...", {
-        x: 1.5,
-        y: 1.5,
+        x: Cm(1.5),
+        y: Cm(1.5),
         color: "363636",
         fill: { color: "F1F1F1" },
         align: pptx.AlignH.center,
     });
+    let x = Cm(2.5);
+    let y = Cm(7.2);
+    let width = Cm(4.39);
+    let height = Cm(9.5);
 
-    // canvasに書かれたデータを読み取るコード
-    cvs = document.getElementById('canvasOutput2');
-    ctx = cvs.getContext('2d');
-    imagedata = cvs.toDataURL("image/jpeg");
-    // 3, 画像データをパワポに追加するメソッドを使う
-    slide.addImage({ data: imagedata, w: 2, h: 4, x: 2, y: 1 });
+    for(let i = 0; i<5; i++){
+         // canvasに書かれたデータを読み取るコード
+        cvs = document.getElementById(`canvas${i}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        if (i % 8 === 0){
+            slide = pptx.addSlide();
+            y = Cm(0.5);
+        }
+        slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
+        x += Cm(7);
 
+        if (i % 4 == 3){
+            x = Cm(2.5);
+            y += Cm(10);
+        }
+    }
+    //画像を２枚ずつパワポに出力
+    height = Cm(16);
+    width = Cm(7.39);
+
+    //連番で2枚ずつのスライドを作る疑似コード
+    let pre_path = null;
+    let path = null;
+    y = Cm(2.5);
+    for(let i =0;i<5;i++){
+        // canvasに書かれたデータを読み取るコード
+        cvs = document.getElementById(`canvas${i}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        path = imagedata;
+        if (i==0) {
+            pre_path = path
+            continue
+        }
+        //スライドを増やす
+        slide = pptx.addSlide(); 
+        //pre_pathの画像を←に配置
+        x = ( Cm(11.7)/2/0.3937 - width ) / 2
+        slide.addImage({ data: pre_path, w: width, h: height, x: x, y: y });
+        //put_text(pic_left-Cm(1.5), pic_top, str(i), 36)
+        pre_path = path
+        //pathの画像を→に配置
+        x += ((Cm(11.7)/0.3937)/2)
+        slide.addImage({ data: path, w: width, h: height, x: x, y: y });
+        //矢印を追加
+        // ratio = 0.45
+        // pic_left2 = slide_width/2 - pic_width*ratio/2
+        // pic_top2 = slide_height/2 - pic_width*ratio/2
+        // put_arrow(pic_left2, pic_top2, pic_width*ratio)
+        //手の写真を追加
+        // put_sign(SIGN_DIR, sign_names)
+        // #テキストを追加
+        // put_text(pic_left-Cm(1.5), pic_top, str(i+1), 36)
+        // pre_path = path
+    }
     // 4. パワポを保存する
     pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
 }
