@@ -20,6 +20,8 @@ function onCvLoaded() {
 
 // videoの再生時に処理を行う関数達
 let streaming = false;
+let imageNum = 0;
+
 function onReady() {
     console.log('ready');
     let src;
@@ -87,6 +89,7 @@ function onReady() {
         if(index%3==0){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
             canvas_id = addCanvas(index);
             cv.imshow(canvas_id, src);
+            imageNum++;
         }
 
         // debug用のキャンバス表示 なくても困らない
@@ -127,6 +130,9 @@ function makePPTX() {
     function Cm(n) {
     return n * 0.3937;
 }
+    function Pt(n) {
+        return n / 72;
+    }
     // 1. パワポの作成、設定
     let pptx = new PptxGenJS();
     pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
@@ -136,28 +142,32 @@ function makePPTX() {
     let slide = pptx.addSlide();
 
     // 3. こんな感じでスライドにオブジェクトを追加できる
-    slide.addText("Hello World from PptxGenJS...", {
-        x: Cm(1.5),
-        y: Cm(1.5),
-        color: "363636",
-        fill: { color: "F1F1F1" },
-        align: pptx.AlignH.center,
-    });
     let x = Cm(2.5);
-    let y = Cm(7.2);
+    let y = Cm(0.5);
     let width = Cm(4.39);
     let height = Cm(9.5);
-
-    for(let i = 0; i<5; i++){
+    let size = 28;
+    for(let i = 0; i < imageNum; i++) {
          // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
-        if (i % 8 === 0){
+        if (i % 8 === 0 && i !== 0){
             slide = pptx.addSlide();
             y = Cm(0.5);
         }
+        //画像追加
         slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
+        //テキスト追加
+        slide.addText(String(i+1), 
+        {x: x-Cm(1),
+        y: y,
+        w: Pt(size),
+        h: Pt(size),
+        color: "363636",
+        fontSize: size,
+        align: pptx.AlignH.center
+    });
         x += Cm(7);
 
         if (i % 4 == 3){
@@ -172,8 +182,9 @@ function makePPTX() {
     //連番で2枚ずつのスライドを作る疑似コード
     let pre_path = null;
     let path = null;
+    size = 36;
     y = Cm(2.5);
-    for(let i =0;i<5;i++){
+    for(let i =0;i<imageNum;i++){
         // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
@@ -189,6 +200,15 @@ function makePPTX() {
         x = ( Cm(11.7)/2/0.3937 - width ) / 2
         slide.addImage({ data: pre_path, w: width, h: height, x: x, y: y });
         //put_text(pic_left-Cm(1.5), pic_top, str(i), 36)
+        slide.addText(String(i), 
+        {x: x-Cm(1),
+        y: y,
+        w:Pt(size),
+        h:Pt(size),
+        color: "363636",
+        fontSize: size,
+        align: pptx.AlignH.center
+    });
         pre_path = path
         //pathの画像を→に配置
         x += ((Cm(11.7)/0.3937)/2)
@@ -200,7 +220,16 @@ function makePPTX() {
         // put_arrow(pic_left2, pic_top2, pic_width*ratio)
         //手の写真を追加
         // put_sign(SIGN_DIR, sign_names)
-        // #テキストを追加
+        //テキストを追加
+        slide.addText(String(i+1), 
+        {x: x-Cm(1),
+        y: y,
+        w:Pt(size),
+        h:Pt(size),
+        color: "363636",
+        fontSize: size,
+        align: pptx.AlignH.center
+    });
         // put_text(pic_left-Cm(1.5), pic_top, str(i+1), 36)
         // pre_path = path
     }
