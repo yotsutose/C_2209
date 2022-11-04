@@ -177,20 +177,59 @@ function makePDF() {
         imagedata = cvs.toDataURL("image/jpeg");
         
         if (i % 8 === 0 && i !== 0){
+            // ページを増やす
             doc.addPage({orientation: "landscape"});
             y = 5;
         }
+
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
 
         // 画像番号の追加
         doc.setFontSize(size);
         doc.text(String(i+1), x-13, y+10);
 
-        x += 70;
         if (i % 4 === 3){
             x = 25;
             y += 100;
+        } else {
+            x += 70;
         }
+    }
+
+    // 画像を２枚ずつ連番で出力
+    height = 160;
+    width = 73.9;
+
+    let pre_path = null;
+    let path = null;
+    size = 35;
+    y = 25;
+
+    for(let i =0; i<img_num; i++) {
+        // canvasに書かれたデータを読み取るコード
+        cvs = document.getElementById(`canvas${i}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        path = imagedata;
+        if (i==0) {
+            pre_path = path
+            continue
+        }
+        //スライドを増やす
+        doc.addPage({orientation: "landscape"});
+        //pre_pathの画像を←に配置
+        x = ( 297/2 - width ) / 2;
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.text(String(i), x-15, y+10);
+        pre_path = path
+        //pathの画像を→に配置
+        x += 297/2
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+
+        //テキストを追加
+        // 画像番号の追加
+        doc.setFontSize(size);
+        doc.text(String(i+1), x-15, y+10);
     }
 
     
@@ -204,7 +243,6 @@ function makePDF() {
     // https://artskydj.github.io/jsPDF/docs/module-addImage.html
     // doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
 
-    doc.addPage({orientation: "landscape"});
 
     doc.save("らくらくトリセツ.pdf");
 }
