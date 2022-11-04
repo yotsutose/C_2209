@@ -2,8 +2,8 @@
 
 var canvasL = document.getElementById('canvas');
 var c = canvasL.getContext('2d');
-var canStamp = document.getElementById('stamp');
-var cS = canStamp.getContext('2d');
+// var canStamp = document.getElementById('stamp');
+// var cS = canStamp.getContext('2d');
 
 // Image オブジェクトを生成
 var img = new Image();
@@ -20,22 +20,24 @@ let srcs = [
     'image/stm/redT6.png',
 ];
 
-let loadcount = 0;
+//押すスタンプのid
+let stamp_id_S = "stamp1";
+
+//スタンプ画像の読み込み
 for(let i=0; i<srcs.length;i++){
     images[i] = new Image();
     images[i].src = srcs[i];
 
     images[i].onload = function(){
-        loadcount+=1;
 
         console.log('dddd');
-        let stamp_id = addCanvas(i);
+        let stamp_id = addCanvas(i+1);
         console.log(stamp_id);
         let stamp_C = document.getElementById(stamp_id);
         let ctS = stamp_C.getContext('2d');
 
-        let ws = img_S.width;
-        let hs = img_S.height;
+        let ws = images[i].width;
+        let hs = images[i].height;
         console.log('ws'+ws);
         console.log('hs'+hs);
 
@@ -46,18 +48,39 @@ for(let i=0; i<srcs.length;i++){
         console.log('w__'+images[i].width);
         console.log('h__'+hs);
         ctS.drawImage(images[i], 0, 0, ws/2, hs/2);
+
+        stamp_C.addEventListener("click", point=>{
+            console.log(stamp_id);
+            stamp_id_S = stamp_id;
+
+            const rect = point.target.getBoundingClientRect();
+    
+            // ブラウザ上での座標を求める
+            const   viewX = point.clientX - rect.left,
+                    viewY = point.clientY - rect.top;
+    
+            // 表示サイズとキャンバスの実サイズの比率を求める
+            const   scaleWidth =  canvasL.clientWidth / canvasL.width,
+                    scaleHeight =  canvasL.clientHeight / canvasL.height;
+    
+            // ブラウザ上でのクリック座標をキャンバス上に変換
+            const   canvasX = Math.floor( viewX / scaleWidth ),
+                    canvasY = Math.floor( viewY / scaleHeight );
+    
+            console.log( canvasX,canvasY );
+        });
     }
 }
 
-img_S.src = 'image/redT.png';
+// img_S.src = 'image/redT.png';
 let w =0;
 let h = 0;
 let stamp_siv_width = 200;
 let stamp_siv_height = 150;
 
 //スタンプの指先の座標
-let asset_w = 113;
-let asset_h = 31;
+let asset_w = 132;
+let asset_h = 52;
 
 // 画像読み込み終了してから描画
 img.onload = function(){
@@ -103,7 +126,8 @@ canvasL.addEventListener("click", point=>{
     console.log( canvasX,canvasY );
     
     c.drawImage(img, 0, 0, w, h); //リセット
-    concatCanvas("#canvas", "#stamp", canvasX, canvasY);
+    let asset_id = '#'+stamp_id_S;
+    concatCanvas("#canvas", asset_id, canvasX, canvasY);
     //concatCanvas("#canvas", "#stamp");
 });
 
