@@ -20,7 +20,7 @@ function onCvLoaded() {
 
 // videoの再生時に処理を行う関数達
 let streaming = false;
-let imageNum = 0;
+let img_num = 0;
 
 function onReady() {
     console.log('ready');
@@ -89,7 +89,7 @@ function onReady() {
         if(index%3==0){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
             canvas_id = addCanvas(index);
             cv.imshow(canvas_id, src);
-            imageNum += 1;
+            img_num += 1;
         }
 
         // debug用のキャンバス表示 なくても困らない
@@ -115,7 +115,7 @@ function addCanvas(index) {
     canvasElement.id = "canvas" + (index/3);       // 値が整数になるように、とりあえず調節 60を３に
     canvasElement.style.width  = Math.round(videoWidth /3)+"px";
     canvasElement.style.height = Math.round(videoHeight/3)+"px";
-    canvasElement.style.border = "4px solid"    // pdfに枠線が付くか確認
+    // canvasElement.style.border = "4px solid"    // pdfに枠線が付くか確認
     canvasElement.willReadFrequently = true;
 
     let buttonElement = document.createElement('p');
@@ -161,18 +161,41 @@ function makePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
-    doc.text("Hello world!", 10, 10);
+    // doc.text("Hello world!", 10, 10);
+
+    // １枚目の初期位置
+    let x = 25;
+    let y = 5;
+    let width = 43.9;
+    let height = 95;
+    let size = 27;
 
     // canvasに書かれたデータを読み取るコード
-    for(let i=0; i<imageNum; i++) {
+    for(let i=0; i<img_num; i++) {
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
-        // imagedata.style.border = "4px solid"
-        doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
         
+        if (i % 8 === 0 && i !== 0){
+            doc.addPage({orientation: "landscape"});
+            y = 5;
+        }
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+
+        // 画像番号の追加
+        doc.setFontSize(size);
+        doc.text(String(i+1), x-13, y+10);
+
+        x += 70;
+        if (i % 4 === 3){
+            x = 25;
+            y += 100;
+        }
     }
-    doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
+
+    
+    // doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
+
     // cvs = document.getElementById('canvasOutput2');
     // ctx = cvs.getContext('2d');
     // imagedata = cvs.toDataURL("image/jpeg");
@@ -184,20 +207,4 @@ function makePDF() {
     doc.addPage({orientation: "landscape"});
 
     doc.save("らくらくトリセツ.pdf");
-
-    // 画像追加
-    function put_pic(path, pic_left, pic_top, pic_width, pic_height) {
-        image = slide.shapes.add_picture(path, pic_left, pic_top, pic_width, pic_height) 
-        image.line.color.rgb = RGBColor(0, 0, 0)
-        image.line.width = Pt(1.5)
-    }
-
-    // テキストを追加
-    function put_text(pic_left, pic_top, str, size) {
-        textbox = slide.shapes.add_textbox(pic_left, pic_top, Pt(size), Pt(size))
-        tf = textbox.text_frame
-        tf.text = str
-        tf.paragraphs[0].font.size = Pt(size)  // font size
-        tf.paragraphs[0].alignment = PP_ALIGN.RIGHT
-    }  
 }
