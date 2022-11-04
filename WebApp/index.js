@@ -20,7 +20,7 @@ function onCvLoaded() {
 
 // videoの再生時に処理を行う関数達
 let streaming = false;
-let imageNum = 0;
+let index = 0;
 
 function onReady() {
     console.log('ready');
@@ -89,7 +89,7 @@ function onReady() {
         if(index%3==0){ // 「ここを類似度がXXXなら追加する」みたいに書き換える (今の処理は30FPSだから2秒に1回くらい選択)
             canvas_id = addCanvas(index);
             cv.imshow(canvas_id, src);
-            imageNum++;
+            index++;
         }
 
         // debug用のキャンバス表示 なくても困らない
@@ -147,7 +147,7 @@ function makePPTX() {
     let width = Cm(4.39);
     let height = Cm(9.5);
     let size = 28;
-    for(let i = 0; i < imageNum; i++) {
+    for(let i = 0; i < index; i++) {
          // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
@@ -160,13 +160,13 @@ function makePPTX() {
         slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
         //テキスト追加
         slide.addText(String(i+1), 
-        {x: x-Cm(1),
+        {x: x-Cm(1.5),
         y: y,
-        w: Pt(size),
+        w: Pt(size*2),
         h: Pt(size),
         color: "363636",
         fontSize: size,
-        align: pptx.AlignH.center
+        //align: pptx.AlignH.center
     });
         x += Cm(7);
 
@@ -184,7 +184,7 @@ function makePPTX() {
     let path = null;
     size = 36;
     y = Cm(2.5);
-    for(let i =0;i<imageNum;i++){
+    for(let i =0;i<index;i++){
         // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
@@ -201,13 +201,13 @@ function makePPTX() {
         slide.addImage({ data: pre_path, w: width, h: height, x: x, y: y });
         //put_text(pic_left-Cm(1.5), pic_top, str(i), 36)
         slide.addText(String(i), 
-        {x: x-Cm(1),
+        {x: x-Cm(1.5),
         y: y,
-        w:Pt(size),
+        w:Pt(size*2),
         h:Pt(size),
         color: "363636",
         fontSize: size,
-        align: pptx.AlignH.center
+        //align: pptx.AlignH.center
     });
         pre_path = path
         //pathの画像を→に配置
@@ -228,7 +228,7 @@ function makePPTX() {
         h:Pt(size),
         color: "363636",
         fontSize: size,
-        align: pptx.AlignH.center
+        align: pptx.AlignH.right
     });
         // put_text(pic_left-Cm(1.5), pic_top, str(i+1), 36)
         // pre_path = path
