@@ -13,7 +13,6 @@ const handleFileSelect = () => {
     let videofile = fileInput.files[0];
     video.src = URL.createObjectURL(videofile);
     // document.getElementById('filename').innerHTML = video.src;
-    $.scrollify.next();
 }
 
 // ファイル選択時にhandleFileSelectを発火
@@ -31,6 +30,17 @@ function modeChange() {
             document.getElementById("allDiv" + (i)).hidden = false;
         }
     }
+    // モードの切り替え
+    let mode = document.getElementsByClassName('mode');
+    let modeChange = document.getElementsByClassName('modeChange');
+    [mode[0].hidden, mode[1].hidden] = [mode[1].hidden, mode[0].hidden]
+    console.log(modeChange.length);
+    [modeChange[0].hidden, modeChange[1].hidden] = [modeChange[1].hidden, modeChange[0].hidden]
+}
+
+// ページ遷移を行う
+function nextPage() {
+    $.scrollify.next();
 }
 
 // フレームの選択/非選択の切り替え
@@ -167,8 +177,8 @@ function addCanvas(i, isSelected) {
     canvasElement.willReadFrequently = true;
 
     buttonDivElement.appendChild(buttonElement);
-    allDivElement.appendChild(buttonDivElement);
     allDivElement.appendChild(canvasElement);
+    allDivElement.appendChild(buttonDivElement);
     parentnode[0].appendChild(allDivElement);
 
     return canvasElement.id;

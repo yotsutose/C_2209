@@ -7,37 +7,57 @@
     <meta name="viewport" content="width=device-width">
     <meta content="ご年配の方に何度も同じスマホ操作を教えた経験はありませんか？一度の画面録画からトリセツを自動で作成します!" name="description">
     <meta charset="utf-8">
-    <link rel="icon" href="favicon.ico">
+    <link rel="icon" href="./favicon.ico">
 </head>
 
 <body>
     <!-- ここからHTML-->
         <div class="pagenation">
-            <h2>ファイル選択画面</h2>
-            <input type="file" id="filename" accept="video/*">
-            <!-- <details>
-                <summary>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</summary>
-                <h2>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</h2>
-                <div class="box-canvases">
-                    <div class="canvasOutput">
-                        <canvas id="canvasOutput"  width="320" height="640" style="width:320px; height:640px;"></canvas>
-                        <canvas id="canvasOutput2" width="320" height="640" style="width:320px; height:640px;"></canvas>
-                        <canvas id="canvasOutput3" width="320" height="640" style="width:320px; height:640px;"></canvas>
-                    </div>
-                </div>
-            </details> -->
+            <div align="center">
+                <img class="titleLogo" src="image/bigtitle.png">
+            </div>
+            <div align="center">
+                <button class="buttonDiv" type="reset">
+                    <img class="selectVideo" src="image/動画選択.png">
+                </button>
+            </div>     
+            <div align="center">
+                <input type="file" id="filename" accept="video/*">
+            </div>     
+            <div align="center">
+                <button class="buttonDiv" type="reset">
+                    <img src="image/使い方ボタン.png">
+                </button>
+                <button class="buttonDiv" type="reset" onclick="nextPage()">
+                    <img src="image/実行ボタン.png">
+                </button>
+            </div>
+            
         </div>
 
         <div class="pagenation">
-            <h2>選択された画像の一覧画面(プレビューとedit)</h2>
+            <div align="center">
+                <img class="mode" src="image/編集モード.png" hidden=true>
+                <img class="mode" src="image/プレビューモード.png">
+            </div>   
             <div style="width: 1px; height: 1px; overflow: auto;"> 
                 <video id="video" muted playsinline autoplay="true"></video> <!-- 828 x 1792 -->
             </div>
-            <input type="button" value="プレビュー/編集" onclick="modeChange()">
             <div class="box-canvases">
                 <div class="canvases">
                     <!-- ここに選択された画像がappendされる -->
                 </div>
+            </div>
+            <div align="center">
+                <button class="buttonDiv modeChange" type="reset" onclick="modeChange()">
+                    <img src="image/編集ボタン.png">
+                </button>
+                <button class="buttonDiv modeChange" type="reset" onclick="modeChange()" hidden=true>
+                    <img src="image/完了ボタン.png">
+                </button>
+                <button class="buttonDiv" type="reset" onclick="nextPage()">
+                    <img src="image/実行ボタン.png">
+                </button>
             </div>
         </div>
 
