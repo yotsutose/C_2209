@@ -220,18 +220,20 @@ function makePDF() {
 let cvslist = [];
 function movePage(){
     console.log('move page');
-    let canvas_class = document.getElementsByClassName("canvases");
-    let canvas_list = canvas_class[0].getElementsByTagName("canvas");
+    // let canvas_class = document.getElementsByClassName("canvases");
+    // let canvas_list = canvas_class[0].getElementsByTagName("canvas");
 
-    console.log(canvas_list.length);
-    for(let i=0; i<canvas_list.length; i++){
-        // const a = document.createElement("a");
-        // a.href = canvas_list[i].toDataURL("image/jpeg", 1); // PNGなら"image/png"
-        // a.download = 'canvImage/canvasI'+i+'jpg';
-        // a.click();
+    // console.log(canvas_list.length);
+    // for(let i=0; i<canvas_list.length; i++){
+    //     // const a = document.createElement("a");
+    //     // a.href = canvas_list[i].toDataURL("image/jpeg", 1); // PNGなら"image/png"
+    //     // a.download = 'canvImage/canvasI'+i+'jpg';
+    //     // a.click();
             
-    }
+    // }
 
-    window.location.replace('index.html');
+    // window.location.replace('index.html');
+
+    
 
 }
