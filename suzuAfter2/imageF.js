@@ -1,17 +1,13 @@
 //A4 = 2,894 x 4,093px
 
-const item = sessionStorage.getItem("canvasList");
-console.log(item);
-sessionStorage.removeItem("canvasList");
 var canvasL = document.getElementById('canvas');
 var c = canvasL.getContext('2d');
+let canvases_L = document.getElementsByClassName("canvases_List");
 // var canStamp = document.getElementById('stamp');
 // var cS = canStamp.getContext('2d');
 
 // Image オブジェクトを生成
 var img = new Image();
-// img.src = 'image/backWhite.png'; //解像度72
-//img.src = 'image/a4_white.png'; //解像度300
 let images = [];
 let srcs = [
     'image/stm/redT1.png',
@@ -50,7 +46,7 @@ window.onload = ()=>{
             loadcount +=1;
 
             console.log('dddd');
-            let stamp_id = addCanvas(i+1);
+            let stamp_id = addCanvas('stamps', "stamp", i+1);
             console.log(stamp_id);
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
@@ -145,6 +141,7 @@ window.onload = ()=>{
         canvasL.width = w;
         canvasL.height = h;
         c.drawImage(img, 0, 0, w, h);
+        addCanvasList();
     }
 
 }
@@ -198,15 +195,16 @@ function reset(){
 
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas(index) {
+function addCanvas( parentname, name, index) {
 
-    let parentnode = document.getElementsByClassName('stamps');
+    let parentnode = document.getElementsByClassName(parentname);
 
     let divElement = document.createElement('div');
     parentnode[0].appendChild(divElement);
     
     let canvasElement = document.createElement('canvas');
-    canvasElement.id = "stamp" + (index);
+    // canvasElement.id = "stamp" + (index);
+    canvasElement.id = name + (index);
     canvasElement.style.width  = stamp_siv_width+"px";
     canvasElement.style.height = stamp_siv_height+"px";
     canvasElement.style.border = "1px solid";
@@ -216,4 +214,16 @@ function addCanvas(index) {
     divElement.appendChild(canvasElement);
 
     return canvasElement.id;
+}
+
+function addCanvasList(){
+    // item.length
+    // console.log('item::'+item.length);
+    // for(let i=0; i<item.length-1; i++){
+    //     console.log(item[i]);
+    //     // let id = addCanvas("canvases_List","canvasN", i);
+    //     // let canvas = document.getElementById(id);
+    //     // let ctcc = canvas.getContext('2d');
+    //     // ctcc.drawImage(img, 0, 0, w, h); 
+    // }
 }

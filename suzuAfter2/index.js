@@ -222,28 +222,16 @@ function movePage(){
     console.log('move page');
     let canvas_class = document.getElementsByClassName("canvases");
     let canvas_list = canvas_class[0].getElementsByTagName("canvas");
-    var myArray = Array.prototype.slice.call(canvas_list);
-    console.log(myArray);
-    // let index = 0;
-    // for(const canV in myArray){
-    //     console.log(canV);
-    //     cvslist[index] = canV;
-    //     index +=1;
-    // }
-    for(let i=0; i<myArray.length; i++){
-        myArray[i] = myArray[i].getContext('2d');
-    }
-    cvslist = myArray;
-    console.log(cvslist);
 
-    if (window.sessionStorage) { 
-        // 使用できる 
-        console.log("333");
-        sessionStorage["canvasList"] = cvslist;
-    }
-    else{ 
-        // 使用できない 
+    console.log(canvas_list.length);
+    for(let i=0; i<canvas_list.length; i++){
+        // const a = document.createElement("a");
+        // a.href = canvas_list[i].toDataURL("image/jpeg", 1); // PNGなら"image/png"
+        // a.download = 'canvImage/canvasI'+i+'jpg';
+        // a.click();
+            
     }
 
     window.location.replace('index.html');
+
 }
