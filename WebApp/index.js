@@ -33,9 +33,9 @@ function modeChange() {
     // モードの切り替え
     let mode = document.getElementsByClassName('mode');
     let modeChange = document.getElementsByClassName('modeChange');
-    [mode[0].hidden, mode[1].hidden] = [mode[1].hidden, mode[0].hidden]
+    [mode[0].hidden, mode[1].hidden] = [mode[1].hidden, mode[0].hidden];
     console.log(modeChange.length);
-    [modeChange[0].hidden, modeChange[1].hidden] = [modeChange[1].hidden, modeChange[0].hidden]
+    [modeChange[0].hidden, modeChange[1].hidden] = [modeChange[1].hidden, modeChange[0].hidden];
 }
 
 // ページ遷移を行う
@@ -49,6 +49,9 @@ function stateChange(i){
     const allDivi = document.getElementById("allDiv" + (i));
     if(prewviewMode) allDivi.hidden = true;
     allDivi.style.backgroundColor = stateOfFrame[i]? '#00FF00': '#FF0000';
+    console.log(allDivi.childNodes[1].childNodes[0].childNodes[0]);
+    const buttonElement = allDivi.childNodes[1].childNodes[0].childNodes;
+    [buttonElement[0].hidden, buttonElement[1].hidden] = [buttonElement[1].hidden, buttonElement[0].hidden];
 }
 
 // opencv.jsの読み込みが終わってから動く関数
@@ -165,10 +168,20 @@ function addCanvas(i, isSelected) {
     allDivElement.style.backgroundColor = isSelected? '#00FF00': '#FF0000';
     // ボタンのためのdiv
     let buttonDivElement = document.createElement('div');
+    buttonDivElement.style="text-align:center";
     // ボタン
     let buttonElement = document.createElement('button');
-    buttonElement.textContent = "選択/非選択"
     buttonElement.onclick = () => stateChange(i);
+    buttonElement.className="buttonDiv";
+    // 選択ボタン
+    let checkboxElement = document.createElement('img');
+    checkboxElement.src="assets/選択box.png";
+    checkboxElement.hidden = !isSelected;
+    // 未選択ボタン
+    let noncheckboxElement = document.createElement('img');
+    noncheckboxElement.src="assets/未選択box.png";
+    noncheckboxElement.hidden = isSelected;
+
     // キャンバス
     let canvasElement = document.createElement('canvas');
     canvasElement.id = "canvas" + (i);
@@ -176,6 +189,8 @@ function addCanvas(i, isSelected) {
     canvasElement.style.height = Math.round(videoHeight/4)+"px";
     canvasElement.willReadFrequently = true;
 
+    buttonElement.appendChild(checkboxElement);
+    buttonElement.appendChild(noncheckboxElement);
     buttonDivElement.appendChild(buttonElement);
     allDivElement.appendChild(canvasElement);
     allDivElement.appendChild(buttonDivElement);
