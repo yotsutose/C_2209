@@ -274,7 +274,9 @@ function makePDF() {
     let y = 5;
     let width = 43.9;
     let height = 95;
-    let size = 27;
+
+    // フォントサイズの指定
+    doc.setFontSize(27);
 
     // canvasに書かれたデータを読み取るコード
     for(let i=0; i<index; i++) {
@@ -290,9 +292,7 @@ function makePDF() {
 
         // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
-
         // 画像番号の追加
-        doc.setFontSize(size);
         doc.text(String(i+1), x-13, y+10);
 
         if (i % 4 === 3){
@@ -306,38 +306,38 @@ function makePDF() {
     // 画像を２枚ずつ連番で出力
     height = 160;
     width = 73.9;
-
-    let pre_path = null;
-    let path = null;
-    size = 35;
+    let pre_imagedata = null;
     y = 25;
+
+    // フォントサイズの指定
+    doc.setFontSize(35);  
 
     for(let i =0; i<index; i++) {
         // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
-        path = imagedata;
         if (i==0) {
-            pre_path = path
+            pre_imagedata = imagedata;
             continue
         }
-        //スライドを増やす
-        doc.addPage({orientation: "landscape"});
-        //pre_pathの画像を←に配置
+
+         //ページを増やす
+         doc.addPage({orientation: "landscape"});
+
+        // 左の画像
         x = ( 297/2 - width ) / 2;
         // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
-        pre_path = path
-        //pathの画像を→に配置
+
+        // 右の画像
         x += 297/2
         // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
-
-        // 画像番号の追加
-        doc.setFontSize(size);
         doc.text(String(i+1), x-15, y+10);
+
+        pre_imagedata = imagedata;
     }
 
     
