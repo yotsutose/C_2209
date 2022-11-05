@@ -34,3 +34,11 @@ canvas {
   float: left;
   padding-left: 20px;
 }
+
+.canvases_List{
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  
+  scroll-behavior: smooth;
+}

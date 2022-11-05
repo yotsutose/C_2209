@@ -1,10 +1,8 @@
 //A4 = 2,894 x 4,093px
 
-var canvasL = document.getElementById('canvas');
+var canvasL = document.getElementById('canvasBack');
 var c = canvasL.getContext('2d');
 let canvases_L = document.getElementsByClassName("canvases_List");
-// var canStamp = document.getElementById('stamp');
-// var cS = canStamp.getContext('2d');
 
 // Image オブジェクトを生成
 var img = new Image();
@@ -46,7 +44,7 @@ window.onload = ()=>{
             loadcount +=1;
 
             console.log('dddd');
-            let stamp_id = addCanvas('stamps', "stamp", i+1);
+            let stamp_id = addCanvas_Re('stamps', "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2);
             console.log(stamp_id);
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
@@ -141,7 +139,7 @@ window.onload = ()=>{
         canvasL.width = w;
         canvasL.height = h;
         c.drawImage(img, 0, 0, w, h);
-        addCanvasList();
+        //addCanvasList();
     }
 
 }
@@ -165,13 +163,14 @@ canvasL.addEventListener("click", point=>{
     
     c.drawImage(img, 0, 0, w, h); //リセット
     let asset_id = '#'+stamp_id_S;
-    concatCanvas("#canvas", asset_id, canvasX, canvasY);
+    concatCanvas("#canvasBack", asset_id, canvasX, canvasY);
     //concatCanvas("#canvas", "#stamp");
 });
 
 async function concatCanvas(base, asset, cX, cY){
-    const canvas = document.querySelector(base); //ここは変えない方が良い
-    const ctx = canvas.getContext("2d");
+    const canvasM = document.querySelector(base); //ここは変えない方が良い
+    //console.log(canvasM);
+    const ctx = canvasM.getContext("2d");
 
     const image1 = await getImagefromCanvas(asset);
     ctx.drawImage(image1, cX-(asset_w), cY-(asset_h), image1.width, image1.height);
@@ -195,7 +194,7 @@ function reset(){
 
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas( parentname, name, index) {
+function addCanvas_Re( parentname, name, index, width_, height_) {
 
     let parentnode = document.getElementsByClassName(parentname);
 
@@ -205,8 +204,10 @@ function addCanvas( parentname, name, index) {
     let canvasElement = document.createElement('canvas');
     // canvasElement.id = "stamp" + (index);
     canvasElement.id = name + (index);
-    canvasElement.style.width  = stamp_siv_width/2+"px";
-    canvasElement.style.height = stamp_siv_height/2+"px";
+    // canvasElement.style.width  = stamp_siv_width/2+"px";
+    // canvasElement.style.height = stamp_siv_height/2+"px";
+    canvasElement.style.width  = width_+"px";
+    canvasElement.style.height = height_+"px";
     canvasElement.style.border = "1px solid";
     //canvasElement.style.float = "left";
     canvasElement.willReadFrequently = true;
@@ -216,14 +217,49 @@ function addCanvas( parentname, name, index) {
     return canvasElement.id;
 }
 
+let button_move = document.getElementById("moveB");
+
+button_move.addEventListener("click", addCanvasList);
+
 function addCanvasList(){
-    // item.length
-    // console.log('item::'+item.length);
-    // for(let i=0; i<item.length-1; i++){
-    //     console.log(item[i]);
-    //     // let id = addCanvas("canvases_List","canvasN", i);
-    //     // let canvas = document.getElementById(id);
-    //     // let ctcc = canvas.getContext('2d');
-    //     // ctcc.drawImage(img, 0, 0, w, h); 
-    // }
+    console.log('生成');
+    let index_length = document.getElementsByClassName("canvases");
+    var CNodeList = index_length[0].getElementsByTagName("canvas");
+
+    console.log(CNodeList.length);
+    // for(let i=0; i<CNodeList.length-1; i++){
+    for(let i=0; i<5; i++){
+        console.log("BB");
+        let id = addCanvas_Re("canvases_List","canvasN", i, w, h);
+        let canvasP = document.getElementById(id);
+        let ctcc = canvasP.getContext('2d');
+        ctcc.width = w;
+        ctcc.height = h;
+        console.log(w);
+        ctcc.drawImage(img, 0, 0, w, h); 
+
+        canvasP.addEventListener("click", point=>{
+            const rect = point.target.getBoundingClientRect();
+        
+            // ブラウザ上での座標を求める
+            const   viewX = point.clientX - rect.left,
+                    viewY = point.clientY - rect.top;
+        
+            // 表示サイズとキャンバスの実サイズの比率を求める
+            const   scaleWidth =  canvasP.clientWidth / canvasP.width,
+                    scaleHeight =  canvasP.clientHeight / canvasP.height;
+        
+            // ブラウザ上でのクリック座標をキャンバス上に変換
+            const   canvasX = Math.floor( viewX / scaleWidth ),
+                    canvasY = Math.floor( viewY / scaleHeight );
+        
+            console.log( canvasX,canvasY );
+            
+            ctcc.drawImage(img, 0, 0, w, h); //リセット
+            let base_id = '#'+id;
+            let asset_id = '#'+stamp_id_S;
+            concatCanvas(base_id, asset_id, canvasX, canvasY);
+            //concatCanvas("#canvas", "#stamp");
+        });
+    }
 }

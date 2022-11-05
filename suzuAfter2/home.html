@@ -57,7 +57,7 @@
             <h2>PDFの生成ボタン</h2>
             <input type="button" value="make PDF" onclick="makePDF()">
             <h2>編集画面へ</h2>
-            <input type="button" value="move_for_next" onclick="movePage()">
+            <input type="button" value="move_for_next" id="moveB" onclick="movePage()">
         </div> 
 
 
@@ -65,12 +65,8 @@
         <div class="pagenation">
             <h2>編集画面</h2>
             <p>
-                <canvas id="canvas" style="border: 1px solid;"></canvas>
+                <canvas id="canvasBack" style="border: 1px solid;"></canvas>
             </p>
-
-            <div class="canvases_List">
-                <!-- ここに選択された画像がappendされる -->
-            </div>
 
             <div class="stampWindow">
                 <p>スタンプセット</p>
@@ -85,7 +81,13 @@
                 </div>
             </div>
         </div>
-    
+        
+        <div class="pagenation">
+            <p>LL</p>
+            <div class="canvases_List">
+                <!-- ここに選択された画像がappendされる -->
+            </div>
+        </div>
     <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
