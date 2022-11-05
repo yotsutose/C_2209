@@ -234,6 +234,11 @@ function movePage(){
 
     // window.location.replace('index.html');
 
-    
+    $.scrollify.next();
 
 }
+
+// // ページ遷移を行う
+// function nextPage() {
+//     $.scrollify.next();
+// }
