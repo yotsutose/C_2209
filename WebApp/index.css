@@ -14,7 +14,7 @@ body {
 }
 
 .canvases {
-  width: 12345px;                /* 親要素よりも大きくする */
+  width: 4321px;                /* 親要素よりも大きくする */
   display: flex;                /* 横並びにする */
 }
 
