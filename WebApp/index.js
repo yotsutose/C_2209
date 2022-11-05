@@ -204,15 +204,19 @@ function makePPTX() {
     let pptx = new PptxGenJS();
     pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
     pptx.layout = 'A4';
+    let slide = pptx.addSlide();
     let x = Cm(2.5);
     let y = Cm(0.5);
+    let x2 = Cm(7.2);
+    let y2 = Cm(4.25);
     let width = Cm(4.39);
     let height = Cm(9.5);
     let size = 28;
     for(let i = 0; i < index; i++) {
-        if (i % 8 === 0){
+        if (i % 8 === 0 && i!== 0){
             slide = pptx.addSlide();
             y = Cm(0.5);
+            y2 = Cm(4.25)
         }
 
         // canvasに書かれたデータを読み取るコード
@@ -223,9 +227,15 @@ function makePPTX() {
         slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
         slide.addText(String(i+1), {x: x-Cm(1.5), y: y, w: Pt(size*2), h: Pt(size), color: "363636", fontSize: size});
         x += Cm(7);
+
         if (i % 4 == 3){
             x = Cm(2.5);
             y += Cm(10);
+            x2 = Cm(7.2)
+            y2 += Cm(10)
+        }else if(i != index-1){
+            slide.addImage({ path: "image/arrow.png", w: Cm(2), h: Cm(2), x: x2, y: y2 });
+            x2 += Cm(7) 
         }
     }
 
@@ -247,13 +257,15 @@ function makePPTX() {
             continue;
         }
         
-        x = ( Cm(11.7)/2/0.3937 - width ) / 2
+        x = ( 11.7/2 - width ) / 2
         slide.addImage({ data: pre_imagedata, w: width, h: height, x: x, y: y });
-        slide.addText(String(i),  {x: x-Cm(1.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
+        slide.addText(String(i),  {x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
+
+        slide.addImage({ path: "image/arrow.png", w: Cm(3.33), h: Cm(3.33), x: Cm(13.18), y: Cm(8.84) });
         
-        x += ((Cm(11.7)/0.3937)/2)
+        x += (11.7/2)
         slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
-        slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size, align: pptx.AlignH.right });
+        slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
         
         pre_imagedata = imagedata;
     }
@@ -267,11 +279,11 @@ function makePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
-    // doc.text("Hello world!", 10, 10);
-
     // １枚目の初期位置
     let x = 25;
     let y = 5;
+    let x2 = 72;
+    let y2 = 42.5;
     let width = 43.9;
     let height = 95;
     let size = 27;
@@ -286,6 +298,7 @@ function makePDF() {
             // ページを増やす
             doc.addPage({orientation: "landscape"});
             y = 5;
+            y2 = 42.5;
         }
 
         // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
@@ -294,12 +307,16 @@ function makePDF() {
         // 画像番号の追加
         doc.setFontSize(size);
         doc.text(String(i+1), x-13, y+10);
+        x += 70;
 
         if (i % 4 === 3){
             x = 25;
             y += 100;
-        } else {
-            x += 70;
+            x2 = 72;
+            y2 += 100;
+        }else if(i != index-1){
+            doc.addImage('image/arrow.png', 'PNG', x2, y2, 20, 20);
+            x2 += 70 
         }
     }
 
@@ -312,13 +329,13 @@ function makePDF() {
     size = 35;
     y = 25;
 
-    for(let i =0; i<index; i++) {
+    for(let i=0; i<index; i++){
         // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
         path = imagedata;
-        if (i==0) {
+        if(i==0){
             pre_path = path
             continue
         }
@@ -330,6 +347,7 @@ function makePDF() {
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
         pre_path = path
+        doc.addImage('image/arrow.png', 131.8, 88.4, 33.3, 33.3);
         //pathの画像を→に配置
         x += 297/2
         // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
