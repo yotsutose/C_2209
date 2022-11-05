@@ -48,8 +48,6 @@ function stateChange(i){
     stateOfFrame[i] = !stateOfFrame[i];
     const allDivi = document.getElementById("allDiv" + (i));
     if(prewviewMode) allDivi.hidden = true;
-    allDivi.style.backgroundColor = stateOfFrame[i]? '#00FF00': '#FF0000';
-    console.log(allDivi.childNodes[1].childNodes[0].childNodes[0]);
     const buttonElement = allDivi.childNodes[1].childNodes[0].childNodes;
     [buttonElement[0].hidden, buttonElement[1].hidden] = [buttonElement[1].hidden, buttonElement[0].hidden];
 }
@@ -154,10 +152,6 @@ function onReady() {
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
 function addCanvas(i, isSelected) {
-    // <div>
-    //   <div><button></button></div>
-    //   <canvas></canvas>
-    // <div>
 
     let parentnode = document.getElementsByClassName('canvases');
 
@@ -165,7 +159,6 @@ function addCanvas(i, isSelected) {
     let allDivElement = document.createElement('div');
     allDivElement.id = "allDiv" + (i);
     allDivElement.hidden = !isSelected; // 選択状態なら隠さない
-    allDivElement.style.backgroundColor = isSelected? '#00FF00': '#FF0000';
     // ボタンのためのdiv
     let buttonDivElement = document.createElement('div');
     buttonDivElement.style="text-align:center";
