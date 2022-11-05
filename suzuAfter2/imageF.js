@@ -218,7 +218,6 @@ function addCanvas_Re( parentname, name, index, width_, height_) {
 }
 
 let button_move = document.getElementById("moveB");
-
 button_move.addEventListener("click", addCanvasList);
 
 function addCanvasList(){
@@ -233,9 +232,11 @@ function addCanvasList(){
         let id = addCanvas_Re("canvases_List","canvasN", i, w, h);
         let canvasP = document.getElementById(id);
         let ctcc = canvasP.getContext('2d');
-        ctcc.width = w;
-        ctcc.height = h;
-        console.log(w);
+        // ctcc.width = w;
+        // ctcc.height = h;
+        canvasP.width = w;
+        canvasP.height = h;
+        console.log('mantion'+w);
         ctcc.drawImage(img, 0, 0, w, h); 
 
         canvasP.addEventListener("click", point=>{
@@ -259,7 +260,6 @@ function addCanvasList(){
             let base_id = '#'+id;
             let asset_id = '#'+stamp_id_S;
             concatCanvas(base_id, asset_id, canvasX, canvasY);
-            //concatCanvas("#canvas", "#stamp");
         });
     }
 }

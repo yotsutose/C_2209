@@ -42,3 +42,7 @@ canvas {
   
   scroll-behavior: smooth;
 }
+
+.move_button{
+  display: flex;
+}
