@@ -270,9 +270,11 @@ function makePDF() {
 
     // doc.text("Hello world!", 10, 10);
 
-    // １枚目の初期位置
-    let x = 25;
+    // 初期位置
+    let x = 25;     // スマホ画像用
     let y = 5;
+    let x2 = 72;    // 矢印画像用
+    let y2 = 42.5;
     let width = 43.9;
     let height = 95;
     let selectedFrameOfIndex = []
@@ -296,6 +298,7 @@ function makePDF() {
             // ページを増やす
             doc.addPage({orientation: "landscape"});
             y = 5;
+            y2 = 42.5;
         }
 
         // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
@@ -306,8 +309,14 @@ function makePDF() {
         if (i % 4 === 3){
             x = 25;
             y += 100;
+            x2 = 72;
+            y2 += 100;
         } else {
             x += 70;
+            if(i != selectedFrameOfIndex.length-1){
+                doc.addImage('images/arrow.png', 'PNG', x2, y2, 20, 20);
+                x2 += 70 
+            }
         }
     }
 
@@ -339,6 +348,8 @@ function makePDF() {
         doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
 
+        doc.addImage('images/arrow.png', 131.8, 88.4, 33.3, 33.3);
+
         // 右の画像
         x += 297/2
         // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
@@ -347,17 +358,10 @@ function makePDF() {
 
         pre_imagedata = imagedata;
     }
-    
-    // doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
-
-    // cvs = document.getElementById('canvasOutput2');
-    // ctx = cvs.getContext('2d');
-    // imagedata = cvs.toDataURL("image/jpeg");
-    
+        
     // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
     // https://artskydj.github.io/jsPDF/docs/module-addImage.html
     // doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
 
-    
     doc.save("らくらくトリセツ.pdf");
 }
