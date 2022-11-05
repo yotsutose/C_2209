@@ -268,8 +268,6 @@ function makePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
-    // doc.text("Hello world!", 10, 10);
-
     // 初期位置
     let x = 25;     // スマホ画像用
     let y = 5;
@@ -288,8 +286,8 @@ function makePDF() {
         }
     }
 
-    // canvasに書かれたデータを読み取るコード
     for(let i=0; i<selectedFrameOfIndex.length; i++) {
+        // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${selectedFrameOfIndex[i]}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
@@ -303,8 +301,7 @@ function makePDF() {
 
         // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
-        // 画像番号の追加
-        doc.text(String(i+1), x-13, y+10);
+        doc.text(String(i+1), x-13, y+10);  // 画像番号
 
         if (i % 4 === 3){
             x = 25;
