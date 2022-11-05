@@ -280,7 +280,7 @@ function makePDF() {
             y = 5;
         }
 
-        doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+        // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
 
         // 画像番号の追加
@@ -318,13 +318,13 @@ function makePDF() {
         doc.addPage({orientation: "landscape"});
         //pre_pathの画像を←に配置
         x = ( 297/2 - width ) / 2;
-        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
         pre_path = path
         //pathの画像を→に配置
         x += 297/2
-        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
 
         // 画像番号の追加
