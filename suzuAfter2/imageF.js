@@ -22,6 +22,9 @@ let srcs = [
 
 //押すスタンプのid
 let stamp_id_S = "stamp1";
+//スタンプの大きさ
+let stamp_siv_width = 200;
+let stamp_siv_height = 150;
 
 let loadcount = 0;
 //スタンプ画像の読み込み
@@ -53,7 +56,14 @@ for(let i=0; i<srcs.length;i++){
 
         stamp_C.addEventListener("click", point=>{
             console.log(stamp_id);
+            let pre_stamp_id = stamp_id_S;
             stamp_id_S = stamp_id;
+
+            //使用するスタンプの強調
+            let preStamp = document.getElementById(pre_stamp_id);
+            let currentStamp = document.getElementById(stamp_id_S);
+            preStamp.style.border = "1px solid";
+            currentStamp.style.border = "5px solid";
 
             const rect = point.target.getBoundingClientRect();
     
@@ -104,13 +114,15 @@ function mySort() {
     for (var i=0; i<myArray.length; i++) {
         myUL[0].appendChild(myArray[i]);
     }
+
+    //ついでに初期スタンプを強調しておく
+    let currentStamp = document.getElementById(stamp_id_S);
+    currentStamp.style.border = "5px solid";
 }
 
-// img_S.src = 'image/redT.png';
+//台紙画像のサイズ変数
 let w =0;
 let h = 0;
-let stamp_siv_width = 200;
-let stamp_siv_height = 150;
 
 //スタンプの指先の座標
 let asset_w = 132;
@@ -126,21 +138,6 @@ img.onload = function(){
     canvasL.height = h;
     c.drawImage(img, 0, 0, w, h);
 }
-
-// img_S.onload = function(){
-//     let ws = img_S.width;
-//     let hs = img_S.height;
-//     console.log('ws'+ws);
-//     console.log('hs'+hs);
-
-//     canStamp.width = ws/2;
-//     canStamp.height = hs/2;
-//     img_S.width /= 2;
-//     img_S.height /= 2;
-//     console.log('w__'+img_S.width);
-//     console.log('h__'+hs);
-//     cS.drawImage(img_S, 0, 0, ws/2, hs/2);
-// }
 
 canvasL.addEventListener("click", point=>{
     const rect = point.target.getBoundingClientRect();
@@ -164,25 +161,6 @@ canvasL.addEventListener("click", point=>{
     concatCanvas("#canvas", asset_id, canvasX, canvasY);
     //concatCanvas("#canvas", "#stamp");
 });
-
-
-// canStamp.addEventListener("click", point=>{
-//     const rect = point.target.getBoundingClientRect();
-
-//     // ブラウザ上での座標を求める
-//     const   viewX = point.clientX - rect.left,
-//             viewY = point.clientY - rect.top;
-
-//     // 表示サイズとキャンバスの実サイズの比率を求める
-//     const   scaleWidth =  canvasL.clientWidth / canvasL.width,
-//             scaleHeight =  canvasL.clientHeight / canvasL.height;
-
-//     // ブラウザ上でのクリック座標をキャンバス上に変換
-//     const   canvasX = Math.floor( viewX / scaleWidth ),
-//             canvasY = Math.floor( viewY / scaleHeight );
-
-//     console.log( canvasX,canvasY );
-// });
 
 async function concatCanvas(base, asset, cX, cY){
     const canvas = document.querySelector(base); //ここは変えない方が良い
