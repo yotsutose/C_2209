@@ -259,18 +259,90 @@ function makePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
-    doc.text("Hello world!", 10, 10);
+    // doc.text("Hello world!", 10, 10);
+
+    // １枚目の初期位置
+    let x = 25;
+    let y = 5;
+    let width = 43.9;
+    let height = 95;
+    let size = 27;
 
     // canvasに書かれたデータを読み取るコード
-    cvs = document.getElementById('canvasOutput2');
-    ctx = cvs.getContext('2d');
-    imagedata = cvs.toDataURL("image/jpeg");
+    for(let i=0; i<index; i++) {
+        cvs = document.getElementById(`canvas${i}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        
+        if (i % 8 === 0 && i !== 0){
+            // ページを増やす
+            doc.addPage({orientation: "landscape"});
+            y = 5;
+        }
+
+        // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+
+        // 画像番号の追加
+        doc.setFontSize(size);
+        doc.text(String(i+1), x-13, y+10);
+
+        if (i % 4 === 3){
+            x = 25;
+            y += 100;
+        } else {
+            x += 70;
+        }
+    }
+
+    // 画像を２枚ずつ連番で出力
+    height = 160;
+    width = 73.9;
+
+    let pre_path = null;
+    let path = null;
+    size = 35;
+    y = 25;
+
+    for(let i =0; i<index; i++) {
+        // canvasに書かれたデータを読み取るコード
+        cvs = document.getElementById(`canvas${i}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        path = imagedata;
+        if (i==0) {
+            pre_path = path
+            continue
+        }
+        //スライドを増やす
+        doc.addPage({orientation: "landscape"});
+        //pre_pathの画像を←に配置
+        x = ( 297/2 - width ) / 2;
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.text(String(i), x-15, y+10);
+        pre_path = path
+        //pathの画像を→に配置
+        x += 297/2
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+
+        // 画像番号の追加
+        doc.setFontSize(size);
+        doc.text(String(i+1), x-15, y+10);
+    }
+
+    
+    // doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
+
+    // cvs = document.getElementById('canvasOutput2');
+    // ctx = cvs.getContext('2d');
+    // imagedata = cvs.toDataURL("image/jpeg");
     
     // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
     // https://artskydj.github.io/jsPDF/docs/module-addImage.html
-    doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
+    // doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
 
-    doc.addPage({orientation: "landscape"});
 
     doc.save("らくらくトリセツ.pdf");
 }
