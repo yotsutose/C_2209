@@ -44,7 +44,7 @@ window.onload = ()=>{
             loadcount +=1;
 
             console.log('dddd');
-            let stamp_id = addCanvas_Re('stamps', "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2);
+            let stamp_id = addCanvas_Re('stamps', "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
             console.log(stamp_id);
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
@@ -194,7 +194,7 @@ function reset(){
 
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas_Re( parentname, name, index, width_, height_) {
+function addCanvas_Re( parentname, name, index, width_, height_, class_name) {
 
     let parentnode = document.getElementsByClassName(parentname);
 
@@ -209,6 +209,7 @@ function addCanvas_Re( parentname, name, index, width_, height_) {
     canvasElement.style.width  = width_+"px";
     canvasElement.style.height = height_+"px";
     canvasElement.style.border = "1px solid";
+    canvasElement.className = class_name;
     //canvasElement.style.float = "left";
     canvasElement.willReadFrequently = true;
 
@@ -226,10 +227,11 @@ function addCanvasList(){
     var CNodeList = index_length[0].getElementsByTagName("canvas");
 
     console.log(CNodeList.length);
+
     // for(let i=0; i<CNodeList.length-1; i++){
     for(let i=0; i<5; i++){
         console.log("BB");
-        let id = addCanvas_Re("canvases_List","canvasN", i, w, h);
+        let id = addCanvas_Re("canvases_List","canvasN", i, w, h, "area");
         let canvasP = document.getElementById(id);
         let ctcc = canvasP.getContext('2d');
         // ctcc.width = w;

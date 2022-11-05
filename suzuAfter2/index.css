@@ -21,6 +21,8 @@ canvas {
 }
 
 
+
+
 /*  */
 .stamps{
   display: flex;
@@ -45,4 +47,14 @@ canvas {
 
 .move_button{
   display: flex;
+}
+
+.area {
+  scroll-snap-align: center;
+  width: 100vh;
+  margin:0 20px;
+}
+
+.pagenation{
+  padding:0 50px;
 }
