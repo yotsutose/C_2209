@@ -183,12 +183,9 @@ function makePPTX() {
         return n / 72;
     }
 
-    // 1. パワポの作成、設定
     let pptx = new PptxGenJS();
     pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
     pptx.layout = 'A4';
-
-    // 3. こんな感じでスライドにオブジェクトを追加できる
     let x = Cm(2.5);
     let y = Cm(0.5);
     let width = Cm(4.39);
@@ -213,36 +210,34 @@ function makePPTX() {
             y += Cm(10);
         }
     }
+
     //画像を２枚ずつパワポに出力
     height = Cm(16);
     width = Cm(7.39);
-
-    let pre_path = null;
-    let path = null;
+    let pre_imagedata = null;
     size = 36;
     y = Cm(2.5);
     for(let i =0;i<index;i++){
+        slide = pptx.addSlide();
+
         // canvasに書かれたデータを読み取るコード
         cvs = document.getElementById(`canvas${i}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
-        path = imagedata;
         if (i==0) {
-            pre_path = path
-            continue
+            pre_imagedata = imagedata;
+            continue;
         }
-        //スライドを増やす
-        slide = pptx.addSlide(); 
-        //pre_pathの画像を←に配置
+        
         x = ( Cm(11.7)/2/0.3937 - width ) / 2
-        slide.addImage({ data: pre_path, w: width, h: height, x: x, y: y });
-        //put_text(pic_left-Cm(1.5), pic_top, str(i), 36)
-        slide.addText(String(i), {x: x-Cm(1.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
-        pre_path = path
+        slide.addImage({ data: pre_imagedata, w: width, h: height, x: x, y: y });
+        slide.addText(String(i),  {x: x-Cm(1.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
+        
         x += ((Cm(11.7)/0.3937)/2)
-        slide.addImage({ data: path, w: width, h: height, x: x, y: y });
-        slide.addText(String(i+1), 
-        {x: x-Cm(1), y: y, w:Pt(size), h:Pt(size), color: "363636", fontSize: size, align: pptx.AlignH.right });
+        slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
+        slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size, align: pptx.AlignH.right });
+        
+        pre_imagedata = imagedata;
     }
 
     // パワポを保存
