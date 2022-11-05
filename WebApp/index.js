@@ -275,38 +275,39 @@ function makePDF() {
     let y = 5;
     let width = 43.9;
     let height = 95;
-
-    // let first_img = true
-    let img_index = 0
+    let selectedFrameOfIndex = []
 
     // フォントサイズの指定
     doc.setFontSize(27);
 
-    // canvasに書かれたデータを読み取るコード
     for(let i=0; i<stateOfFrame.length; i++) {
         if(stateOfFrame[i]) {
-            cvs = document.getElementById(`canvas${i}`);
-            ctx = cvs.getContext('2d');
-            imagedata = cvs.toDataURL("image/jpeg");
-            
-            if (img_index % 8 === 0 && img_index !== 0){
-                // ページを増やす
-                doc.addPage({orientation: "landscape"});
-                y = 5;
-            }
+            selectedFrameOfIndex.push(i);
+        }
+    }
 
-            // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
-            doc.addImage(imagedata, 'JPEG', x, y, width, height);
-            // 画像番号の追加
-            doc.text(String(img_index+1), x-13, y+10);
+    // canvasに書かれたデータを読み取るコード
+    for(let i=0; i<selectedFrameOfIndex.length; i++) {
+        cvs = document.getElementById(`canvas${selectedFrameOfIndex[i]}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        
+        if (i % 8 === 0 && i !== 0){
+            // ページを増やす
+            doc.addPage({orientation: "landscape"});
+            y = 5;
+        }
 
-            if (img_index % 4 === 3){
-                x = 25;
-                y += 100;
-            } else {
-                x += 70;
-            }
-            img_index += 1;
+        // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        // 画像番号の追加
+        doc.text(String(i+1), x-13, y+10);
+
+        if (i % 4 === 3){
+            x = 25;
+            y += 100;
+        } else {
+            x += 70;
         }
     }
 
@@ -315,41 +316,36 @@ function makePDF() {
     width = 73.9;
     let pre_imagedata = null;
     y = 25;
-    img_index = 0
 
     // フォントサイズの指定
     doc.setFontSize(35);  
 
-    for(let i =0; i<stateOfFrame.length; i++) {
-        if(stateOfFrame[i]) {
-            // canvasに書かれたデータを読み取るコード
-            cvs = document.getElementById(`canvas${i}`);
-            ctx = cvs.getContext('2d');
-            imagedata = cvs.toDataURL("image/jpeg");
-            if (img_index === 0) {
-                pre_imagedata = imagedata;
-                img_index += 1;
-                continue
-            }
-
-            //ページを増やす
-            doc.addPage({orientation: "landscape"});
-
-            // 左の画像
-            x = ( 297/2 - width ) / 2;
-            // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-            doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
-            doc.text(String(img_index), x-15, y+10);
-
-            // 右の画像
-            x += 297/2
-            // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-            doc.addImage(imagedata, 'JPEG', x, y, width, height);
-            doc.text(String(img_index+1), x-15, y+10);
-
+    for(let i =0; i<selectedFrameOfIndex.length; i++) {
+        // canvasに書かれたデータを読み取るコード
+        cvs = document.getElementById(`canvas${selectedFrameOfIndex[i]}`);
+        ctx = cvs.getContext('2d');
+        imagedata = cvs.toDataURL("image/jpeg");
+        if (i === 0) {
             pre_imagedata = imagedata;
-            img_index += 1;
+            continue
         }
+
+        //ページを増やす
+        doc.addPage({orientation: "landscape"});
+
+        // 左の画像
+        x = ( 297/2 - width ) / 2;
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
+        doc.text(String(i), x-15, y+10);
+
+        // 右の画像
+        x += 297/2
+        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.text(String(i+1), x-15, y+10);
+
+        pre_imagedata = imagedata;
     }
     
     // doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
