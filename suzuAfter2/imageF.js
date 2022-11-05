@@ -205,8 +205,8 @@ function addCanvas( parentname, name, index) {
     let canvasElement = document.createElement('canvas');
     // canvasElement.id = "stamp" + (index);
     canvasElement.id = name + (index);
-    canvasElement.style.width  = stamp_siv_width+"px";
-    canvasElement.style.height = stamp_siv_height+"px";
+    canvasElement.style.width  = stamp_siv_width/2+"px";
+    canvasElement.style.height = stamp_siv_height/2+"px";
     canvasElement.style.border = "1px solid";
     //canvasElement.style.float = "left";
     canvasElement.willReadFrequently = true;

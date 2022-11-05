@@ -19,3 +19,18 @@ body {
 canvas {
   border: 1px solid #000;      /* わかりやすくボーダーを引く,　なくて良い */
 }
+
+
+/*  */
+.stamps{
+  display: flex;
+}
+
+.stampWindow{
+  float: left;
+}
+
+.toolWindow{
+  float: left;
+  padding-left: 20px;
+}

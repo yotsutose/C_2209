@@ -39,7 +39,9 @@
                     </div>
                 </div>
             </details>
+        </div>
 
+        <div class="pagenation">
             <h2>選択された画像の一覧画面</h2>
             <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas(99)">
             <div class="box">
@@ -47,7 +49,9 @@
                     <!-- ここに選択された画像がappendされる -->
                 </div>
             </div>
+        </div>
 
+        <div class="pagenation">
             <h2>パワポの生成ボタン</h2>
             <input type="button" value="make PPTX" onclick="makePPTX()">
             <h2>PDFの生成ボタン</h2>
@@ -55,8 +59,31 @@
             <h2>編集画面へ</h2>
             <input type="button" value="move_for_next" onclick="movePage()">
         </div> 
-        <div class="pagenation">
 
+
+
+        <div class="pagenation">
+            <h2>編集画面</h2>
+            <p>
+                <canvas id="canvas" style="border: 1px solid;"></canvas>
+            </p>
+
+            <div class="canvases_List">
+                <!-- ここに選択された画像がappendされる -->
+            </div>
+
+            <div class="stampWindow">
+                <p>スタンプセット</p>
+                <div class="stamps">
+                    <!-- <canvas id="stamp" style="border: 1px solid;"></canvas> -->
+                </div>
+            </div>
+            <div class="toolWindow">
+                <p>ツールセット</p>
+                <div class="tools">
+                    <input type="button" value="reset" onclick="reset()">
+                </div>
+            </div>
         </div>
     
     <!-- ここまでHTML-->
@@ -75,6 +102,35 @@
 
         <!-- 自作のJavaScriptのコードの読み込み-->
         <script src="./index.js"></script>
+        <script src="./imageF.js"></script>
+
+        <!-- JQueryとScrollifyのコード本体を読み込む -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollify/1.0.21/jquery.scrollify.min.js" integrity="sha512-UyX8JsMsNRW1cYl8BoxpcamonpwU2y7mSTsN0Z52plp7oKo1u92Xqfpv6lOlTyH3yiMXK+gU1jw0DVCsPTfKew==" crossorigin="anonymous"></script>
+
+        <!-- scrollifyの設定コード(jsコードと分離するためここに記述) -->
+        <script>
+            $(function() {
+                $.scrollify({
+                    section : ".pagenation",
+                    sectionName : "section-name",
+                    interstitialSection : "",
+                    easing: "easeOutExpo",
+                    scrollSpeed: 300,
+                    offset : 0,
+                    scrollbars: false,
+                    standardScrollElements: ".box-canvases",
+                    setHeights: true,
+                    overflowScroll: false,
+                    updateHash: true,
+                    touchScroll: false,
+                    before:function() {},
+                    after:function() {},
+                    afterResize:function() {},
+                    afterRender:function() {}
+                });
+            });
+        </script>
     <!-- ここまでJavaScript -->
 </body>
 
