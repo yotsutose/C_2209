@@ -264,6 +264,8 @@ function makePPTX() {
 
 // PDFを作る関数
 function makePDF() {
+    const allStart = performance.now();
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
@@ -287,9 +289,15 @@ function makePDF() {
 
     for(let i=0; i<indexOfSelectedFrame.length; i++) {
         // canvasに書かれたデータを読み取るコード
+        console.log("--------４段---------");
+        let startTime = performance.now();
+
         cvs = document.getElementById(`canvas${indexOfSelectedFrame[i]}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
+
+        let endTime = performance.now();
+        console.log("キャンバスの取得時間:" + (endTime - startTime));
         
         if (i % 8 === 0 && i !== 0){
             // ページを増やす
@@ -298,9 +306,14 @@ function makePDF() {
             y2 = 42.5;
         }
 
-        // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+        startTime = performance.now();
+
+        doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i+1), x-13, y+10);  // 画像番号
+
+        endTime = performance.now();
+        console.log("画像と枠線と番号の追加時間：" + (endTime - startTime));
 
         if (i % 4 === 3){
             x = 25;
@@ -314,6 +327,10 @@ function makePDF() {
                 x2 += 70 
             }
         }
+
+        endTime = performance.now();
+        console.log("矢印込みの追加時間：" + (endTime - startTime));
+
     }
 
     // 画像を２枚ずつ連番で出力
@@ -326,10 +343,17 @@ function makePDF() {
     doc.setFontSize(35);  
 
     for(let i =0; i<indexOfSelectedFrame.length; i++) {
+        console.log("--------2段---------");
         // canvasに書かれたデータを読み取るコード
+        startTime = performance.now();
+
         cvs = document.getElementById(`canvas${indexOfSelectedFrame[i]}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
+
+        let endTime = performance.now();
+        console.log("キャンバスの取得時間:" + (endTime - startTime));
+
         if (i === 0) {
             pre_imagedata = imagedata;
             continue
@@ -338,9 +362,11 @@ function makePDF() {
         //ページを増やす
         doc.addPage({orientation: "landscape"});
 
+        startTime = performance.now();
+
         // 左の画像
         x = ( 297/2 - width ) / 2;
-        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
 
@@ -348,9 +374,12 @@ function makePDF() {
 
         // 右の画像
         x += 297/2
-        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
         doc.addImage(imagedata, 'JPEG', x, y, width, height);
         doc.text(String(i+1), x-15, y+10);
+
+        endTime = performance.now();
+        console.log("画像２枚と枠線と矢印の追加時間：" + (endTime - startTime));
 
         pre_imagedata = imagedata;
     }
@@ -360,4 +389,7 @@ function makePDF() {
     // doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
 
     doc.save("らくらくトリセツ.pdf");
+
+    const allEnd = performance.now();
+    console.log("全実行時間：" + (allEnd - allStart));
 }
