@@ -276,28 +276,26 @@ function makePDF() {
     let y2 = 42.5;
     let width = 43.9;
     let height = 95;
-    let indexOfSelectedFrame = []
+    let selectedImageData = [];
 
     // フォントサイズの指定
     doc.setFontSize(27);
 
+    // let startTime = performance.now();
+    // canvasに書かれたデータを読み取るコード
     for(let i=0; i<stateOfFrame.length; i++) {
         if(stateOfFrame[i]) {
-            indexOfSelectedFrame.push(i);
+            cvs = document.getElementById(`canvas${i}`);
+            ctx = cvs.getContext('2d');
+            imagedata = cvs.toDataURL("image/jpeg");
+            selectedImageData.push(imagedata);
         }
     }
+    // let endTime = performance.now();
+    // console.log("キャンバスの取得時間:" + (endTime - startTime));
 
-    for(let i=0; i<indexOfSelectedFrame.length; i++) {
-        // canvasに書かれたデータを読み取るコード
-        console.log("--------４段---------");
-        let startTime = performance.now();
-
-        cvs = document.getElementById(`canvas${indexOfSelectedFrame[i]}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
-
-        let endTime = performance.now();
-        console.log("キャンバスの取得時間:" + (endTime - startTime));
+    for(let i=0; i<selectedImageData.length; i++) {
+        // console.log("--------４列---------");
         
         if (i % 8 === 0 && i !== 0){
             // ページを増やす
@@ -306,14 +304,14 @@ function makePDF() {
             y2 = 42.5;
         }
 
-        startTime = performance.now();
+        // startTime = performance.now();
 
         doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
         doc.text(String(i+1), x-13, y+10);  // 画像番号
 
-        endTime = performance.now();
-        console.log("画像と枠線と番号の追加時間：" + (endTime - startTime));
+        // endTime = performance.now();
+        // console.log("画像・枠線・番号の追加時間：" + (endTime - startTime));
 
         if (i % 4 === 3){
             x = 25;
@@ -322,52 +320,41 @@ function makePDF() {
             y2 += 100;
         } else {
             x += 70;
-            if(i != indexOfSelectedFrame.length-1){
+            if(i != selectedImageData.length-1){
                 doc.addImage('images/arrow.png', 'PNG', x2, y2, 20, 20);
                 x2 += 70 
             }
         }
 
-        endTime = performance.now();
-        console.log("矢印込みの追加時間：" + (endTime - startTime));
+        // endTime = performance.now();
+        // console.log("矢印込みの追加時間：" + (endTime - startTime));
 
     }
 
     // 画像を２枚ずつ連番で出力
     height = 160;
     width = 73.9;
-    let pre_imagedata = null;
     y = 25;
 
     // フォントサイズの指定
     doc.setFontSize(35);  
 
-    for(let i =0; i<indexOfSelectedFrame.length; i++) {
-        console.log("--------2段---------");
-        // canvasに書かれたデータを読み取るコード
-        startTime = performance.now();
-
-        cvs = document.getElementById(`canvas${indexOfSelectedFrame[i]}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
-
-        let endTime = performance.now();
-        console.log("キャンバスの取得時間:" + (endTime - startTime));
+    for(let i =0; i<selectedImageData.length; i++) {
+        // console.log("--------２列---------");
 
         if (i === 0) {
-            pre_imagedata = imagedata;
             continue
         }
 
         //ページを増やす
         doc.addPage({orientation: "landscape"});
 
-        startTime = performance.now();
+        // startTime = performance.now();
 
         // 左の画像
         x = ( 297/2 - width ) / 2;
         doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(pre_imagedata, 'JPEG', x, y, width, height);
+        doc.addImage(selectedImageData[i-1], 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
 
         doc.addImage('images/arrow.png', 131.8, 88.4, 33.3, 33.3);
@@ -375,13 +362,11 @@ function makePDF() {
         // 右の画像
         x += 297/2
         doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
         doc.text(String(i+1), x-15, y+10);
 
-        endTime = performance.now();
-        console.log("画像２枚と枠線と矢印の追加時間：" + (endTime - startTime));
-
-        pre_imagedata = imagedata;
+        // endTime = performance.now();
+        // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime));
     }
         
     // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
