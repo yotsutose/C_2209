@@ -18,12 +18,14 @@
             </div>
             <div style="text-align:center">
                 <button class="buttonDiv" type="reset">
-                    <img class="selectVideo" src="assets/動画選択.png">
+                    <label>
+                        <span title="ファイルを選択">
+                            <img src="assets/動画選択.png">
+                        </span>
+                        <input type="file" id="filename" accept="video/*" hidden>
+                    </label>
                 </button>
-            </div>     
-            <div style="text-align:center">
-                <input type="file" id="filename" accept="video/*">
-            </div>     
+            </div>    
             <div style="text-align:center">
                 <a class="buttonDiv" href="https://github.com/jphacks/C_2209/tree/master/WebApp/documents">
                     <img src="assets/使い方ボタン.png">
