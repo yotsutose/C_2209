@@ -1,0 +1,146 @@
+<!-- 
+
+    編集画面への遷移検証テスト用
+
+-->
+
+<!doctype html>
+<html>
+
+<head>
+    <title>らくらくトリセツ.Web</title>
+    <link href="index.css" rel="stylesheet">
+    <!-- Webサイトのアイコンはここで設定する: favicon -->
+</head>
+
+<body>
+    <!-- ここからHTML-->
+        <div class="pagenation">
+            <h1>らくらくトリセツ</h1>
+
+            <h2>ファイル選択画面</h2>
+            <input type="file" id="filename" accept="video/*">
+            <!-- 検証テスト-->
+            <p id="suzu_test1">AA</p>
+            <p id="suzu_test2">AA</p>
+            <div style="width: 800px; height: 200px; overflow: auto;"> 
+                <!-- 828 x 1792 -->
+                <video id="video" muted playsinline autoplay="false"></video>
+            </div>
+
+            <details> <!-- トグルになってる部分 -->
+                <summary>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</summary>
+                <h2>【debug用】フレーム間のdiffを確認 ( diff | pre_src | src )</h2>
+                <div class="box">
+                    <div class="canvasOutput">
+                        <canvas id="canvasOutput"  width="320" height="640" style="width:320px; height:640px;"></canvas>
+                        <canvas id="canvasOutput2" width="320" height="640" style="width:320px; height:640px;"></canvas>
+                        <canvas id="canvasOutput3" width="320" height="640" style="width:320px; height:640px;"></canvas>
+                    </div>
+                </div>
+            </details>
+        </div>
+
+        <div class="pagenation">
+            <h2>選択された画像の一覧画面</h2>
+            <input type="button" value="【debug用】canvasesにcanvasを追加するボタン" onclick="addCanvas(99)">
+            <div class="box">
+                <div class="canvases">
+                    <!-- ここに選択された画像がappendされる -->
+                </div>
+            </div>
+        </div>
+
+        <div class="pagenation">
+            <h2>パワポの生成ボタン</h2>
+            <input type="button" value="make PPTX" onclick="makePPTX()">
+            <h2>PDFの生成ボタン</h2>
+            <input type="button" value="make PDF" onclick="makePDF()">
+            <h2>編集画面へ</h2>
+            <input type="button" value="move_for_next" id="moveB" onclick="movePage()">
+        </div> 
+
+
+
+        <div class="pagenation">
+            <h2>編集画面</h2>
+            <p>
+                <canvas id="canvasBack" style="border: 1px solid;"></canvas>
+            </p>
+
+            <div class="stampWindow">
+                <p>スタンプセット</p>
+                <div class="stamps">
+                    <!-- <canvas id="stamp" style="border: 1px solid;"></canvas> -->
+                </div>
+            </div>
+            <div class="toolWindow">
+                <p>ツールセット</p>
+                <div class="tools">
+                    <input type="button" value="reset" onclick="reset()">
+                </div>
+            </div>
+        </div>
+        
+        <div class="pagenation">
+            <p>LL</p>
+            <div class="canvases_List">
+                <!-- ここに選択された画像がappendされる -->
+            </div>
+            <div class="move_button">
+                <input type="button" value="左" id="left_move">
+                <input type="button" value="右" id="right_move">
+            </div>
+            <div>
+                <img src="" alt="" id="tttt" hidden>
+            </div>
+        </div>
+    <!-- ここまでHTML-->
+
+    <!-- ここからJavaScript -->
+        <!-- opencv.jsのコード本体を読み込む -->
+        <!-- <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script> -->
+        <script async src="https://docs.opencv.org/4.6.0/opencv.js" type="text/javascript" onload="onCvLoaded();"></script>
+        
+        <!-- pptxgen.jsのコード本体を読み込む -->
+        <script async src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.11.0/libs/jszip.min.js"></script>
+        <script async src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.min.js"></script>
+
+        <!-- jsPDFのコード本体を読み込む -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+        <!-- 自作のJavaScriptのコードの読み込み-->
+        <script src="./index.js"></script>
+        <script src="./imageF.js"></script>
+
+        <!-- JQueryとScrollifyのコード本体を読み込む -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/scrollify/1.0.21/jquery.scrollify.min.js" integrity="sha512-UyX8JsMsNRW1cYl8BoxpcamonpwU2y7mSTsN0Z52plp7oKo1u92Xqfpv6lOlTyH3yiMXK+gU1jw0DVCsPTfKew==" crossorigin="anonymous"></script>
+
+        <!-- scrollifyの設定コード(jsコードと分離するためここに記述) -->
+        <script>
+            $(function() {
+                $.scrollify({
+                    section : ".pagenation",
+                    sectionName : "section-name",
+                    interstitialSection : "",
+                    easing: "easeOutExpo",
+                    scrollSpeed: 300,
+                    offset : 0,
+                    scrollbars: false,
+                    standardScrollElements: ".box-canvases",
+                    setHeights: true,
+                    overflowScroll: false,
+                    updateHash: true,
+                    touchScroll: false,
+                    before:function() {},
+                    after:function() {},
+                    afterResize:function() {},
+                    afterRender:function() {}
+                });
+            });
+        </script>
+    <!-- ここまでJavaScript -->
+</body>
+
+</html>

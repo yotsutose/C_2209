@@ -1,0 +1,60 @@
+body {
+	background-color:#FCFFEE;		/*ページ全体の背景色*/
+  margin: auto;
+  width: 960px;
+}
+
+.box {
+  width: 1000px;                /* 横幅を200pxに指定 */
+  height: 650px;               /* 横幅を200pxに指定 */
+  border: 1px solid #000;      /* わかりやすくボーダーを引く */
+  overflow-x: scroll;          /* 横方向にスクロール可能にする */
+}
+
+.canvases {
+  width: 12345px;                /* 親要素よりも大きくする */
+  display: flex;                /* 横並びにする */
+}
+
+canvas {
+  border: 1px solid #000;      /* わかりやすくボーダーを引く,　なくて良い */
+}
+
+
+
+
+/*  */
+.stamps{
+  display: flex;
+}
+
+.stampWindow{
+  float: left;
+}
+
+.toolWindow{
+  float: left;
+  padding-left: 20px;
+}
+
+.canvases_List{
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  
+  scroll-behavior: smooth;
+}
+
+.move_button{
+  display: flex;
+}
+
+.area {
+  scroll-snap-align: center;
+  width: 100vh;
+  margin:0 20px;
+}
+
+.pagenation{
+  padding:0 50px;
+}
