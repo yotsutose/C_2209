@@ -38,7 +38,7 @@ canvas {
 }
 
 
-.buttonDiv { /* 画像ボタンを作る時のdiv設定 */
+.buttonDiv { /* 画像ボタンを作る時のdiv設定(外枠をなくす) */
   width: auto;
   padding:0;
   margin:0;
@@ -48,4 +48,8 @@ canvas {
   line-height:0;
   overflow:visible;
   cursor:pointer;
+}
+
+.buttonImage { /* スマホ版のボタン画像のサイズを指定する */
+  max-width: 35vw;
 }
