@@ -147,9 +147,6 @@ function onReady() {
         
         pre_src = src.clone(); // 30フレームx10秒くらいやると落ちる, 6フレームx50秒くらいまで耐えられる
         setTimeout(processVideo, 0);
-        // setTimeout(function () {
-        //     processVideo();
-        // }, 0);
     }
 }
 
