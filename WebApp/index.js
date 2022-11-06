@@ -275,7 +275,8 @@ function makePDF() {
     let x2 = 72;    // 矢印画像用
     let y2 = 42.5;
     let width = 43.9;
-    let height = 95;
+    // let height = 95;
+    let height = width * videoRatio;
     let selectedImageData = [];
 
     // フォントサイズの指定
@@ -332,8 +333,9 @@ function makePDF() {
     }
 
     // 画像を２枚ずつ連番で出力
-    height = 160;
+    // height = 160;
     width = 73.9;
+    height = width * videoRatio;
     y = 25;
 
     // フォントサイズの指定
