@@ -264,7 +264,6 @@ function makePPTX() {
 
 // PDFを作る関数
 function makePDF() {
-    console.log(stateOfFrame);
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
