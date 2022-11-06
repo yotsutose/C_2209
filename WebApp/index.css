@@ -53,3 +53,41 @@ canvas {
 .buttonImage { /* スマホ版のボタン画像のサイズを指定する */
   max-width: 35vw;
 }
+
+
+
+/*  */
+.stamps{
+  display: flex;
+}
+
+/* .stampWindow{
+  float: left;
+}
+
+.toolWindow{
+  float: right;
+  padding-left: 20px;
+} */
+
+.canvases_List{
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  
+  scroll-behavior: smooth;
+}
+
+.move_button{
+  display: flex;
+}
+
+.area {
+  scroll-snap-align: center;
+  width: 100vh;
+  margin:0 20px;
+}
+
+.pagenation{
+  padding:0 50px;
+}

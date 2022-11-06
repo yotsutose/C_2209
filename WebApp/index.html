@@ -68,12 +68,46 @@
             <input type="button" value="make PPTX" onclick="makePPTX()">
             <h2>PDFの生成ボタン</h2>
             <input type="button" value="make PDF" onclick="makePDF()">
+            <h2>編集画面へ</h2>
+            <input type="button" value="move_for_next" id="moveB" onclick="nextPage()">
+        </div>
+
+    
+        
+        <div class="pagenation">
+            <h2>編集画面</h2>
+            <div class="stampWindow">
+                <p>スタンプセット</p>
+                <div class="stamps">
+                    <!-- <canvas id="stamp" style="border: 1px solid;"></canvas> -->
+                </div>
+            </div>
+            <div class="toolWindow">
+                <p>ツールセット</p>
+                <div class="tools">
+                    <input type="button" value="reset" onclick="reset()">
+                </div>
+            </div>
+            
+            <div class="canvases_List">
+                <!-- ここに選択された画像がappendされる -->
+            </div>
+            <div>
+                <img src="" alt="ここは新品を保存するところ" id="tttt" hidden>
+            </div>
+        </div>
+
+        <div class="pagenation">
+            <p>
+                <canvas id="canvasBack" style="border: 1px solid;"></canvas>
+            </p>
         </div>
     <!-- ここまでHTML-->
 
     <!-- ここからJavaScript -->
         <!-- 自作のJavaScriptのコードの読み込み-->
         <script src="./index.js"></script>
+        <script src="./imageF.js"></script>
 
         <!-- opencv.jsのコード本体を読み込む -->
         <!-- <script async src="./opencv.js" type="text/javascript" onload="onCvLoaded();"></script> -->
@@ -101,7 +135,7 @@
                     scrollSpeed: 300,
                     offset : 0,
                     scrollbars: false,
-                    standardScrollElements: ".box-canvases",
+                    standardScrollElements: ".box-canvases, .stampdiv",
                     setHeights: true,
                     overflowScroll: false,
                     updateHash: true,
