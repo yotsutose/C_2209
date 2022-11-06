@@ -10,3 +10,5 @@
 *.pptx
 .DS_Store
 !/WebApp/assets/*
+!/suzuAfter2/image/*
+!/suzuAfter2/image/stm/*
