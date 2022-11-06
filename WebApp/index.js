@@ -34,7 +34,6 @@ function modeChange() {
     let mode = document.getElementsByClassName('mode');
     let modeChange = document.getElementsByClassName('modeChange');
     [mode[0].hidden, mode[1].hidden] = [mode[1].hidden, mode[0].hidden];
-    console.log(modeChange.length);
     [modeChange[0].hidden, modeChange[1].hidden] = [modeChange[1].hidden, modeChange[0].hidden];
 }
 
