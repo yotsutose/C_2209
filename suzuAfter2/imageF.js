@@ -191,8 +191,11 @@ async function concatCanvas_M(base, asset, cX, cY, mag){
 function getImagefromCanvas(id){
     return new Promise((resolve, reject) => {
         const image = new Image();
-        const ctx = document.querySelector(id).getContext("2d");
-        image.onload = () => resolve(image);
+        const cnv = document.querySelector(id);
+        const ctx = cnv.getContext("2d");
+        image.onload = () => {
+            resolve(image);
+        }
         image.onerror = (e) => reject(e);
         image.src = ctx.canvas.toDataURL();
     });
@@ -266,6 +269,7 @@ async function addCanvasList(){
 
         let flag = true;
         canvasP.addEventListener("click", point=>{
+            console.log(id);
             let ff = document.getElementById("tttt");
             if(flag == true){
                 ff.src = canvasP.toDataURL("image/jpeg");
