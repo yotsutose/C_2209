@@ -1,21 +1,52 @@
 body {
 	background-color:#FCFFEE;		/*ページ全体の背景色*/
-  margin: auto;
-  width: 960px;
+  max-width: 1000px; margin: auto;
 }
 
-.box {
-  width: 1000px;                /* 横幅を200pxに指定 */
-  height: 650px;               /* 横幅を200pxに指定 */
+.pagenation {
+  height: 100vh;
+}
+
+.box-canvases {
+  height: 550px;               /* canvasの表示する高さを指定 */
   border: 1px solid #000;      /* わかりやすくボーダーを引く */
   overflow-x: scroll;          /* 横方向にスクロール可能にする */
 }
 
 .canvases {
-  width: 12345px;                /* 親要素よりも大きくする */
+  width: 4321px;                /* 親要素よりも大きくする */
   display: flex;                /* 横並びにする */
 }
 
 canvas {
   border: 1px solid #000;      /* わかりやすくボーダーを引く,　なくて良い */
+}
+
+.titleLogo { /* タイトルロゴの大きさ設定 */
+  width: 100%;
+  max-width: 800px; 
+  height:auto;
+}
+
+.mode {
+  max-width:100%;
+}
+
+.selectVideo {
+  width: 100%;
+  max-width: 500px; 
+  height:auto;
+}
+
+
+.buttonDiv { /* 画像ボタンを作る時のdiv設定 */
+  width: auto;
+  padding:0;
+  margin:0;
+  background:none;
+  border:0;
+  font-size:0;
+  line-height:0;
+  overflow:visible;
+  cursor:pointer;
 }
