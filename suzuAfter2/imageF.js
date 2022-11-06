@@ -163,17 +163,28 @@ canvasL.addEventListener("click", point=>{
     
     c.drawImage(img, 0, 0, w, h); //リセット
     let asset_id = '#'+stamp_id_S;
-    concatCanvas("#canvasBack", asset_id, canvasX, canvasY);
+    concatCanvas("#canvasBack", asset_id, canvasX, canvasY, 1);
     //concatCanvas("#canvas", "#stamp");
 });
 
-async function concatCanvas(base, asset, cX, cY){
+//スタンプ用
+async function concatCanvas(base, asset, cX, cY, mag){
     const canvasM = document.querySelector(base); //ここは変えない方が良い
     //console.log(canvasM);
     const ctx = canvasM.getContext("2d");
 
     const image1 = await getImagefromCanvas(asset);
-    ctx.drawImage(image1, cX-(asset_w), cY-(asset_h), image1.width, image1.height);
+    ctx.drawImage(image1, cX-(asset_w), cY-(asset_h), image1.width/mag, image1.height/mag);
+
+}
+
+async function concatCanvas_M(base, asset, cX, cY, mag){
+    const canvasM = document.querySelector(base); //ここは変えない方が良い
+    //console.log(canvasM);
+    const ctx = canvasM.getContext("2d");
+
+    const image1 = await getImagefromCanvas(asset);
+    ctx.drawImage(image1, cX, cY, image1.width/mag, image1.height/mag);
 
 }
 
@@ -221,17 +232,22 @@ function addCanvas_Re( parentname, name, index, width_, height_, class_name) {
 let button_move = document.getElementById("moveB");
 button_move.addEventListener("click", addCanvasList);
 
-function addCanvasList(){
+
+let width_prepdf = 100;
+let height_prepdf = 80;
+
+async function addCanvasList(){
     console.log('生成');
     let index_length = document.getElementsByClassName("canvases");
     var CNodeList = index_length[0].getElementsByTagName("canvas");
 
     console.log(CNodeList.length);
 
-    // for(let i=0; i<CNodeList.length-1; i++){
-    for(let i=0; i<5; i++){
+    for(let i=0; i<CNodeList.length-1; i++){
+    // for(let i=0; i<5; i++){
         console.log("BB");
         let id = addCanvas_Re("canvases_List","canvasN", i, w, h, "area");
+        let base_id = '#'+id;
         let canvasP = document.getElementById(id);
         let ctcc = canvasP.getContext('2d');
         // ctcc.width = w;
@@ -239,9 +255,26 @@ function addCanvasList(){
         canvasP.width = w;
         canvasP.height = h;
         console.log('mantion'+w);
-        ctcc.drawImage(img, 0, 0, w, h); 
+        ctcc.drawImage(img, 0, 0, w, h);
 
+        let page_id = '#' + CNodeList[i].id;
+        concatCanvas_M(base_id, page_id, width_prepdf, height_prepdf ,4);
+        let pageN_id = '#' + CNodeList[i+1].id;
+        concatCanvas_M(base_id, pageN_id, width_prepdf+400, height_prepdf ,4);
+
+        console.log("loaded");
+
+        let flag = true;
         canvasP.addEventListener("click", point=>{
+            let ff = document.getElementById("tttt");
+            if(flag == true){
+                ff.src = canvasP.toDataURL("image/jpeg");
+                ff.onload = ()=>{
+                    console.log("NN");
+                }
+                flag = false;
+            }
+
             const rect = point.target.getBoundingClientRect();
         
             // ブラウザ上での座標を求める
@@ -256,12 +289,16 @@ function addCanvasList(){
             const   canvasX = Math.floor( viewX / scaleWidth ),
                     canvasY = Math.floor( viewY / scaleHeight );
         
+            console.log( "tap" );
             console.log( canvasX,canvasY );
             
-            ctcc.drawImage(img, 0, 0, w, h); //リセット
-            let base_id = '#'+id;
+            //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
+            ctcc.drawImage(ff, 0, 0, w, h); //リセット
+            //ctcc = save[i];
+            // let base_id = '#'+id;
             let asset_id = '#'+stamp_id_S;
-            concatCanvas(base_id, asset_id, canvasX, canvasY);
+            concatCanvas(base_id, asset_id, canvasX, canvasY, 1);
         });
+        
     }
 }
