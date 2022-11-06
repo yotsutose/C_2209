@@ -275,20 +275,20 @@ function makePDF() {
     let y2 = 42.5;
     let width = 43.9;
     let height = 95;
-    let selectedFrameOfIndex = []
+    let IndexOfselectedFrame = []
 
     // フォントサイズの指定
     doc.setFontSize(27);
 
     for(let i=0; i<stateOfFrame.length; i++) {
         if(stateOfFrame[i]) {
-            selectedFrameOfIndex.push(i);
+            IndexOfselectedFrame.push(i);
         }
     }
 
-    for(let i=0; i<selectedFrameOfIndex.length; i++) {
+    for(let i=0; i<IndexOfselectedFrame.length; i++) {
         // canvasに書かれたデータを読み取るコード
-        cvs = document.getElementById(`canvas${selectedFrameOfIndex[i]}`);
+        cvs = document.getElementById(`canvas${IndexOfselectedFrame[i]}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
         
@@ -310,7 +310,7 @@ function makePDF() {
             y2 += 100;
         } else {
             x += 70;
-            if(i != selectedFrameOfIndex.length-1){
+            if(i != IndexOfselectedFrame.length-1){
                 doc.addImage('images/arrow.png', 'PNG', x2, y2, 20, 20);
                 x2 += 70 
             }
@@ -326,9 +326,9 @@ function makePDF() {
     // フォントサイズの指定
     doc.setFontSize(35);  
 
-    for(let i =0; i<selectedFrameOfIndex.length; i++) {
+    for(let i =0; i<IndexOfselectedFrame.length; i++) {
         // canvasに書かれたデータを読み取るコード
-        cvs = document.getElementById(`canvas${selectedFrameOfIndex[i]}`);
+        cvs = document.getElementById(`canvas${IndexOfselectedFrame[i]}`);
         ctx = cvs.getContext('2d');
         imagedata = cvs.toDataURL("image/jpeg");
         if (i === 0) {
