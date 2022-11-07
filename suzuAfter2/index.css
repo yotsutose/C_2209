@@ -1,19 +1,18 @@
 body {
 	background-color:#FCFFEE;		/*ページ全体の背景色*/
-  max-width: 1000px; margin: auto;
+  margin: auto;
+  width: 960px;
 }
 
-.pagenation {
-  height: 100vh;
-}
-
-.box-canvases {
-  height: 550px;               /* canvasの表示する高さを指定 */
+.box {
+  width: 1000px;                /* 横幅を200pxに指定 */
+  height: 650px;               /* 横幅を200pxに指定 */
   border: 1px solid #000;      /* わかりやすくボーダーを引く */
   overflow-x: scroll;          /* 横方向にスクロール可能にする */
 }
 
 .canvases {
+  width: 12345px;                /* 親要素よりも大きくする */
   display: flex;                /* 横並びにする */
 }
 
@@ -21,38 +20,6 @@ canvas {
   border: 1px solid #000;      /* わかりやすくボーダーを引く,　なくて良い */
 }
 
-.titleLogo { /* タイトルロゴの大きさ設定 */
-  width: 100%;
-  max-width: 800px; 
-  height:auto;
-}
-
-.mode {
-  max-width:100%;
-}
-
-.selectVideo {
-  width: 100%;
-  max-width: 500px; 
-  height:auto;
-}
-
-
-.buttonDiv { /* 画像ボタンを作る時のdiv設定(外枠をなくす) */
-  width: auto;
-  padding:0;
-  margin:0;
-  background:none;
-  border:0;
-  font-size:0;
-  line-height:0;
-  overflow:visible;
-  cursor:pointer;
-}
-
-.buttonImage { /* スマホ版のボタン画像のサイズを指定する */
-  max-width: 35vw;
-}
 
 
 
@@ -61,14 +28,14 @@ canvas {
   display: flex;
 }
 
-/* .stampWindow{
+.stampWindow{
   float: left;
 }
 
 .toolWindow{
-  float: right;
+  float: left;
   padding-left: 20px;
-} */
+}
 
 .canvases_List{
   display: flex;

@@ -10,3 +10,7 @@
 *.pptx
 .DS_Store
 !/WebApp/assets/*
+!/WebApp/assets/stamps/*
+!/suzuAfter2/image/*
+!/suzuAfter2/image/stm/*
+.vscode/*
