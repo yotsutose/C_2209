@@ -194,6 +194,7 @@ function addCanvas(i, isSelected) {
 
 // パワーポイントを作る関数
 function makePPTX() {
+    const allStart = performance.now();
     function Cm(n) {
         return n * 0.3937;
     }
@@ -201,98 +202,148 @@ function makePPTX() {
         return n / 72;
     }
 
+    //let startTime = performance.now();
+
     let pptx = new PptxGenJS();
     pptx.defineLayout({ name:'A4', width:11.7, height:8.3 });
     pptx.layout = 'A4';
     let slide = pptx.addSlide();
+
     let x = Cm(2.5);
     let y = Cm(0.5);
     let x2 = Cm(7.2);
     let y2 = Cm(4.25);
     let width = Cm(4.39);
-    let height = Cm(9.5);
+    //let height = Cm(9.5);
+    let height = width * videoRatio;
+    let selectedImageData = [];
     let size = 28;
-    for(let i = 0; i < index; i++) {
+
+    // canvasに書かれたデータを読み取るコード
+    for(let i=0; i<stateOfFrame.length; i++) {
+        if(stateOfFrame[i]) {
+            cvs = document.getElementById(`canvas${i}`);
+            ctx = cvs.getContext('2d');
+            imagedata = cvs.toDataURL("image/jpeg");
+            selectedImageData.push(imagedata);
+        }
+    }
+
+    //let endTime = performance.now();
+    //console.log("キャンバスの取得時間:" + (endTime - startTime));
+    
+    for(let i = 0; i < selectedImageData.length; i++) {
+
         if (i % 8 === 0 && i!== 0){
             slide = pptx.addSlide();
             y = Cm(0.5);
             y2 = Cm(4.25)
         }
 
-        // canvasに書かれたデータを読み取るコード
-        cvs = document.getElementById(`canvas${i}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
+        //startTime = performance.now();
         
-        slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
+        slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+        slide.addImage({ data: selectedImageData[i], w: width, h: height, x: x, y: y });
         slide.addText(String(i+1), {x: x-Cm(1.5), y: y, w: Pt(size*2), h: Pt(size), color: "363636", fontSize: size});
-        x += Cm(7);
+
+        // endTime = performance.now();
+        // console.log("画像・枠線・番号の追加時間：" + (endTime - startTime));
 
         if (i % 4 == 3){
             x = Cm(2.5);
             y += Cm(10);
             x2 = Cm(7.2)
             y2 += Cm(10)
-        }else if(i != index-1){
-            slide.addImage({ path: "image/arrow.png", w: Cm(2), h: Cm(2), x: x2, y: y2 });
+        } else {
+            x += Cm(7);
+            if (i != selectedImageData.length-1){
+            slide.addImage({ path: "images/arrow.png", w: Cm(2), h: Cm(2), x: x2, y: y2 });
             x2 += Cm(7) 
+            }
         }
+
+        // endTime = performance.now();
+        // console.log("矢印込みの追加時間：" + (endTime - startTime));
     }
 
     //画像を２枚ずつパワポに出力
-    height = Cm(16);
+    //height = Cm(16);
     width = Cm(7.39);
-    let pre_imagedata = null;
+    //let pre_imagedata = null;
+    height = width * videoRatio;
     size = 36;
     y = Cm(2.5);
-    for(let i =0;i<index;i++){
+
+    for(let i=0;i<selectedImageData.length;i++){
+        //console.log("--------２列---------");
+
+
+        if (i === 0) {
+            continue
+        }
+
         slide = pptx.addSlide();
 
-        // canvasに書かれたデータを読み取るコード
-        cvs = document.getElementById(`canvas${i}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
-        if (i==0) {
-            pre_imagedata = imagedata;
-            continue;
-        }
+        // startTime = performance.now();
         
         x = ( 11.7/2 - width ) / 2
-        slide.addImage({ data: pre_imagedata, w: width, h: height, x: x, y: y });
+        slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+        slide.addImage({ data: selectedImageData[i-1], w: width, h: height, x: x, y: y });
         slide.addText(String(i),  {x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
 
-        slide.addImage({ path: "image/arrow.png", w: Cm(3.33), h: Cm(3.33), x: Cm(13.18), y: Cm(8.84) });
+        slide.addImage({ path: "images/arrow.png", w: Cm(3.33), h: Cm(3.33), x: Cm(13.18), y: Cm(8.84) });
         
         x += (11.7/2)
-        slide.addImage({ data: imagedata, w: width, h: height, x: x, y: y });
+        slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+        slide.addImage({ data: selectedImageData[i], w: width, h: height, x: x, y: y });
         slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
+
+        // endTime = performance.now();
+        // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime));
         
-        pre_imagedata = imagedata;
     }
 
     // パワポを保存
     pptx.writeFile({ fileName: "らくらくトリセツ.pptx" });
+    // const allEnd = performance.now();
+    // console.log("全実行時間：" + (allEnd - allStart));
 }
 
 // PDFを作る関数
 function makePDF() {
+    const allStart = performance.now();
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({orientation: "landscape"}); // 向きを指定する
 
-    // １枚目の初期位置
-    let x = 25;
+    // 初期位置
+    let x = 25;     // スマホ画像用
     let y = 5;
-    let x2 = 72;
+    let x2 = 72;    // 矢印画像用
     let y2 = 42.5;
     let width = 43.9;
-    let height = 95;
-    let size = 27;
+    // let height = 95;
+    let height = width * videoRatio;
+    let selectedImageData = [];
 
+    // フォントサイズの指定
+    doc.setFontSize(27);
+
+    // let startTime = performance.now();
     // canvasに書かれたデータを読み取るコード
-    for(let i=0; i<index; i++) {
-        cvs = document.getElementById(`canvas${i}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
+    for(let i=0; i<stateOfFrame.length; i++) {
+        if(stateOfFrame[i]) {
+            cvs = document.getElementById(`canvas${i}`);
+            ctx = cvs.getContext('2d');
+            imagedata = cvs.toDataURL("image/jpeg");
+            selectedImageData.push(imagedata);
+        }
+    }
+    // let endTime = performance.now();
+    // console.log("キャンバスの取得時間:" + (endTime - startTime));
+
+    for(let i=0; i<selectedImageData.length; i++) {
+        // console.log("--------４列---------");
         
         if (i % 8 === 0 && i !== 0){
             // ページを増やす
@@ -301,74 +352,78 @@ function makePDF() {
             y2 = 42.5;
         }
 
-        // doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        // startTime = performance.now();
 
-        // 画像番号の追加
-        doc.setFontSize(size);
-        doc.text(String(i+1), x-13, y+10);
-        x += 70;
+        doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
+        doc.text(String(i+1), x-13, y+10);  // 画像番号
+
+        // endTime = performance.now();
+        // console.log("画像・枠線・番号の追加時間：" + (endTime - startTime));
 
         if (i % 4 === 3){
             x = 25;
             y += 100;
             x2 = 72;
             y2 += 100;
-        }else if(i != index-1){
-            doc.addImage('image/arrow.png', 'PNG', x2, y2, 20, 20);
-            x2 += 70 
+        } else {
+            x += 70;
+            if(i != selectedImageData.length-1){
+                doc.addImage('images/arrow.png', 'PNG', x2, y2, 20, 20);
+                x2 += 70 
+            }
         }
+
+        // endTime = performance.now();
+        // console.log("矢印込みの追加時間：" + (endTime - startTime));
+
     }
 
     // 画像を２枚ずつ連番で出力
-    height = 160;
+    // height = 160;
     width = 73.9;
-
-    let pre_path = null;
-    let path = null;
-    size = 35;
+    height = width * videoRatio;
     y = 25;
 
-    for(let i=0; i<index; i++){
-        // canvasに書かれたデータを読み取るコード
-        cvs = document.getElementById(`canvas${i}`);
-        ctx = cvs.getContext('2d');
-        imagedata = cvs.toDataURL("image/jpeg");
-        path = imagedata;
-        if(i==0){
-            pre_path = path
+    // フォントサイズの指定
+    doc.setFontSize(35);  
+
+    for(let i =0; i<selectedImageData.length; i++) {
+        // console.log("--------２列---------");
+
+        if (i === 0) {
             continue
         }
-        //スライドを増やす
+
+        //ページを増やす
         doc.addPage({orientation: "landscape"});
-        //pre_pathの画像を←に配置
+
+        // startTime = performance.now();
+
+        // 左の画像
         x = ( 297/2 - width ) / 2;
-        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
+        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(selectedImageData[i-1], 'JPEG', x, y, width, height);
         doc.text(String(i), x-15, y+10);
-        pre_path = path
-        doc.addImage('image/arrow.png', 131.8, 88.4, 33.3, 33.3);
-        //pathの画像を→に配置
+
+        doc.addImage('images/arrow.png', 131.8, 88.4, 33.3, 33.3);
+
+        // 右の画像
         x += 297/2
-        // doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
-        doc.addImage(imagedata, 'JPEG', x, y, width, height);
-
-        // 画像番号の追加
-        doc.setFontSize(size);
+        doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+        doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
         doc.text(String(i+1), x-15, y+10);
+
+        // endTime = performance.now();
+        // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime));
     }
-
-    
-    // doc.addImage('images/arrow_big.jpg', 'JPEG', 100, 100, 80, 160);
-
-    // cvs = document.getElementById('canvasOutput2');
-    // ctx = cvs.getContext('2d');
-    // imagedata = cvs.toDataURL("image/jpeg");
-    
+        
     // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
     // https://artskydj.github.io/jsPDF/docs/module-addImage.html
     // doc.addImage(imagedata, 'JPEG', 30, 30, 80, 160);
 
-
     doc.save("らくらくトリセツ.pdf");
+
+    const allEnd = performance.now();
+    console.log("全実行時間：" + (allEnd - allStart));
 }
