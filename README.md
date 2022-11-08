@@ -9,7 +9,7 @@
 
 **(↓↓↓実際に使ってみたい方はこちら↓↓↓)**
 
-[WebApp]
+[Webアプリ]
 https://jphacks.github.io/C_2209/
 
 <details>
