@@ -1,9 +1,21 @@
 # らくらくトリセツ
+```
+ご年配の方に何度も同じスマホ操作を教えた経験はありませんか？一度の画面録画からトリセツを自動で作成します!
+```
 
-[![IMAGE ALT TEXT HERE](https://github.com/jphacks/C_2209/blob/master/WebApp/assets/GitHub%E7%94%A8.png)](https://youtu.be/GY-fjx39K9Y)
+**(↓↓↓クリックして紹介動画を再生できます↓↓↓)**
 
-## (実際に使ってみたい方はこちら)
+[![サービス紹介動画](https://img.youtube.com/vi/GY-fjx39K9Y/0.jpg)](https://www.youtube.com/watch?v=GY-fjx39K9Y)
+
+**(↓↓↓実際に使ってみたい方はこちら↓↓↓)**
+
+[WebApp]
+https://jphacks.github.io/C_2209/
+
+<details>
+<summary>(過去のバージョン) PC版[Pythonが必要です]</summary>
 https://github.com/jphacks/C_2209/tree/master/app
+</details>
 
 ## 製品概要
 
