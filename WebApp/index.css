@@ -95,7 +95,7 @@ canvas {
   padding:0 10px;
 }
 
-.overlapbox{ /*  */
+.centerBox{ /*  */
   position: relative;
   top: 50%;
 	left: 50%;
