@@ -44,7 +44,7 @@ window.onload = ()=>{
             loadcount +=1;
 
             console.log('dddd');
-            let stamp_id = addCanvas_Re('stamps', "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
+            let stamp_id = addCanvas_Re('stamps', "stampdiv", "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
             console.log(stamp_id);
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
@@ -208,12 +208,12 @@ function reset(){
 
 
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
-function addCanvas_Re( parentname, name, index, width_, height_, class_name) {
+function addCanvas_Re( parentname, divname, name, index, width_, height_, class_name) {
 
     let parentnode = document.getElementsByClassName(parentname);
 
     let divElement = document.createElement('div');
-    divElement.className = "stampdiv";
+    divElement.className = divname;
     parentnode[0].appendChild(divElement);
     
     let canvasElement = document.createElement('canvas');
@@ -250,14 +250,14 @@ async function addCanvasList(){
     for(let i=0; i<CNodeList.length-1; i++){
     // for(let i=0; i<5; i++){
         console.log("BB");
-        let id = addCanvas_Re("canvases_List","canvasN", i, w, h, "area");
+        let id = addCanvas_Re("canvases_List", "divdiv", "canvasN", i, w, h, "area");
         let base_id = '#'+id;
         let canvasP = document.getElementById(id);
         let ctcc = canvasP.getContext('2d');
         // ctcc.width = w;
         // ctcc.height = h;
-        canvasP.width = w;
-        canvasP.height = h;
+        canvasP.width = w/2;
+        canvasP.height = h/2;
         console.log('mantion'+w);
         ctcc.drawImage(img, 0, 0, w, h);
 
@@ -298,7 +298,7 @@ async function addCanvasList(){
             console.log( canvasX,canvasY );
             
             //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
-            ctcc.drawImage(ff, 0, 0, w, h); //リセット
+            ctcc.drawImage(ff, 0, 0, w/2, h/2); //リセット
             //ctcc = save[i];
             // let base_id = '#'+id;
             let asset_id = '#'+stamp_id_S;
