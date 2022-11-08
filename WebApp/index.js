@@ -153,7 +153,7 @@ function onReady() {
     }
 }
 
-// 「選択された画像の一覧画面」のところに<canvas>を追加する処理
+// <canvases>の中に<canvas>と<button>を追加する処理
 function addCanvas(i, isSelected) {
 
     let parentnode = document.getElementsByClassName('canvases');
