@@ -72,12 +72,22 @@
         </div>
 
         <div class="pagenation">
-            <h2>パワポの生成ボタン</h2>
-            <input type="button" value="make PPTX" onclick="makePPTX()">
-            <h2>PDFの生成ボタン</h2>
-            <input type="button" value="make PDF" onclick="makePDF()">
-            <h2>編集画面へ</h2>
-            <input type="button" value="move_for_next" id="moveB" onclick="nextPage()">
+            <div style="text-align:center" class="overlapbox">
+                <img style="max-width:100vw;" src="assets/選択完了背景.png">
+                <div style="text-align:center" class="buttoncenter">
+                    <button class="buttonDiv" type="reset" onclick="makePPTX()" >
+                        <img class="bigbuttonImage" src="assets/PPTX生成ボタン.png">
+                    </button>
+                    <button class="buttonDiv" type="reset" onclick="makePDF()">
+                        <img class="bigbuttonImage" src="assets/PDF生成ボタン.png">
+                    </button>
+                </div>
+                <div style="text-align:center" class="buttoncenter2">
+                    <button class="buttonDiv" type="reset" onclick="nextPage()">
+                        <img class="bigbuttonImage" src="assets/編集画面ボタン.png">
+                    </button>
+                </div>
+            </div>
         </div>
 
     

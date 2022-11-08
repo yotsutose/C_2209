@@ -94,3 +94,32 @@ canvas {
 .pagenation{
   padding:0 10px;
 }
+
+.overlapbox{ /*  */
+  position: relative;
+  top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.buttoncenter {
+  position: absolute;
+  width:100%;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.buttoncenter2 {
+  position: absolute;
+  width:100%;
+  top: 87%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+.bigbuttonImage { /* スマホ版のボタン画像のサイズを指定する */
+  max-width: 40vw;
+  min-width: 230px;
+}
