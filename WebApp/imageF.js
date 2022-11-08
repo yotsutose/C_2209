@@ -4,6 +4,9 @@ var canvasL = document.getElementById('canvasBack');
 var c = canvasL.getContext('2d');
 let canvases_L = document.getElementsByClassName("canvases_List");
 
+//押したスタンプの座標
+let relatestamps = [];
+
 // Image オブジェクトを生成
 var img = new Image();
 let images = [];
@@ -51,15 +54,15 @@ window.onload = ()=>{
 
             let ws = images[i].width;
             let hs = images[i].height;
-            console.log('ws'+ws);
-            console.log('hs'+hs);
+            // console.log('ws'+ws);
+            // console.log('hs'+hs);
 
             stamp_C.width = ws/2;
             stamp_C.height = hs/2;
             images[i].width /= 2;
             images[i].height /= 2;
-            console.log('w__'+images[i].width);
-            console.log('h__'+hs);
+            // console.log('w__'+images[i].width);
+            // console.log('h__'+hs);
             ctS.drawImage(images[i], 0, 0, ws/2, hs/2);
 
             stamp_C.addEventListener("click", point=>{
@@ -178,6 +181,10 @@ async function concatCanvas(base, asset, cX, cY, mag){
 
 }
 
+
+//スタンプ台紙用
+let paintImage_w = 0;
+let paintImage_h = 0;
 async function concatCanvas_M(base, asset, cX, cY, mag){
     const canvasM = document.querySelector(base); //ここは変えない方が良い
     //console.log(canvasM);
@@ -186,6 +193,8 @@ async function concatCanvas_M(base, asset, cX, cY, mag){
     const image1 = await getImagefromCanvas(asset);
     ctx.drawImage(image1, cX, cY, image1.width/mag, image1.height/mag);
 
+    paintImage_w = image1.width/mag;
+    paintImage_h = image1.height/mag;
 }
 
 function getImagefromCanvas(id){
@@ -237,6 +246,29 @@ let button_move = document.getElementById("moveB");
 button_move.addEventListener("click", addCanvasList);
 
 
+
+// 「選択された画像の一覧画面」のところに<canvas>を追加する処理
+function addsaveImage( index, width_, height_) {
+
+    let parentnode = document.getElementsByClassName("savaImages");
+
+    let divElement = document.createElement('div');
+    divElement.className = "sadiv";
+    parentnode[0].appendChild(divElement);
+    
+    let imgElement = document.createElement('img');
+    imgElement.id = 'saveI_' + (index);
+    imgElement.style.width  = width_+"px";
+    imgElement.style.height = height_+"px";
+    imgElement.hidden = true;
+    imgElement.willReadFrequently = true;
+
+    divElement.appendChild(imgElement);
+
+    return imgElement.id;
+}
+
+
 let width_prepdf = 100;
 let height_prepdf = 80;
 
@@ -246,9 +278,19 @@ async function addCanvasList(){
     var CNodeList = index_length[0].getElementsByTagName("canvas");
 
     console.log(CNodeList.length);
-
+    let CNodeList2 = [];
+    let j=0;
     for(let i=0; i<CNodeList.length-1; i++){
-    // for(let i=0; i<5; i++){
+        if(!stateOfFrame[i]) {
+            console.log("!!");
+            continue;
+        }
+        CNodeList2[j] = CNodeList[i];
+        j+=1;
+    }
+    console.log(CNodeList2.length);
+
+    for(let i=0; i<CNodeList2.length-1; i++){
         console.log("BB");
         let id = addCanvas_Re("canvases_List", "divdiv", "canvasN", i, w, h, "area");
         let base_id = '#'+id;
@@ -258,18 +300,21 @@ async function addCanvasList(){
         canvasP.height = h;
         ctcc.drawImage(img, 0, 0, w, h);
 
-        let page_id = '#' + CNodeList[i].id;
+        let page_id = '#' + CNodeList2[i].id;
         concatCanvas_M(base_id, page_id, width_prepdf, height_prepdf ,4);
-        let pageN_id = '#' + CNodeList[i+1].id;
+        let pageN_id = '#' + CNodeList2[i+1].id;
         concatCanvas_M(base_id, pageN_id, width_prepdf+400, height_prepdf ,4);
 
         console.log("loaded");
 
         let flag = true;
+        let image_id = "";
+        let ff="";
         canvasP.addEventListener("click", point=>{
             console.log(id);
-            let ff = document.getElementById("tttt");
             if(flag == true){
+                image_id = addsaveImage(i, w, h);
+                ff = document.getElementById(image_id);
                 ff.src = canvasP.toDataURL("image/jpeg");
                 ff.onload = ()=>{
                     console.log("NN");
@@ -293,7 +338,11 @@ async function addCanvasList(){
         
             console.log( "tap" );
             console.log( canvasX,canvasY );
-            
+
+            relatestamps[i] = {rX:(canvasX-width_prepdf-stamp_siv_width/2)/paintImage_w 
+            ,rY:(canvasY-height_prepdf-stamp_siv_height/2)/paintImage_h};
+            console.log(i+':'+base_id+':'+relatestamps[i].rX);
+            console.log(relatestamps);
             //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
             ctcc.drawImage(ff, 0, 0, w, h); //リセット
             //ctcc = save[i];
