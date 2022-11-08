@@ -27,8 +27,8 @@ let w =0;
 let h = 0;
 
 //スタンプの指先の座標
-let asset_w = 132;
-let asset_h = 52;
+let asset_w = stamp_siv_width/2;
+let asset_h = stamp_siv_height/2;
 
 
 window.onload = ()=>{
