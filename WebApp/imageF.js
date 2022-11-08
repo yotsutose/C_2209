@@ -254,11 +254,8 @@ async function addCanvasList(){
         let base_id = '#'+id;
         let canvasP = document.getElementById(id);
         let ctcc = canvasP.getContext('2d');
-        // ctcc.width = w;
-        // ctcc.height = h;
-        canvasP.width = w/2;
-        canvasP.height = h/2;
-        console.log('mantion'+w);
+        canvasP.width = w;
+        canvasP.height = h;
         ctcc.drawImage(img, 0, 0, w, h);
 
         let page_id = '#' + CNodeList[i].id;
@@ -298,7 +295,7 @@ async function addCanvasList(){
             console.log( canvasX,canvasY );
             
             //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
-            ctcc.drawImage(ff, 0, 0, w/2, h/2); //リセット
+            ctcc.drawImage(ff, 0, 0, w, h); //リセット
             //ctcc = save[i];
             // let base_id = '#'+id;
             let asset_id = '#'+stamp_id_S;

@@ -1,0 +1,9 @@
+@media screen and (max-width: 480px){
+    .divdiv {
+        width: 400px;
+        height: 600px;
+    }
+    .area {
+        scroll-snap-align: none;
+    }
+}
