@@ -43,7 +43,7 @@ function makePDF() {
 
       // startTime = performance.now();
 
-      doc.addImage('images/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
+      doc.addImage('assets/black.png', 'PNG', x-0.6, y-0.6, width+1.2, height+1.2);  // 画像の枠線用の黒画像を先に貼る
       doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
       doc.text(String(i+1), x-13, y+10);  // 画像番号
 
@@ -58,7 +58,7 @@ function makePDF() {
       } else {
           x += 70;
           if(i != selectedImageData.length-1){
-              doc.addImage('images/arrow.png', 'PNG', x2, y2, 20, 20);
+              doc.addImage('assets/arrow.png', 'PNG', x2, y2, 20, 20);
               x2 += 70 
           }
       }
@@ -91,15 +91,15 @@ function makePDF() {
 
       // 左の画像
       x = ( 297/2 - width ) / 2;
-      doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+      doc.addImage('assets/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
       doc.addImage(selectedImageData[i-1], 'JPEG', x, y, width, height);
       doc.text(String(i), x-15, y+10);
 
-      doc.addImage('images/arrow.png', 131.8, 88.4, 33.3, 33.3);
+      doc.addImage('assets/arrow.png', 131.8, 88.4, 33.3, 33.3);
 
       // 右の画像
       x += 297/2
-      doc.addImage('images/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
+      doc.addImage('assets/black.png', 'PNG', x-0.8, y-0.8, width+1.6, height+1.6);  // 画像の枠線用の黒画像を先に貼る
       doc.addImage(selectedImageData[i], 'JPEG', x, y, width, height);
       doc.text(String(i+1), x-15, y+10);
 

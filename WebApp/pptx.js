@@ -48,7 +48,7 @@ function makePPTX() {
 
       //startTime = performance.now();
       
-      slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+      slide.addImage({ path: "assets/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
       slide.addImage({ data: selectedImageData[i], w: width, h: height, x: x, y: y });
       slide.addText(String(i+1), {x: x-Cm(1.5), y: y, w: Pt(size*2), h: Pt(size), color: "363636", fontSize: size});
 
@@ -63,7 +63,7 @@ function makePPTX() {
       } else {
           x += Cm(7);
           if (i != selectedImageData.length-1){
-          slide.addImage({ path: "images/arrow.png", w: Cm(2), h: Cm(2), x: x2, y: y2 });
+          slide.addImage({ path: "assets/arrow.png", w: Cm(2), h: Cm(2), x: x2, y: y2 });
           x2 += Cm(7) 
           }
       }
@@ -93,14 +93,14 @@ function makePPTX() {
       // startTime = performance.now();
       
       x = ( 11.7/2 - width ) / 2
-      slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+      slide.addImage({ path: "assets/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
       slide.addImage({ data: selectedImageData[i-1], w: width, h: height, x: x, y: y });
       slide.addText(String(i),  {x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
 
-      slide.addImage({ path: "images/arrow.png", w: Cm(3.33), h: Cm(3.33), x: Cm(13.18), y: Cm(8.84) });
+      slide.addImage({ path: "assets/arrow.png", w: Cm(3.33), h: Cm(3.33), x: Cm(13.18), y: Cm(8.84) });
       
       x += (11.7/2)
-      slide.addImage({ path: "images/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
+      slide.addImage({ path: "assets/black.png", w: width+Cm(0.12), h: height+Cm(0.12), x: x-Cm(0.06), y: y-Cm(0.06) });
       slide.addImage({ data: selectedImageData[i], w: width, h: height, x: x, y: y });
       slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
 
