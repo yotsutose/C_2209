@@ -21,28 +21,29 @@
 <body>
     <!-- ここからHTML-->
         <div class="pagenation">
-            <div style="text-align:center">
-                <img class="titleLogo" src="assets/タイトルロゴ.png">
+            <div class="centerBox">
+                <div style="text-align:center">
+                    <img class="titleLogo" src="assets/タイトルロゴ.png">
+                </div>
+                <div style="text-align:center">
+                    <button class="buttonDiv" type="reset">
+                        <label>
+                            <span title="ファイルを選択">
+                                <img class="selectVideo" src="assets/動画選択.png">
+                            </span>
+                            <input type="file" id="filename" accept="video/*" hidden>
+                        </label>
+                    </button>
+                </div>    
+                <div style="text-align:center">
+                    <a class="buttonDiv" href="https://github.com/jphacks/C_2209/tree/master/WebApp/documents" target="_blank" rel="noopener noreferrer">
+                        <img class="buttonImage" src="assets/使い方ボタン.png">
+                    </a>
+                    <button class="buttonDiv" type="reset" onclick="nextPage(); playV();">
+                        <img class="buttonImage" src="assets/実行ボタン.png">
+                    </button>
+                </div>
             </div>
-            <div style="text-align:center">
-                <button class="buttonDiv" type="reset">
-                    <label>
-                        <span title="ファイルを選択">
-                            <img class="selectVideo" src="assets/動画選択.png">
-                        </span>
-                        <input type="file" id="filename" accept="video/*" hidden>
-                    </label>
-                </button>
-            </div>    
-            <div style="text-align:center">
-                <a class="buttonDiv" href="https://github.com/jphacks/C_2209/tree/master/WebApp/documents" target="_blank" rel="noopener noreferrer">
-                    <img class="buttonImage" src="assets/使い方ボタン.png">
-                </a>
-                <button class="buttonDiv" type="reset" onclick="nextPage(); playV();">
-                    <img class="buttonImage" src="assets/実行ボタン.png">
-                </button>
-            </div>
-            
         </div>
 
         <div class="pagenation">
@@ -72,7 +73,7 @@
         </div>
 
         <div class="pagenation">
-            <div style="text-align:center" class="overlapbox">
+            <div style="text-align:center" class="centerBox">
                 <img style="max-width:100vw;" src="assets/選択完了背景.png">
                 <div style="text-align:center" class="buttoncenter">
                     <button class="buttonDiv" type="reset" onclick="makePPTX();console.log('aaaa');" >
