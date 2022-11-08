@@ -42,6 +42,10 @@ function nextPage() {
     $.scrollify.next();
 }
 
+function playV() {
+    video.play();
+}
+
 // フレームの選択/非選択の切り替え
 function stateChange(i){
     stateOfFrame[i] = !stateOfFrame[i];
