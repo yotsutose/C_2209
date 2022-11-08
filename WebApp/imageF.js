@@ -35,7 +35,7 @@ let asset_h = stamp_siv_height/2;
 
 
 window.onload = ()=>{
-    console.log("load!");
+    console.log("windowload!");
 
     let loadcount = 0;
     //スタンプ画像の読み込み
@@ -45,24 +45,17 @@ window.onload = ()=>{
 
         images[i].onload = function(){
             loadcount +=1;
-
-            console.log('dddd');
             let stamp_id = addCanvas_Re('stamps', "stampdiv", "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
-            console.log(stamp_id);
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
 
             let ws = images[i].width;
             let hs = images[i].height;
-            // console.log('ws'+ws);
-            // console.log('hs'+hs);
 
             stamp_C.width = ws/2;
             stamp_C.height = hs/2;
             images[i].width /= 2;
             images[i].height /= 2;
-            // console.log('w__'+images[i].width);
-            // console.log('h__'+hs);
             ctS.drawImage(images[i], 0, 0, ws/2, hs/2);
 
             stamp_C.addEventListener("click", point=>{
@@ -94,7 +87,6 @@ window.onload = ()=>{
             });
 
             if(loadcount == srcs.length){
-                console.log('sort');
                 mySort();
             }
         }
@@ -137,8 +129,8 @@ window.onload = ()=>{
     img.onload = function(){
         w = img.width;
         h = img.height;
-        console.log(w);
-        console.log(h);
+        // console.log(w);
+        // console.log(h);
         canvasL.width = w;
         canvasL.height = h;
         c.drawImage(img, 0, 0, w, h);
@@ -211,7 +203,6 @@ function getImagefromCanvas(id){
 }
 
 function reset(){
-    console.log('reset');
     c.drawImage(img, 0, 0, w, h); //リセット
 }
 
@@ -273,11 +264,9 @@ let width_prepdf = 100;
 let height_prepdf = 80;
 
 async function addCanvasList(){
-    console.log('生成');
     let index_length = document.getElementsByClassName("canvases");
     var CNodeList = index_length[0].getElementsByTagName("canvas");
 
-    console.log(CNodeList.length);
     let CNodeList2 = [];
     let j=0;
     for(let i=0; i<CNodeList.length-1; i++){
@@ -288,10 +277,8 @@ async function addCanvasList(){
         CNodeList2[j] = CNodeList[i];
         j+=1;
     }
-    console.log(CNodeList2.length);
 
     for(let i=0; i<CNodeList2.length-1; i++){
-        console.log("BB");
         let id = addCanvas_Re("canvases_List", "divdiv", "canvasN", i, w, h, "area");
         let base_id = '#'+id;
         let canvasP = document.getElementById(id);
@@ -304,8 +291,6 @@ async function addCanvasList(){
         concatCanvas_M(base_id, page_id, width_prepdf, height_prepdf ,4);
         let pageN_id = '#' + CNodeList2[i+1].id;
         concatCanvas_M(base_id, pageN_id, width_prepdf+400, height_prepdf ,4);
-
-        console.log("loaded");
 
         let flag = true;
         let image_id = "";
