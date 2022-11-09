@@ -20,6 +20,15 @@ let srcs = [
     'assets/stamps/redT6.png',
 ];
 
+var img2 = new Image();
+img2.src = 'assets/arrow.png';
+let arrow_w =0;
+let arrow_h = 0;
+img2.onload = ()=>{
+    arrow_w = img2.naturalWidth;
+    arrow_h = img2.naturalHeight;
+}
+
 //押すスタンプのid
 let stamp_id_S = "stamp1";
 //スタンプの大きさ
@@ -293,6 +302,9 @@ async function addCanvasList(){
         let pageN_id = '#' + CNodeList2[i+1].id;
         concatCanvas_M(base_id, pageN_id, width_prepdf+400, height_prepdf ,4);
 
+        ctcc.drawImage(img2, width_prepdf+250, height_prepdf+200, arrow_w/4, arrow_h/4); //矢印画像はる
+        
+
         let flag = true;
         let image_id = "";
         let ff="";
@@ -333,10 +345,9 @@ async function addCanvasList(){
 
             console.log(relatestamps);
             console.log(stamp_idSave);
-            //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
+            
             ctcc.drawImage(ff, 0, 0, w, h); //リセット
-            //ctcc = save[i];
-            // let base_id = '#'+id;
+            
             let asset_id = '#'+stamp_id_S;
             concatCanvas(base_id, asset_id, canvasX, canvasY, 1);
         });
