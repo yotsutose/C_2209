@@ -328,7 +328,11 @@ async function addCanvasList(){
             relatestamps[i] = {rX:(canvasX-width_prepdf-stamp_siv_width/2)/paintImage_w 
             ,rY:(canvasY-height_prepdf-stamp_siv_height/2)/paintImage_h};
             console.log(i+':'+base_id+':'+relatestamps[i].rX);
+
+            stamp_idSave[i] = stamp_id_S;
+
             console.log(relatestamps);
+            console.log(stamp_idSave);
             //ctcc.drawImage(imageB_E, 0, 0, w, h); //リセット
             ctcc.drawImage(ff, 0, 0, w, h); //リセット
             //ctcc = save[i];
