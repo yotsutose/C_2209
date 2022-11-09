@@ -43,6 +43,7 @@ function nextPage() {
 }
 
 function playV() {
+    bool_stamp = true;
     video.play();
 }
 

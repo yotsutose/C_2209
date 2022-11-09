@@ -44,6 +44,9 @@ let h = 0;
 let asset_w = stamp_siv_width/2;
 let asset_h = stamp_siv_height/2;
 
+//編集画面への移動フラグ
+let bool_stamp = true;
+
 
 window.onload = ()=>{
     console.log("windowload!");
@@ -265,6 +268,8 @@ let width_prepdf = 100;
 let height_prepdf = 80;
 
 async function addCanvasList(){
+    if(!bool_stamp) return;
+
     let index_length = document.getElementsByClassName("canvases");
     var CNodeList = index_length[0].getElementsByTagName("canvas");
 
@@ -291,9 +296,11 @@ async function addCanvasList(){
         let page_id = '#' + CNodeList2[i].id;
         concatCanvas_M(base_id, page_id, width_prepdf, height_prepdf ,4);
         let pageN_id = '#' + CNodeList2[i+1].id;
-        concatCanvas_M(base_id, pageN_id, width_prepdf+400, height_prepdf ,4);
+        concatCanvas_M(base_id, pageN_id, width_prepdf+430, height_prepdf ,4);
 
-        ctcc.drawImage(img2, width_prepdf+250, height_prepdf+200, arrow_w/4, arrow_h/4); //矢印画像はる
+        let WW = arrow_w/5;
+        let HH = arrow_h/5;
+        ctcc.drawImage(img2,w/2 - WW/2 , h/2 - HH/2, WW, HH); //矢印画像はる
         
 
         let flag = true;
@@ -344,4 +351,6 @@ async function addCanvasList(){
         });
         
     }
+
+    bool_stamp = false;
 }
