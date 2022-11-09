@@ -345,7 +345,7 @@ async function addCanvasList(){
 
             console.log(relatestamps);
             console.log(stamp_idSave);
-            
+
             ctcc.drawImage(ff, 0, 0, w, h); //リセット
             
             let asset_id = '#'+stamp_id_S;
