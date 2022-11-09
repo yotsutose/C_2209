@@ -57,21 +57,6 @@ canvas {
 
 
 /*  */
-.stamps{
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
-}
-
-/* .stampWindow{
-  float: left;
-}
-
-.toolWindow{
-  float: right;
-  padding-left: 20px;
-} */
 
 .canvases_List{
   display: flex;
@@ -79,6 +64,10 @@ canvas {
   scroll-snap-type: x mandatory;
   
   scroll-behavior: smooth;
+}
+
+.tool_W{
+  display: flex;
 }
 
 .move_button{
