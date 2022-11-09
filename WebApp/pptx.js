@@ -104,6 +104,15 @@ function makePPTX() {
       slide.addImage({ data: selectedImageData[i], w: width, h: height, x: x, y: y });
       slide.addText(String(i+1),{x: x-Cm(2.5), y: y, w:Pt(size*2), h:Pt(size), color: "363636", fontSize: size});
 
+      if(stamp_idSave[i-1] != undefined) {
+        const path = 'assets/stamps/' + stamp_idSave[i-1] + '.png';
+        const stamp_x = x + relatestamps[i-1].rX * width - 11.7/2;
+        const stamp_y = y + relatestamps[i-1].rY * height;
+        const stamp_width = stamp_siv_width * (width/paintImage_w);
+        const stamp_height = stamp_width * (stamp_siv_height / stamp_siv_width);
+        slide.addImage({ path: path, w: stamp_width, h: stamp_height, x: stamp_x, y: stamp_y });
+      } 
+
       // endTime = performance.now();
       // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime));
       
