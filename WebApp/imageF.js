@@ -12,12 +12,12 @@ let stamp_idSave = [];
 var img = new Image();
 let images = [];
 let srcs = [
-    'assets/stamps/redT1.png',
-    'assets/stamps/redT2.png',
-    'assets/stamps/redT3.png',
-    'assets/stamps/redT4.png',
-    'assets/stamps/redT5.png',
-    'assets/stamps/redT6.png',
+    'assets/stamps/stamp1.png',
+    'assets/stamps/stamp2.png',
+    'assets/stamps/stamp3.png',
+    'assets/stamps/stamp4.png',
+    'assets/stamps/stamp5.png',
+    'assets/stamps/stamp6.png',
 ];
 
 //押すスタンプのid
