@@ -12,6 +12,7 @@ let stamp_idSave = [];
 var img = new Image();
 let images = [];
 let srcs = [
+    'assets/stamps/button_f.png',
     'assets/stamps/redT1.png',
     'assets/stamps/redT2.png',
     'assets/stamps/redT3.png',
@@ -55,7 +56,7 @@ window.onload = ()=>{
 
         images[i].onload = function(){
             loadcount +=1;
-            let stamp_id = addCanvas_Re('stamps', "stampdiv", "stamp", i+1, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
+            let stamp_id = addCanvas_Re('stamps', "stampdiv", "stamp", i, stamp_siv_width/2, stamp_siv_height/2, "stampClass");
             let stamp_C = document.getElementById(stamp_id);
             let ctS = stamp_C.getContext('2d');
 
@@ -68,34 +69,23 @@ window.onload = ()=>{
             images[i].height /= 2;
             ctS.drawImage(images[i], 0, 0, ws/2, hs/2);
 
-            stamp_C.addEventListener("click", point=>{
-                console.log(stamp_id);
-                let pre_stamp_id = stamp_id_S;
-                stamp_id_S = stamp_id;
+            if(i == 0){ //出力ボタンの処理
+                stamp_C.addEventListener("click", point=>{
+                    $.scrollify.previous();
+                });
+            }else{ //スタンプボタンの処理
+                stamp_C.addEventListener("click", point=>{
+                    console.log(stamp_id);
+                    let pre_stamp_id = stamp_id_S;
+                    stamp_id_S = stamp_id;
 
-                //使用するスタンプの強調
-                let preStamp = document.getElementById(pre_stamp_id);
-                let currentStamp = document.getElementById(stamp_id_S);
-                preStamp.style.border = "1px solid";
-                currentStamp.style.border = "5px solid";
-
-                const rect = point.target.getBoundingClientRect();
-        
-                // ブラウザ上での座標を求める
-                const   viewX = point.clientX - rect.left,
-                        viewY = point.clientY - rect.top;
-        
-                // 表示サイズとキャンバスの実サイズの比率を求める
-                const   scaleWidth =  canvasL.clientWidth / canvasL.width,
-                        scaleHeight =  canvasL.clientHeight / canvasL.height;
-        
-                // ブラウザ上でのクリック座標をキャンバス上に変換
-                const   canvasX = Math.floor( viewX / scaleWidth ),
-                        canvasY = Math.floor( viewY / scaleHeight );
-        
-                console.log( canvasX,canvasY );
-            });
-
+                    //使用するスタンプの強調
+                    let preStamp = document.getElementById(pre_stamp_id);
+                    let currentStamp = document.getElementById(stamp_id_S);
+                    preStamp.style.border = "1px solid";
+                    currentStamp.style.border = "5px solid";
+                });
+            }
             if(loadcount == srcs.length){
                 mySort();
             }
@@ -227,13 +217,14 @@ function addCanvas_Re( parentname, divname, name, index, width_, height_, class_
     parentnode[0].appendChild(divElement);
     
     let canvasElement = document.createElement('canvas');
-    // canvasElement.id = "stamp" + (index);
     canvasElement.id = name + (index);
-    // canvasElement.style.width  = stamp_siv_width/2+"px";
-    // canvasElement.style.height = stamp_siv_height/2+"px";
     canvasElement.style.width  = width_+"px";
     canvasElement.style.height = height_+"px";
-    canvasElement.style.border = "1px solid";
+    if(index != 0){ //スタンプの時だけ
+        canvasElement.style.border = "1px solid";
+    }else{
+        canvasElement.style.border = "0px solid";
+    }
     canvasElement.className = class_name;
     //canvasElement.style.float = "left";
     canvasElement.willReadFrequently = true;
