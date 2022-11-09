@@ -95,7 +95,7 @@ function makePDF() {
       doc.addImage(selectedImageData[i-1], 'JPEG', x, y, width, height);
       doc.text(String(i), x-15, y+10);
 
-      doc.addImage('assets/arrow.png', 131.8, 88.4, 33.3, 33.3);
+      doc.addImage('assets/arrow.png', 131.8, 88.4, 33.3, 33.3); 
 
       // 右の画像
       x += 297/2
@@ -104,7 +104,17 @@ function makePDF() {
       doc.text(String(i+1), x-15, y+10);
 
       // endTime = performance.now();
-      // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime));
+      // console.log("画像２枚・枠線・番号・矢印の追加時間：" + (endTime - startTime)); 
+
+      // スタンプの画像
+      if(stamp_idSave[i-1] != undefined) {
+        const path = 'assets/stamps/' + stamp_idSave[i-1] + '.png';
+        const stamp_x = x + relatestamps[i-1].rX * width - 297/2;
+        const stamp_y = y + relatestamps[i-1].rY * height;
+        const stamp_width = stamp_siv_width * (width/paintImage_w);
+        const stamp_height = stamp_width * (stamp_siv_height / stamp_siv_width);
+        doc.addImage(path, 'PNG', stamp_x, stamp_y, stamp_width, stamp_height);
+      }  
   }
       
   // addImage(imageData, format, x, y, width, height, alias, compression, rotation)
