@@ -6,6 +6,7 @@ let canvases_L = document.getElementsByClassName("canvases_List");
 
 //押したスタンプの座標
 let relatestamps = [];
+let stamp_idSave = [];
 
 // Image オブジェクトを生成
 var img = new Image();
