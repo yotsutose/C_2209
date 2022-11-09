@@ -58,10 +58,10 @@ canvas {
 
 /*  */
 .stamps{
-  display: flex;
+  /* display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scroll-behavior: smooth;
+  scroll-behavior: smooth; */
 }
 
 /* .stampWindow{
@@ -79,6 +79,10 @@ canvas {
   scroll-snap-type: x mandatory;
   
   scroll-behavior: smooth;
+}
+
+.tool_W{
+  display: flex;
 }
 
 .move_button{
