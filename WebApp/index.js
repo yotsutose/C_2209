@@ -33,8 +33,10 @@ function modeChange() {
     // モードの切り替え
     let mode = document.getElementsByClassName('mode');
     let modeChange = document.getElementsByClassName('modeChange');
+    let modeChange2 = document.getElementsByClassName('modeChange2');
     [mode[0].hidden, mode[1].hidden] = [mode[1].hidden, mode[0].hidden];
     [modeChange[0].hidden, modeChange[1].hidden] = [modeChange[1].hidden, modeChange[0].hidden];
+    modeChange2[0].hidden = !modeChange2[0].hidden;
 }
 
 // ページ遷移を行う
