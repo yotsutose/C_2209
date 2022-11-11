@@ -241,7 +241,6 @@ let button_move = document.getElementById("moveB");
 button_move.addEventListener("click", addCanvasList);
 
 
-
 // 「選択された画像の一覧画面」のところに<canvas>を追加する処理
 function addsaveImage( index, width_, height_) {
 
@@ -263,12 +262,23 @@ function addsaveImage( index, width_, height_) {
     return imgElement.id;
 }
 
+let bool_edit = false;
+function reset_stampCanvas(){
+    console.log("##");
+    let parentnode = document.getElementsByClassName("canvases_List")[0];
+    while( parentnode.firstChild ){
+        parentnode.removeChild( parentnode.firstChild );
+    }
+    bool_edit = true;
+}
 
 let width_prepdf = 100;
 let height_prepdf = 80;
 
 async function addCanvasList(){
-    if(!bool_stamp) return;
+    if(!bool_stamp && !bool_edit){ 
+        return;
+    }
 
     let index_length = document.getElementsByClassName("canvases");
     var CNodeList = index_length[0].getElementsByTagName("canvas");
@@ -355,4 +365,5 @@ async function addCanvasList(){
     }
 
     bool_stamp = false;
+    bool_edit = false;
 }
