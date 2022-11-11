@@ -316,6 +316,8 @@ async function addCanvasList(){
                     console.log("NN");
                 }
                 flag = false;
+            }else{
+                ctcc.clearRect(0, 0, w, h);
             }
 
             const rect = point.target.getBoundingClientRect();
