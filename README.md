@@ -3,6 +3,15 @@
 ご年配の方に何度も同じスマホ操作を教えた経験はありませんか？一度の画面録画からトリセツを自動で作成します!
 ```
 
+## 🎉JPHACKS Innovator認定を受けました🎉
+
+<img width="615" alt="スクリーンショット 2023-02-26 20 06 46" src="https://user-images.githubusercontent.com/61626658/221406835-d9b5fb7f-7e8b-40c9-b097-829588730db1.png">
+
+詳細
+https://jphacks.com/2022/result/innovator/
+
+## 紹介動画
+
 **(↓↓↓クリックして紹介動画を再生できます↓↓↓)**
 
 [![サービス紹介動画](https://img.youtube.com/vi/GY-fjx39K9Y/0.jpg)](https://www.youtube.com/watch?v=GY-fjx39K9Y)
